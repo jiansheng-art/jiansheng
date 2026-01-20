@@ -45,15 +45,28 @@ export const contactForms = pgTable('contact_forms', {
   message: varchar({ length: 2000 }).notNull(),
 });
 
+export const worksCategories = pgTable('works_categories', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar({ length: 255 }).notNull(),
+});
+
 export const works = pgTable('works', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: varchar({ length: 255 }).notNull(),
   description: varchar({ length: 2000 }).notNull(),
-});
+  categoryId: integer('category_id'),
+}, table => [
+  foreignKey({
+    columns: [table.categoryId],
+    foreignColumns: [worksCategories.id],
+    name: 'fk_category',
+  }).onDelete('set null'),
+]);
 
 export const workImages = pgTable('work_images', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   workId: integer('work_id'),
+  fileName: varchar({ length: 255 }),
   s3FileId: varchar({ length: 255 }).notNull(),
 }, table => [
   foreignKey({
@@ -63,8 +76,9 @@ export const workImages = pgTable('work_images', {
   }).onDelete('cascade'),
 ]);
 
-export const workRelations = relations(works, ({ many }) => ({
+export const workRelations = relations(works, ({ many, one }) => ({
   images: many(workImages),
+  category: one(worksCategories),
 }));
 
 export const workImageRelations = relations(workImages, ({ one }) => ({
@@ -72,4 +86,8 @@ export const workImageRelations = relations(workImages, ({ one }) => ({
     fields: [workImages.workId],
     references: [works.id],
   }),
+}));
+
+export const worksCategoryRelations = relations(worksCategories, ({ many }) => ({
+  works: many(works),
 }));

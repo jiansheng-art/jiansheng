@@ -109,7 +109,7 @@ const {
   data: works,
   refresh,
 } = useQuery({
-  key: ['users'],
+  key: ['work.list'],
   query: () => $trpc.work.list.query(),
 });
 
@@ -122,7 +122,7 @@ async function onSubmit() {
   submitLoading.value = true;
   for (const file of images.value) {
     try {
-      const { id, url } = await $trpc.work.createImage.mutate();
+      const { id, url } = await $trpc.work.createImage.mutate({ fileName: file.name });
 
       await axios.put(url, file.slice(), {
         headers: { 'Content-Type': file.type },
