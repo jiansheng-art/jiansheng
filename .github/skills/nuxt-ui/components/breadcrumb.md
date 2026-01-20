@@ -21,7 +21,8 @@ You can pass any property from the [Link](/docs/components/link#props) component
 
 ```vue
 <UBreadcrumb
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```
 

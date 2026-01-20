@@ -31,6 +31,7 @@ You can pass any property from the [Button](/docs/components/button#props) compo
 
 ```vue
 <UEditorToolbar
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

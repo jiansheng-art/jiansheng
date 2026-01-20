@@ -13,6 +13,7 @@ A component to showcase key features of your application.
 
 ```vue
 <UPageFeature
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

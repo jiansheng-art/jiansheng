@@ -10,6 +10,7 @@ Display content in a card with a header, body and footer.
 
 ```vue
 <UCard
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

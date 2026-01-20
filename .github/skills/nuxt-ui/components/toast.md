@@ -8,6 +8,7 @@ A succinct message to provide information or feedback to the user.
 
 ```vue
 <UToast
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

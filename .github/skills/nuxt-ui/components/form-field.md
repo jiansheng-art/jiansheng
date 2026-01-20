@@ -15,6 +15,7 @@ A wrapper for form elements that provides validation and error handling.
 
 ```vue
 <UFormField
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

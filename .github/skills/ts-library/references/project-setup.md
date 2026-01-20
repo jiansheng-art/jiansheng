@@ -114,13 +114,13 @@ pnpm add -D eslint @antfu/eslint-config
 
 ```typescript
 // eslint.config.ts
-import antfu from '@antfu/eslint-config'
+import antfu from '@antfu/eslint-config';
 
 export default antfu({
   type: 'lib',
   pnpm: true,
   formatters: true,
-})
+});
 ```
 
 ## Git Hooks

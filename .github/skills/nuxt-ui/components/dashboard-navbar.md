@@ -12,6 +12,7 @@ A responsive navbar to display in a dashboard.
 
 ```vue
 <UDashboardNavbar
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

@@ -7,8 +7,14 @@
 ### Basic Usage
 
 ```vue
+<template>
+  <UButton @click="showToast">
+    Show Toast
+  </UButton>
+</template>
+
 <script setup>
-const toast = useToast()
+const toast = useToast();
 
 function showToast() {
   toast.add({
@@ -16,13 +22,9 @@ function showToast() {
     description: 'Your changes have been saved.',
     color: 'success',
     icon: 'i-heroicons-check-circle'
-  })
+  });
 }
 </script>
-
-<template>
-  <UButton @click="showToast">Show Toast</UButton>
-</template>
 ```
 
 ### Toast Options
@@ -41,29 +43,29 @@ toast.add({
     click: () => {}
   }],
   callback: () => {} // Called on dismiss
-})
+});
 ```
 
 ### Toast Types
 
 ```ts
 // Success
-toast.add({ title: 'Saved', color: 'success', icon: 'i-heroicons-check-circle' })
+toast.add({ title: 'Saved', color: 'success', icon: 'i-heroicons-check-circle' });
 
 // Error
-toast.add({ title: 'Error', color: 'error', icon: 'i-heroicons-x-circle' })
+toast.add({ title: 'Error', color: 'error', icon: 'i-heroicons-x-circle' });
 
 // Warning
-toast.add({ title: 'Warning', color: 'warning', icon: 'i-heroicons-exclamation-triangle' })
+toast.add({ title: 'Warning', color: 'warning', icon: 'i-heroicons-exclamation-triangle' });
 
 // Info
-toast.add({ title: 'Info', color: 'info', icon: 'i-heroicons-information-circle' })
+toast.add({ title: 'Info', color: 'info', icon: 'i-heroicons-information-circle' });
 
 // Remove toast
-toast.remove('toast-id')
+toast.remove('toast-id');
 
 // Clear all
-toast.clear()
+toast.clear();
 ```
 
 ## Modal
@@ -71,12 +73,10 @@ toast.clear()
 ### Basic Modal
 
 ```vue
-<script setup>
-const isOpen = ref(false)
-</script>
-
 <template>
-  <UButton @click="isOpen = true">Open Modal</UButton>
+  <UButton @click="isOpen = true">
+    Open Modal
+  </UButton>
 
   <UModal v-model:open="isOpen">
     <template #header>
@@ -86,11 +86,19 @@ const isOpen = ref(false)
     <p>Modal content goes here...</p>
 
     <template #footer>
-      <UButton variant="ghost" @click="isOpen = false">Cancel</UButton>
-      <UButton @click="save">Save</UButton>
+      <UButton variant="ghost" @click="isOpen = false">
+        Cancel
+      </UButton>
+      <UButton @click="save">
+        Save
+      </UButton>
     </template>
   </UModal>
 </template>
+
+<script setup>
+const isOpen = ref(false);
+</script>
 ```
 
 ### Modal Props
@@ -98,7 +106,8 @@ const isOpen = ref(false)
 ```vue
 <UModal
   v-model:open="isOpen"
-  title="Modal Title"          <!-- Alternative to #header slot -->
+  title="Modal Title"          <!-- Alternative to #header slot --
+>
   description="Subtitle"       <!-- Below title -->
   :close="true"                <!-- Show close button -->
   :close-icon="'i-heroicons-x-mark'"
@@ -113,7 +122,7 @@ const isOpen = ref(false)
 
 ```vue
 <script setup>
-const overlay = useOverlay()
+const overlay = useOverlay();
 
 async function openConfirm() {
   const modal = overlay.create(ConfirmModal, {
@@ -122,9 +131,9 @@ async function openConfirm() {
       confirm: () => modal.close(true),
       cancel: () => modal.close(false)
     }
-  })
+  });
 
-  const result = await modal.result
+  const result = await modal.result;
   if (result) {
     // User confirmed
   }
@@ -137,12 +146,10 @@ async function openConfirm() {
 Side panel overlay (from edge of screen).
 
 ```vue
-<script setup>
-const isOpen = ref(false)
-</script>
-
 <template>
-  <UButton @click="isOpen = true">Open Slideover</UButton>
+  <UButton @click="isOpen = true">
+    Open Slideover
+  </UButton>
 
   <USlideover v-model:open="isOpen" title="Settings" side="right">
     <div class="p-4">
@@ -150,6 +157,10 @@ const isOpen = ref(false)
     </div>
   </USlideover>
 </template>
+
+<script setup>
+const isOpen = ref(false);
+</script>
 ```
 
 ### Slideover Props
@@ -159,7 +170,8 @@ const isOpen = ref(false)
   v-model:open="isOpen"
   title="Title"
   description="Subtitle"
-  side="right"              <!-- left, right, top, bottom -->
+  side="right"              <!-- left, right, top, bottom --
+>
   :overlay="true"
   :transition="true"
   :prevent-close="false"
@@ -171,12 +183,10 @@ const isOpen = ref(false)
 Bottom sheet overlay (vaul-vue).
 
 ```vue
-<script setup>
-const isOpen = ref(false)
-</script>
-
 <template>
-  <UButton @click="isOpen = true">Open Drawer</UButton>
+  <UButton @click="isOpen = true">
+    Open Drawer
+  </UButton>
 
   <UDrawer v-model:open="isOpen">
     <div class="p-4">
@@ -184,6 +194,10 @@ const isOpen = ref(false)
     </div>
   </UDrawer>
 </template>
+
+<script setup>
+const isOpen = ref(false);
+</script>
 ```
 
 ### Drawer Props
@@ -193,7 +207,8 @@ const isOpen = ref(false)
   v-model:open="isOpen"
   title="Drawer Title"
   description="Subtitle"
-  handle                     <!-- Show drag handle -->
+  handle                     <!-- Show drag handle --
+>
   :should-scale-background="true"
   :close-threshold="0.25"    <!-- Swipe threshold to close -->
 >
@@ -218,7 +233,8 @@ const isOpen = ref(false)
 ```vue
 <UPopover
   :open="isOpen"
-  side="bottom"              <!-- top, right, bottom, left -->
+  side="bottom"              <!-- top, right, bottom, left --
+>
   align="center"             <!-- start, center, end -->
   :arrow="true"
   :delay="{ open: 0, close: 0 }"
@@ -244,20 +260,20 @@ const isOpen = ref(false)
 ## DropdownMenu
 
 ```vue
+<template>
+  <UDropdownMenu :items="items">
+    <UButton icon="i-heroicons-ellipsis-vertical" variant="ghost" />
+  </UDropdownMenu>
+</template>
+
 <script setup>
 const items = [
   { label: 'Edit', icon: 'i-heroicons-pencil', click: () => {} },
   { label: 'Duplicate', icon: 'i-heroicons-document-duplicate' },
   { type: 'separator' },
   { label: 'Delete', icon: 'i-heroicons-trash', color: 'error' }
-]
+];
 </script>
-
-<template>
-  <UDropdownMenu :items="items">
-    <UButton icon="i-heroicons-ellipsis-vertical" variant="ghost" />
-  </UDropdownMenu>
-</template>
 ```
 
 ### Nested Items
@@ -268,9 +284,9 @@ const items = [
   { label: 'New', children: [
     { label: 'File', click: () => {} },
     { label: 'Folder', click: () => {} }
-  ]},
+  ] },
   { label: 'Delete' }
-]
+];
 </script>
 ```
 
@@ -291,8 +307,12 @@ Right-click menu.
 Search-driven command menu (Fuse.js powered).
 
 ```vue
+<template>
+  <UCommandPalette v-model:open="isOpen" :groups="groups" placeholder="Search..." />
+</template>
+
 <script setup>
-const isOpen = ref(false)
+const isOpen = ref(false);
 
 const groups = [{
   key: 'actions',
@@ -308,12 +328,8 @@ const groups = [{
     { label: 'Home', to: '/' },
     { label: 'Settings', to: '/settings' }
   ]
-}]
+}];
 </script>
-
-<template>
-  <UCommandPalette v-model:open="isOpen" :groups="groups" placeholder="Search..." />
-</template>
 ```
 
 ### Keyboard Shortcut
@@ -321,8 +337,8 @@ const groups = [{
 ```vue
 <script setup>
 defineShortcuts({
-  meta_k: () => { isOpen.value = true }
-})
+  meta_k: () => { isOpen.value = true; }
+});
 </script>
 ```
 

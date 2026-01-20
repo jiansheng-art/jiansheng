@@ -6,6 +6,7 @@ A placeholder to show while content is loading.
 
 ```vue
 <USkeleton
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

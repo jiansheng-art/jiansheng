@@ -6,6 +6,7 @@ An Avatar with a different source for light and dark mode.
 
 ```vue
 <UColorModeAvatar
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

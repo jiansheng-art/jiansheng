@@ -19,14 +19,22 @@ Working with images, links, or time display in templates. **Always prefer Nuxt c
 ```vue
 <template>
   <!-- Internal navigation -->
-  <NuxtLink to="/about">About</NuxtLink>
-  <NuxtLink :to="{ name: '/users/[userId]', params: { userId } }">Profile</NuxtLink>
+  <NuxtLink to="/about">
+    About
+  </NuxtLink>
+  <NuxtLink :to="{ name: '/users/[userId]', params: { userId } }">
+    Profile
+  </NuxtLink>
 
   <!-- External links (uses target="_blank" automatically with external) -->
-  <NuxtLink to="https://nuxt.com" external>Nuxt Docs</NuxtLink>
+  <NuxtLink to="https://nuxt.com" external>
+    Nuxt Docs
+  </NuxtLink>
 
   <!-- Prefetch control -->
-  <NuxtLink to="/dashboard" :prefetch="false">Dashboard</NuxtLink>
+  <NuxtLink to="/dashboard" :prefetch="false">
+    Dashboard
+  </NuxtLink>
 
   <!-- Active state styling -->
   <NuxtLink to="/settings" active-class="text-primary" exact-active-class="font-bold">

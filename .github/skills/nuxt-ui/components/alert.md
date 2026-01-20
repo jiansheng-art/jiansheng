@@ -19,6 +19,7 @@ A callout to draw user's attention.
 
 ```vue
 <UAlert
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

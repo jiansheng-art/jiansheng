@@ -6,6 +6,7 @@ A toolbar to display under the navbar in a dashboard.
 
 ```vue
 <UDashboardToolbar
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

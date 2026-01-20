@@ -13,6 +13,7 @@ A component to select a color.
 
 ```vue
 <UColorPicker
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

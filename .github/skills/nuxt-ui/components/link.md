@@ -6,6 +6,7 @@ A wrapper around <NuxtLink> with extra props.
 
 ```vue
 <ULink
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

@@ -18,6 +18,7 @@ Separates content horizontally or vertically.
 
 ```vue
 <USeparator
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

@@ -33,7 +33,8 @@ You must provide an `id` for each group otherwise the group will be ignored.
 
 ```vue
 <UCommandPalette
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```
 

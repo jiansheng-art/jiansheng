@@ -12,6 +12,7 @@ A pre-built error component with NuxtError support.
 
 ```vue
 <UError
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

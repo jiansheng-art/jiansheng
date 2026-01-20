@@ -42,7 +42,7 @@ watch(count, (newVal) => { ... })        // ❌ Won't work
 **Non-destructured** only if props ONLY used in template:
 
 ```ts
-defineProps<{ count: number }>()
+defineProps<{ count: number }>();
 // Template: {{ count }}
 ```
 
@@ -61,13 +61,13 @@ Type-safe event definitions:
 
 ```ts
 const emit = defineEmits<{
-  update: [id: number, value: string] // multiple args
-  close: [] // no args
-}>()
+  update: [id: number, value: string]; // multiple args
+  close: []; // no args
+}>();
 
 // Usage
-emit('update', 123, 'new value')
-emit('close')
+emit('update', 123, 'new value');
+emit('close');
 ```
 
 **Template syntax:** kebab-case (`@update-item`) vs camelCase in script (`updateItem`)
@@ -98,13 +98,13 @@ Replaces manual `modelValue` prop + `update:modelValue` emit.
 ### Basic
 
 ```vue
-<script setup lang="ts">
-const title = defineModel<string>()
-</script>
-
 <template>
   <input v-model="title">
 </template>
+
+<script setup lang="ts">
+const title = defineModel<string>();
+</script>
 ```
 
 ### With Options
@@ -114,14 +114,14 @@ const title = defineModel<string>()
 const [title, modifiers] = defineModel<string>({
   default: 'default value',
   required: true,
-  get: (value) => value.trim(),
+  get: value => value.trim(),
   set: (value) => {
     if (modifiers.capitalize) {
-      return value.charAt(0).toUpperCase() + value.slice(1)
+      return value.charAt(0).toUpperCase() + value.slice(1);
     }
-    return value
+    return value;
   },
-})
+});
 </script>
 ```
 
@@ -133,8 +133,8 @@ Default assumes `modelValue` prop. For multiple bindings, use explicit names:
 
 ```vue
 <script setup lang="ts">
-const firstName = defineModel<string>('firstName')
-const age = defineModel<number>('age')
+const firstName = defineModel<string>('firstName');
+const age = defineModel<number>('age');
 </script>
 
 <!-- Usage -->
@@ -148,16 +148,6 @@ const age = defineModel<number>('age')
 For typed, scoped template snippets within a component:
 
 ```vue
-<script setup lang="ts">
-import { createReusableTemplate } from '@vueuse/core'
-
-const [DefineItem, UseItem] = createReusableTemplate<{
-  item: SearchItem
-  icon: string
-  color?: 'red' | 'green' | 'blue'
-}>()
-</script>
-
 <template>
   <DefineItem v-slot="{ item, icon, color }">
     <div :class="color">
@@ -169,6 +159,16 @@ const [DefineItem, UseItem] = createReusableTemplate<{
   <!-- Reuse multiple times -->
   <UseItem v-for="item in items" :key="item.id" :item :icon="getIcon(item)" />
 </template>
+
+<script setup lang="ts">
+import { createReusableTemplate } from '@vueuse/core';
+
+const [DefineItem, UseItem] = createReusableTemplate<{
+  item: SearchItem;
+  icon: string;
+  color?: 'red' | 'green' | 'blue';
+}>();
+</script>
 ```
 
 ## UnoCSS Attributify
@@ -193,10 +193,14 @@ Some attributes conflict with HTML properties. Use `un-` prefix:
 
 ```vue
 <!-- ❌ Wrong - changes <a> inner text, not color -->
-<a text="red">Link</a>
+<a text="red">
+Link
+</a>
 
 <!-- ✅ Correct - un- prefix targets UnoCSS -->
-<a un-text="red">Link</a>
+<a un-text="red">
+Link
+</a>
 ```
 
 Common conflicts requiring `un-` prefix:
@@ -210,18 +214,18 @@ Common conflicts requiring `un-` prefix:
 
 ```ts
 // ❌ Wrong
-const props = defineProps<{ count: number }>()
-const { count } = props // Loses reactivity
+const props = defineProps<{ count: number }>();
+const { count } = props; // Loses reactivity
 ```
 
 **Forgetting TypeScript types:**
 
 ```ts
 // ❌ Wrong
-const emit = defineEmits(['update'])
+const emit = defineEmits(['update']);
 
 // ✅ Correct
-const emit = defineEmits<{ update: [id: number] }>()
+const emit = defineEmits<{ update: [id: number] }>();
 ```
 
 **Components >300 lines:** Split into smaller components or extract logic to composables

@@ -6,6 +6,7 @@ A Button to collapse the sidebar on desktop.
 
 ```vue
 <UDashboardSidebarCollapse
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

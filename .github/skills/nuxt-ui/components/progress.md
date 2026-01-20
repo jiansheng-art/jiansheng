@@ -18,6 +18,7 @@ An indicator showing the progress of a task.
 
 ```vue
 <UProgress
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

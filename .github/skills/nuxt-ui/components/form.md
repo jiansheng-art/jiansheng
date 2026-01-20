@@ -11,6 +11,7 @@ A form component with built-in validation and submission handling.
 
 ```vue
 <UForm
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

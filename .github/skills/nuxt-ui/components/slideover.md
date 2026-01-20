@@ -19,7 +19,8 @@ A dialog that slides in from any side of the screen.
 
 ```vue
 <USlideover
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```
 

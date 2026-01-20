@@ -8,19 +8,19 @@
  *   - components/<group>.md (per-group details)
  */
 
-import { mkdirSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const REPO = 'unovue/reka-ui'
-const BRANCH = 'main'
-const BASE_URL = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`
+const REPO = 'unovue/reka-ui';
+const BRANCH = 'main';
+const BASE_URL = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
 
-interface PropMeta { name: string, description: string, type: string, required: boolean, default?: string }
-interface EmitMeta { name: string, description: string, type: string }
-interface SlotMeta { name: string, description: string, type: string }
+interface PropMeta { name: string; description: string; type: string; required: boolean; default?: string }
+interface EmitMeta { name: string; description: string; type: string }
+interface SlotMeta { name: string; description: string; type: string }
 
-const COMPONENT_GROUPS: Record<string, { category: string, description: string, components: string[] }> = {
+const COMPONENT_GROUPS: Record<string, { category: string; description: string; components: string[] }> = {
   checkbox: { category: 'Form', description: 'Selection control with indeterminate state', components: ['CheckboxGroupRoot', 'CheckboxRoot', 'CheckboxIndicator'] },
   combobox: { category: 'Form', description: 'Searchable dropdown with filtering', components: ['ComboboxRoot', 'ComboboxInput', 'ComboboxAnchor', 'ComboboxTrigger', 'ComboboxContent', 'ComboboxViewport', 'ComboboxItem', 'ComboboxItemIndicator', 'ComboboxGroup', 'ComboboxLabel', 'ComboboxEmpty', 'ComboboxSeparator', 'ComboboxArrow', 'ComboboxPortal', 'ComboboxCancel', 'ComboboxVirtualizer'] },
   editable: { category: 'Form', description: 'Inline text editing with preview/edit modes', components: ['EditableRoot', 'EditableArea', 'EditableInput', 'EditablePreview', 'EditableSubmitTrigger', 'EditableCancelTrigger', 'EditableEditTrigger'] },
@@ -76,7 +76,7 @@ const COMPONENT_GROUPS: Record<string, { category: string, description: string, 
   presence: { category: 'Utility', description: 'Animation presence control', components: ['Presence'] },
   primitive: { category: 'Utility', description: 'Base element wrapper', components: ['Primitive', 'Slot'] },
   visuallyHidden: { category: 'Utility', description: 'Screen reader only content', components: ['VisuallyHidden'] },
-}
+};
 
 const COMPOSABLES = [
   { name: 'useEmitAsProps', description: 'Convert emit functions to props for passing to child components' },
@@ -88,165 +88,165 @@ const COMPOSABLES = [
   { name: 'useDateFormatter', description: 'Format dates with locale support' },
   { name: 'useDirection', description: 'Get/set text direction (ltr/rtl)' },
   { name: 'useLocale', description: 'Get/set locale for internationalization' },
-]
+];
 
-async function fetchMeta(componentName: string): Promise<{ props: PropMeta[], emits: EmitMeta[], slots: SlotMeta[] }> {
-  const url = `${BASE_URL}/docs/content/meta/${componentName}.md`
+async function fetchMeta(componentName: string): Promise<{ props: PropMeta[]; emits: EmitMeta[]; slots: SlotMeta[] }> {
+  const url = `${BASE_URL}/docs/content/meta/${componentName}.md`;
   try {
-    const res = await fetch(url)
+    const res = await fetch(url);
     if (!res.ok)
-      return { props: [], emits: [], slots: [] }
-    const text = await res.text()
-    return parseMeta(text)
+      return { props: [], emits: [], slots: [] };
+    const text = await res.text();
+    return parseMeta(text);
   }
-  catch { return { props: [], emits: [], slots: [] } }
+  catch { return { props: [], emits: [], slots: [] }; }
 }
 
-function parseMeta(content: string): { props: PropMeta[], emits: EmitMeta[], slots: SlotMeta[] } {
-  const props: PropMeta[] = []
-  const emits: EmitMeta[] = []
-  const slots: SlotMeta[] = []
-  const propsMatch = content.match(/<PropsTable\s+:data="(\[[\s\S]*?\])"\s*\/>/)
-  const emitsMatch = content.match(/<EmitsTable\s+:data="(\[[\s\S]*?\])"\s*\/>/)
-  const slotsMatch = content.match(/<SlotsTable\s+:data="(\[[\s\S]*?\])"\s*\/>/)
+function parseMeta(content: string): { props: PropMeta[]; emits: EmitMeta[]; slots: SlotMeta[] } {
+  const props: PropMeta[] = [];
+  const emits: EmitMeta[] = [];
+  const slots: SlotMeta[] = [];
+  const propsMatch = content.match(/<PropsTable\s+:data="(\[[\s\S]*?\])"\s*\/>/);
+  const emitsMatch = content.match(/<EmitsTable\s+:data="(\[[\s\S]*?\])"\s*\/>/);
+  const slotsMatch = content.match(/<SlotsTable\s+:data="(\[[\s\S]*?\])"\s*\/>/);
   if (propsMatch) {
     try {
-      props.push(...JSON.parse(propsMatch[1].replace(/'/g, '"')))
+      props.push(...JSON.parse(propsMatch[1].replace(/'/g, '"')));
     }
     catch {}
   }
   if (emitsMatch) {
     try {
-      emits.push(...JSON.parse(emitsMatch[1].replace(/'/g, '"')))
+      emits.push(...JSON.parse(emitsMatch[1].replace(/'/g, '"')));
     }
     catch {}
   }
   if (slotsMatch) {
     try {
-      slots.push(...JSON.parse(slotsMatch[1].replace(/'/g, '"')))
+      slots.push(...JSON.parse(slotsMatch[1].replace(/'/g, '"')));
     }
     catch {}
   }
-  return { props, emits, slots }
+  return { props, emits, slots };
 }
 
-const escapeMarkdown = (str: string) => str.replace(/\|/g, '\\|').replace(/\n/g, ' ')
+const escapeMarkdown = (str: string) => str.replace(/\|/g, '\\|').replace(/\n/g, ' ');
 
 function truncateType(type: string, max = 50) {
-  const c = type.replace(/\s+/g, ' ').trim()
-  return c.length > max ? `${c.slice(0, max - 3)}...` : c
+  const c = type.replace(/\s+/g, ' ').trim();
+  return c.length > max ? `${c.slice(0, max - 3)}...` : c;
 }
-const toKebab = (str: string) => str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
+const toKebab = (str: string) => str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 
-async function generateGroupFile(groupName: string, group: { category: string, description: string, components: string[] }): Promise<string> {
-  const lines: string[] = []
-  const title = groupName.charAt(0).toUpperCase() + groupName.slice(1).replace(/([A-Z])/g, ' $1').trim()
-  lines.push(`# ${title}`)
-  lines.push('')
-  lines.push(group.description)
-  lines.push('')
-  lines.push(`**Parts:** ${group.components.map(c => `\`${c}\``).join(', ')}`)
-  lines.push('')
+async function generateGroupFile(groupName: string, group: { category: string; description: string; components: string[] }): Promise<string> {
+  const lines: string[] = [];
+  const title = groupName.charAt(0).toUpperCase() + groupName.slice(1).replace(/([A-Z])/g, ' $1').trim();
+  lines.push(`# ${title}`);
+  lines.push('');
+  lines.push(group.description);
+  lines.push('');
+  lines.push(`**Parts:** ${group.components.map(c => `\`${c}\``).join(', ')}`);
+  lines.push('');
 
   for (const comp of group.components) {
-    const meta = await fetchMeta(comp)
+    const meta = await fetchMeta(comp);
     if (meta.props.length === 0 && meta.emits.length === 0 && meta.slots.length === 0)
-      continue
+      continue;
 
-    lines.push(`## ${comp}`)
-    lines.push('')
+    lines.push(`## ${comp}`);
+    lines.push('');
 
     if (meta.props.length > 0) {
-      lines.push('### Props')
-      lines.push('| Prop | Type | Default |')
-      lines.push('|------|------|---------|')
+      lines.push('### Props');
+      lines.push('| Prop | Type | Default |');
+      lines.push('|------|------|---------|');
       for (const p of meta.props) {
-        const type = escapeMarkdown(truncateType(p.type))
-        const def = p.default ? `\`${escapeMarkdown(p.default)}\`` : '-'
-        lines.push(`| \`${p.name}\`${p.required ? '*' : ''} | \`${type}\` | ${def} |`)
+        const type = escapeMarkdown(truncateType(p.type));
+        const def = p.default ? `\`${escapeMarkdown(p.default)}\`` : '-';
+        lines.push(`| \`${p.name}\`${p.required ? '*' : ''} | \`${type}\` | ${def} |`);
       }
-      lines.push('')
+      lines.push('');
     }
 
     if (meta.emits.length > 0) {
-      lines.push('### Emits')
-      lines.push('| Event | Payload |')
-      lines.push('|-------|---------|')
+      lines.push('### Emits');
+      lines.push('| Event | Payload |');
+      lines.push('|-------|---------|');
       for (const e of meta.emits) {
-        lines.push(`| \`${e.name}\` | \`${escapeMarkdown(truncateType(e.type))}\` |`)
+        lines.push(`| \`${e.name}\` | \`${escapeMarkdown(truncateType(e.type))}\` |`);
       }
-      lines.push('')
+      lines.push('');
     }
 
     if (meta.slots.length > 0) {
-      lines.push('### Slots')
-      lines.push('| Slot | Type |')
-      lines.push('|------|------|')
+      lines.push('### Slots');
+      lines.push('| Slot | Type |');
+      lines.push('|------|------|');
       for (const s of meta.slots) {
-        lines.push(`| \`${s.name}\` | \`${escapeMarkdown(truncateType(s.type))}\` |`)
+        lines.push(`| \`${s.name}\` | \`${escapeMarkdown(truncateType(s.type))}\` |`);
       }
-      lines.push('')
+      lines.push('');
     }
   }
-  return lines.join('\n')
+  return lines.join('\n');
 }
 
 async function main() {
-  const __dirname = dirname(fileURLToPath(import.meta.url))
-  const baseDir = join(__dirname, '..')
-  const componentsDir = join(baseDir, 'components')
-  mkdirSync(componentsDir, { recursive: true })
+  const __dirname = dirname(fileURLToPath(import.meta.url));
+  const baseDir = join(__dirname, '..');
+  const componentsDir = join(baseDir, 'components');
+  mkdirSync(componentsDir, { recursive: true });
 
-  console.log('Generating Reka UI component docs...')
+  console.log('Generating Reka UI component docs...');
 
   // Generate index
-  const index: string[] = []
-  index.push('# Components')
-  index.push('')
-  index.push('> Auto-generated. Run `npx tsx skills/reka-ui/scripts/generate-components.ts` to update.')
-  index.push('')
+  const index: string[] = [];
+  index.push('# Components');
+  index.push('');
+  index.push('> Auto-generated. Run `npx tsx skills/reka-ui/scripts/generate-components.ts` to update.');
+  index.push('');
 
-  const categories: Record<string, string[]> = {}
+  const categories: Record<string, string[]> = {};
   for (const [name, group] of Object.entries(COMPONENT_GROUPS)) {
     if (!categories[group.category])
-      categories[group.category] = []
-    categories[group.category].push(name)
+      categories[group.category] = [];
+    categories[group.category].push(name);
   }
 
   for (const [cat, groupNames] of Object.entries(categories)) {
-    index.push(`## ${cat}`)
-    index.push('')
-    index.push('| Component | Description | File |')
-    index.push('|-----------|-------------|------|')
+    index.push(`## ${cat}`);
+    index.push('');
+    index.push('| Component | Description | File |');
+    index.push('|-----------|-------------|------|');
     for (const name of groupNames) {
-      const g = COMPONENT_GROUPS[name]
-      const file = `components/${toKebab(name)}.md`
-      index.push(`| **${name}** | ${g.description} | \`${file}\` |`)
+      const g = COMPONENT_GROUPS[name];
+      const file = `components/${toKebab(name)}.md`;
+      index.push(`| **${name}** | ${g.description} | \`${file}\` |`);
     }
-    index.push('')
+    index.push('');
   }
 
-  index.push('## Composables')
-  index.push('')
-  index.push('| Composable | Description |')
-  index.push('|------------|-------------|')
+  index.push('## Composables');
+  index.push('');
+  index.push('| Composable | Description |');
+  index.push('|------------|-------------|');
   for (const c of COMPOSABLES) {
-    index.push(`| \`${c.name}\` | ${c.description} |`)
+    index.push(`| \`${c.name}\` | ${c.description} |`);
   }
-  index.push('')
+  index.push('');
 
-  writeFileSync(join(baseDir, 'components.md'), index.join('\n'))
-  console.log('✓ Generated components.md (index)')
+  writeFileSync(join(baseDir, 'components.md'), index.join('\n'));
+  console.log('✓ Generated components.md (index)');
 
   // Generate per-group files
   for (const [name, group] of Object.entries(COMPONENT_GROUPS)) {
-    const content = await generateGroupFile(name, group)
-    const filename = `${toKebab(name)}.md`
-    writeFileSync(join(componentsDir, filename), content)
-    console.log(`✓ Generated components/${filename}`)
+    const content = await generateGroupFile(name, group);
+    const filename = `${toKebab(name)}.md`;
+    writeFileSync(join(componentsDir, filename), content);
+    console.log(`✓ Generated components/${filename}`);
   }
 
-  console.log(`\nDone! Generated ${Object.keys(COMPONENT_GROUPS).length + 1} files.`)
+  console.log(`\nDone! Generated ${Object.keys(COMPONENT_GROUPS).length + 1} files.`);
 }
 
-main().catch(console.error)
+main().catch(console.error);

@@ -10,6 +10,7 @@ A ready to use CommandPalette to add to your documentation.
 
 ```vue
 <UContentSearch
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

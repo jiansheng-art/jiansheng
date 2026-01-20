@@ -5,7 +5,7 @@
 Show notifications. Requires `<UApp>` wrapper.
 
 ```ts
-const toast = useToast()
+const toast = useToast();
 
 // Add toast
 toast.add({
@@ -14,13 +14,13 @@ toast.add({
   color: 'success',
   icon: 'i-heroicons-check-circle',
   timeout: 5000
-})
+});
 
 // Remove specific toast
-toast.remove('toast-id')
+toast.remove('toast-id');
 
 // Clear all toasts
-toast.clear()
+toast.clear();
 ```
 
 See overlays.md for full toast options.
@@ -30,45 +30,51 @@ See overlays.md for full toast options.
 Programmatically create modals, slidelovers, drawers.
 
 ```ts
-const overlay = useOverlay()
+const overlay = useOverlay();
 
 // Create modal
 const modal = overlay.create(MyModalComponent, {
   props: { title: 'Confirm' },
   modal: true // Default: true
-})
+});
 
 // Wait for result
-const result = await modal.result
+const result = await modal.result;
 
 // Close programmatically
-modal.close(returnValue)
+modal.close(returnValue);
 ```
 
 ### Confirm Dialog Pattern
 
 ```vue
 <!-- ConfirmDialog.vue -->
-<script setup>
-const props = defineProps<{ title: string; message: string }>()
-const emit = defineEmits(['confirm', 'cancel'])
-</script>
-
 <template>
   <UModal :open="true">
-    <template #header>{{ title }}</template>
+    <template #header>
+      {{ title }}
+    </template>
     <p>{{ message }}</p>
     <template #footer>
-      <UButton variant="ghost" @click="emit('cancel')">Cancel</UButton>
-      <UButton color="error" @click="emit('confirm')">Confirm</UButton>
+      <UButton variant="ghost" @click="emit('cancel')">
+        Cancel
+      </UButton>
+      <UButton color="error" @click="emit('confirm')">
+        Confirm
+      </UButton>
     </template>
   </UModal>
 </template>
+
+<script setup>
+const props = defineProps<{ title: string; message: string }>();
+const emit = defineEmits(['confirm', 'cancel']);
+</script>
 ```
 
 ```ts
 // Usage
-const overlay = useOverlay()
+const overlay = useOverlay();
 
 async function confirmDelete() {
   const modal = overlay.create(ConfirmDialog, {
@@ -77,7 +83,7 @@ async function confirmDelete() {
       confirm: () => modal.close(true),
       cancel: () => modal.close(false)
     }
-  })
+  });
 
   if (await modal.result) {
     // Delete item
@@ -113,7 +119,7 @@ defineShortcuts({
     handler: () => submit(),
     whenever: [isFormValid]
   }
-})
+});
 ```
 
 ### Shortcut Syntax
@@ -132,7 +138,7 @@ defineShortcuts({
 const shortcuts = extractShortcuts({
   meta_k: () => {},
   escape: () => {}
-})
+});
 // Returns: { meta_k: { key: 'K', metaKey: true }, ... }
 ```
 
@@ -141,13 +147,13 @@ const shortcuts = extractShortcuts({
 Detect current keyboard state.
 
 ```ts
-const kbd = useKbd()
+const kbd = useKbd();
 
 // Reactive state
-kbd.meta // true if Cmd/Ctrl pressed
-kbd.ctrl // true if Ctrl pressed
-kbd.shift // true if Shift pressed
-kbd.alt // true if Alt/Option pressed
+kbd.meta; // true if Cmd/Ctrl pressed
+kbd.ctrl; // true if Ctrl pressed
+kbd.shift; // true if Shift pressed
+kbd.alt; // true if Alt/Option pressed
 ```
 
 ## useScrollspy
@@ -158,7 +164,7 @@ Track scroll position for anchor navigation.
 const { activeId } = useScrollspy({
   ids: ['section-1', 'section-2', 'section-3'],
   offset: 100 // Pixels from top
-})
+});
 
 // activeId.value = 'section-2' (currently visible)
 ```
@@ -166,11 +172,6 @@ const { activeId } = useScrollspy({
 ### With Table of Contents
 
 ```vue
-<script setup>
-const sections = ['intro', 'features', 'pricing']
-const { activeId } = useScrollspy({ ids: sections })
-</script>
-
 <template>
   <nav>
     <a
@@ -182,6 +183,11 @@ const { activeId } = useScrollspy({ ids: sections })
     </a>
   </nav>
 </template>
+
+<script setup>
+const sections = ['intro', 'features', 'pricing'];
+const { activeId } = useScrollspy({ ids: sections });
+</script>
 ```
 
 ## useFileUpload
@@ -194,37 +200,39 @@ const { files, open, reset, remove } = useFileUpload({
   multiple: true,
   maxFiles: 5,
   maxSize: 5 * 1024 * 1024 // 5MB
-})
+});
 
 // Open file picker
-open()
+open();
 
 // Files selected
-files.value // FileList
+files.value; // FileList
 
 // Reset selection
-reset()
+reset();
 
 // Remove specific file
-remove(index)
+remove(index);
 ```
 
 ### With UFileUpload
 
 ```vue
-<script setup>
-const { files, open, reset } = useFileUpload()
-</script>
-
 <template>
   <UFileUpload v-model="files" accept="image/*" @change="handleFiles">
     <template #default="{ dragover }">
       <div :class="{ 'border-primary': dragover }">
-        Drop files here or <UButton @click="open">Browse</UButton>
+        Drop files here or <UButton @click="open">
+          Browse
+        </UButton>
       </div>
     </template>
   </UFileUpload>
 </template>
+
+<script setup>
+const { files, open, reset } = useFileUpload();
+</script>
 ```
 
 ## defineLocale
@@ -246,13 +254,13 @@ export default defineLocale({
       next: 'Siguiente'
     }
   }
-})
+});
 ```
 
 ### Extend Existing Locale
 
 ```ts
-import en from '@nuxt/ui/locale/en'
+import en from '@nuxt/ui/locale/en';
 
 export default extendLocale(en, {
   messages: {
@@ -260,21 +268,21 @@ export default extendLocale(en, {
       placeholder: 'Choose an option...'
     }
   }
-})
+});
 ```
 
 ### Use in App
 
 ```vue
-<script setup>
-import es from '~/locales/es'
-</script>
-
 <template>
   <UApp :locale="es">
     <NuxtPage />
   </UApp>
 </template>
+
+<script setup>
+import es from '~/locales/es';
+</script>
 ```
 
 ## useFormField
@@ -283,7 +291,7 @@ Access form field context in custom components.
 
 ```ts
 // Inside custom form component
-const { name, error, disabled } = useFormField()
+const { name, error, disabled } = useFormField();
 
 // name: field name from UFormField
 // error: validation error message
@@ -293,21 +301,21 @@ const { name, error, disabled } = useFormField()
 ### Custom Input Component
 
 ```vue
-<script setup>
-const props = defineProps<{ modelValue: string }>()
-const emit = defineEmits(['update:modelValue'])
-
-const { error } = useFormField()
-</script>
-
 <template>
   <input
     :value="modelValue"
     :class="{ 'border-error': error }"
     @input="emit('update:modelValue', $event.target.value)"
-  />
+  >
   <span v-if="error" class="text-error">{{ error }}</span>
 </template>
+
+<script setup>
+const props = defineProps<{ modelValue: string }>();
+const emit = defineEmits(['update:modelValue']);
+
+const { error } = useFormField();
+</script>
 ```
 
 ## Quick Reference

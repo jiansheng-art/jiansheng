@@ -6,6 +6,7 @@ A sticky aside to display your page navigation.
 
 ```vue
 <UPageAside
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

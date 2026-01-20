@@ -43,7 +43,8 @@ ignore:
 
 ```vue
 <UTabs
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```
 

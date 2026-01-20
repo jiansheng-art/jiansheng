@@ -10,6 +10,7 @@ A resizable panel to display in a dashboard.
 
 ```vue
 <UDashboardPanel
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

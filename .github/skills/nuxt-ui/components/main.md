@@ -6,6 +6,7 @@ A main element that fills the available viewport height.
 
 ```vue
 <UMain
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

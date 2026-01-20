@@ -10,6 +10,7 @@ A vertical list layout for displaying content in a stacked format.
 
 ```vue
 <UPageList
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

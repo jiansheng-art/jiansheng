@@ -15,6 +15,7 @@ Display a chat message with icon, avatar, and actions.
 
 ```vue
 <UChatMessage
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

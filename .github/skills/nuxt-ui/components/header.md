@@ -13,6 +13,7 @@ A responsive header component.
 
 ```vue
 <UHeader
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

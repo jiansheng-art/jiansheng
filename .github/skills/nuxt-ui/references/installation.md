@@ -11,7 +11,7 @@ pnpm add @nuxt/ui
 export default defineNuxtConfig({
   modules: ['@nuxt/ui'],
   css: ['~/assets/css/main.css']
-})
+});
 ```
 
 ```css
@@ -45,26 +45,26 @@ pnpm add @nuxt/ui
 ```
 
 ```ts
-import ui from '@nuxt/ui/vite'
-import vue from '@vitejs/plugin-vue'
+import ui from '@nuxt/ui/vite';
+import vue from '@vitejs/plugin-vue';
 // vite.config.ts
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [vue(), ui()]
-})
+});
 ```
 
 ```ts
-import ui from '@nuxt/ui/vue-plugin'
+import ui from '@nuxt/ui/vue-plugin';
 // main.ts
-import { createApp } from 'vue'
-import App from './App.vue'
-import './assets/main.css'
+import { createApp } from 'vue';
+import App from './App.vue';
+import './assets/main.css';
 
-const app = createApp(App)
-app.use(ui)
-app.mount('#app')
+const app = createApp(App);
+app.use(ui);
+app.mount('#app');
 ```
 
 ```css
@@ -120,7 +120,7 @@ export default defineNuxtConfig({
       componentDetection: false // Tree-shake unused components
     }
   }
-})
+});
 ```
 
 ## Vue Vite Options
@@ -141,7 +141,7 @@ ui({
     colors: { primary: 'green' }, // Runtime color config
     button: { /* theme overrides */ }
   }
-})
+});
 ```
 
 ## Auto-installed Modules

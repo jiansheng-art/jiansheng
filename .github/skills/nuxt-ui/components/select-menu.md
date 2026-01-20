@@ -59,7 +59,8 @@ ignore:
 
 ```vue
 <USelectMenu
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```
 

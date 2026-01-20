@@ -27,7 +27,7 @@ export default defineAppConfig({
       error: 'rose'
     }
   }
-})
+});
 ```
 
 ### Vue (vite.config.ts)
@@ -40,7 +40,7 @@ ui({
       secondary: 'violet'
     }
   }
-})
+});
 ```
 
 ## Adding Custom Colors
@@ -55,7 +55,7 @@ export default defineNuxtConfig({
       colors: ['primary', 'secondary', 'tertiary'] // Add new color
     }
   }
-})
+});
 ```
 
 2. Define in CSS (all 11 shades required):
@@ -82,11 +82,13 @@ export default defineNuxtConfig({
 // app.config.ts
 export default defineAppConfig({
   ui: { colors: { tertiary: 'tertiary' } }
-})
+});
 ```
 
 ```vue
-<UButton color="tertiary">Custom Color</UButton>
+<UButton color="tertiary">
+Custom Color
+</UButton>
 ```
 
 ## CSS Variables
@@ -184,17 +186,21 @@ export default defineAppConfig({
       }
     }
   }
-})
+});
 ```
 
 ### Per-Component Override
 
 ```vue
 <!-- ui prop overrides slots -->
-<UButton :ui="{ base: 'font-mono' }">Custom</UButton>
+<UButton :ui="{ base: 'font-mono' }">
+Custom
+</UButton>
 
 <!-- class prop overrides root/base slot -->
-<UButton class="rounded-none">Square</UButton>
+<UButton class="rounded-none">
+Square
+</UButton>
 ```
 
 ## Matching Theme Structure in app.config
@@ -213,7 +219,7 @@ export default {
     root: '...',
     icon: '...'
   }
-}
+};
 ```
 
 **app.config usage**:
@@ -221,7 +227,7 @@ export default {
 ```ts
 ui: {
   button: {
-    slots: { base: 'font-bold' }  // ✅ Match slots structure
+    slots: { base: 'font-bold'; } // ✅ Match slots structure
   }
 }
 ```
@@ -234,7 +240,7 @@ Components like Container, Skeleton, Form, Main use flat `base:` in their theme:
 // Component theme (Container, Skeleton, etc.)
 export default {
   base: 'w-full max-w-container'
-}
+};
 ```
 
 **app.config usage**:
@@ -242,7 +248,7 @@ export default {
 ```ts
 ui: {
   container: {
-    base: 'max-w-lg'  // ✅ Match flat structure
+    base: 'max-w-lg'; // ✅ Match flat structure
   }
 }
 ```
@@ -253,14 +259,14 @@ ui: {
 // ❌ WRONG - Don't use slots for flat-base components
 ui: {
   container: {
-    slots: { base: 'max-w-lg' }  // TypeScript error!
+    slots: { base: 'max-w-lg'; } // TypeScript error!
   }
 }
 
 // ❌ WRONG - Don't use flat for slots-based components
 ui: {
   button: {
-    base: 'font-bold'  // Won't work correctly
+    base: 'font-bold'; // Won't work correctly
   }
 }
 ```
@@ -296,7 +302,7 @@ export default {
     color: 'primary',
     size: 'md'
   }
-}
+};
 ```
 
 ## Dark Mode
@@ -304,12 +310,13 @@ export default {
 Handled by `@nuxtjs/color-mode`. Access via:
 
 ```ts
-const colorMode = useColorMode()
-colorMode.preference = 'dark' // 'light', 'dark', 'system'
+const colorMode = useColorMode();
+colorMode.preference = 'dark'; // 'light', 'dark', 'system'
 ```
 
 ```vue
 <UColorModeButton /> <!-- Toggle button -->
+
 <UColorModeSelect /> <!-- Dropdown select -->
 ```
 

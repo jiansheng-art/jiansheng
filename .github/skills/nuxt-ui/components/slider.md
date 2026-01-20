@@ -18,6 +18,7 @@ An input to select a numeric value within a range.
 
 ```vue
 <USlider
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

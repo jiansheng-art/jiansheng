@@ -6,6 +6,7 @@ A handle to resize a sidebar or panel.
 
 ```vue
 <UDashboardResizeHandle
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

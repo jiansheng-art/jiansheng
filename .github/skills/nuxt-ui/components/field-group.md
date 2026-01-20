@@ -11,6 +11,7 @@ Group multiple button-like elements together.
 
 ```vue
 <UFieldGroup
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

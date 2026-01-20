@@ -18,14 +18,14 @@ pnpm add -D tsdown
 
 ```typescript
 // tsdown.config.ts
-import { defineConfig } from 'tsdown'
+import { defineConfig } from 'tsdown';
 
 export default defineConfig({
   entry: ['src/index.ts'],
   format: ['esm', 'cjs'],
   dts: true,
   clean: true,
-})
+});
 ```
 
 ### Multiple Entries
@@ -36,19 +36,19 @@ export default defineConfig({
   format: ['esm', 'cjs'],
   dts: true,
   external: ['vue', 'vite'],
-})
+});
 ```
 
 ### Plugin Pattern (unplugin-\*)
 
 ```typescript
 export default defineConfig({
-  entry: ['src/*.ts'],          // Glob all entries
+  entry: ['src/*.ts'], // Glob all entries
   format: ['esm', 'cjs'],
   dts: true,
-  exports: true,                // Auto-generate package.json exports
+  exports: true, // Auto-generate package.json exports
   attw: { profile: 'esm-only' }, // Type checking profile
-})
+});
 ```
 
 ### Advanced Options
@@ -58,7 +58,7 @@ export default defineConfig({
   entry: ['src/index.ts'],
   format: ['esm', 'cjs'],
   dts: {
-    resolve: ['@antfu/utils'],  // Inline specific deps in declarations
+    resolve: ['@antfu/utils'], // Inline specific deps in declarations
   },
   external: ['vue'],
   define: {
@@ -69,7 +69,7 @@ export default defineConfig({
       // Post-build tasks
     },
   },
-})
+});
 ```
 
 ## unbuild
@@ -82,7 +82,7 @@ pnpm add -D unbuild
 
 ```typescript
 // build.config.ts
-import { defineBuildConfig } from 'unbuild'
+import { defineBuildConfig } from 'unbuild';
 
 export default defineBuildConfig({
   entries: ['src/index'],
@@ -90,7 +90,7 @@ export default defineBuildConfig({
   rollup: {
     emitCJS: true,
   },
-})
+});
 ```
 
 ### With Externals
@@ -105,7 +105,7 @@ export default defineBuildConfig({
     inlineDependencies: true,
     dts: { respectExternal: true },
   },
-})
+});
 ```
 
 ## Output Formats
@@ -115,7 +115,7 @@ export default defineBuildConfig({
 ```typescript
 export default defineConfig({
   format: ['esm'],
-})
+});
 ```
 
 ### Dual CJS/ESM (recommended)
@@ -123,7 +123,7 @@ export default defineConfig({
 ```typescript
 export default defineConfig({
   format: ['esm', 'cjs'],
-})
+});
 ```
 
 ### With IIFE for CDN
@@ -132,7 +132,7 @@ export default defineConfig({
 export default defineConfig([
   { format: ['esm', 'cjs'], dts: true },
   { format: 'iife', globalName: 'MyLib', minify: true },
-])
+]);
 ```
 
 ## Define Flags
@@ -147,7 +147,7 @@ export default defineConfig({
     __BROWSER__: 'true',
     __VERSION__: JSON.stringify(pkg.version),
   },
-})
+});
 ```
 
 ## Build Scripts
@@ -175,7 +175,7 @@ export default defineConfig({
       // Patch CJS files if needed
     },
   },
-})
+});
 ```
 
 ### Missing types in output

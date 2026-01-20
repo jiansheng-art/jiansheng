@@ -15,6 +15,7 @@ Each column contains a `children` array of objects that define the links.
 
 ```vue
 <UFooterColumns
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

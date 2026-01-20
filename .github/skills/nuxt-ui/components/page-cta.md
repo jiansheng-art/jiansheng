@@ -15,6 +15,7 @@ A call to action section to display in your pages.
 
 ```vue
 <UPageCta
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

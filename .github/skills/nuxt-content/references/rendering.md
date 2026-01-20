@@ -11,15 +11,15 @@ Working with `<ContentRenderer>`, MDC syntax, custom prose components, or code h
 Render parsed markdown body:
 
 ```vue
-<script setup lang="ts">
-const post = await queryCollection('blog')
-  .where('path', '=', '/blog/my-post')
-  .first()
-</script>
-
 <template>
   <ContentRenderer v-if="post" :value="post" />
 </template>
+
+<script setup lang="ts">
+const post = await queryCollection('blog')
+  .where('path', '=', '/blog/my-post')
+  .first();
+</script>
 ```
 
 **With custom wrapper:**
@@ -140,7 +140,7 @@ Override default HTML elements with custom components:
 </template>
 
 <script setup lang="ts">
-defineProps<{ id?: string }>()
+defineProps<{ id?: string }>();
 </script>
 ```
 
@@ -166,7 +166,7 @@ export default defineNuxtConfig({
       },
     },
   },
-})
+});
 ```
 
 **In markdown:**
@@ -211,7 +211,7 @@ export default defineNuxtConfig({})
 ```vue
 <!-- components/content/Alert.vue -->
 <template>
-  <div :class="['alert', `alert-${type}`]">
+  <div class="alert" :class="[`alert-${type}`]">
     <slot />
   </div>
 </template>
@@ -219,7 +219,7 @@ export default defineNuxtConfig({})
 <script setup lang="ts">
 withDefaults(defineProps<{ type?: 'info' | 'warning' | 'error' }>(), {
   type: 'info',
-})
+});
 </script>
 ```
 
@@ -236,11 +236,6 @@ Be careful with this operation.
 Access TOC from parsed content:
 
 ```vue
-<script setup lang="ts">
-const post = await queryCollection('blog').where('path', '=', route.path).first()
-const toc = post?.body?.toc?.links || []
-</script>
-
 <template>
   <nav>
     <ul>
@@ -250,6 +245,11 @@ const toc = post?.body?.toc?.links || []
     </ul>
   </nav>
 </template>
+
+<script setup lang="ts">
+const post = await queryCollection('blog').where('path', '=', route.path).first();
+const toc = post?.body?.toc?.links || [];
+</script>
 ```
 
 ## Best Practices

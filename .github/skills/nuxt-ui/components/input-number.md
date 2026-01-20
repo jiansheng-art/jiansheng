@@ -16,6 +16,7 @@ An input for numerical values with a customizable range.
 
 ```vue
 <UInputNumber
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

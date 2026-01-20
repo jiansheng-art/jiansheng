@@ -17,7 +17,7 @@ export const workRouter = router({
       const id = (await db.insert(works).values({
         title: input.title,
         description: input.description,
-      }).returning())[0].id;
+      }).returning())[0]?.id;
 
       for (const fileId of input.imageIds) {
         await db.update(workImages).set({
@@ -90,7 +90,7 @@ export const workRouter = router({
       const id = (await db.insert(workImages).values({
         s3FileId,
         fileName: input.fileName || null,
-      }).returning())[0].id;
+      }).returning())[0]?.id;
 
       const url = await s3.getStandardUploadPresignedUrl(s3FileId);
       if (!url)

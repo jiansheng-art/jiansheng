@@ -35,6 +35,7 @@ A unique identifier is required for each item.
 
 ```vue
 <UTree
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

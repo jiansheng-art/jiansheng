@@ -34,7 +34,8 @@ You can pass any property from the [Link](/docs/components/link#props) component
 
 ```vue
 <UContextMenu
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```
 

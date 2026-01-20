@@ -16,6 +16,7 @@ A short text to represent a status or a category.
 
 ```vue
 <UBadge
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

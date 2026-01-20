@@ -20,6 +20,7 @@ An input element to enter a pin.
 
 ```vue
 <UPinInput
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

@@ -34,6 +34,7 @@ hide:
 
 ```vue
 <UPricingPlan
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

@@ -64,7 +64,7 @@ Component library for Vue 3 and Nuxt 4+ built on Reka UI (headless) + Tailwind C
 export default defineNuxtConfig({
   modules: ['@nuxt/ui'],
   css: ['~/assets/css/main.css']
-})
+});
 ```
 
 ```css

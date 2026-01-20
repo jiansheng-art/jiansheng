@@ -10,6 +10,7 @@ An enhanced Textarea for submitting prompts in AI chat interfaces.
 
 ```vue
 <UChatPrompt
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

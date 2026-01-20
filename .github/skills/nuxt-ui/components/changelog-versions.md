@@ -11,6 +11,7 @@ Display a list of changelog versions in a timeline.
 
 ```vue
 <UChangelogVersions
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

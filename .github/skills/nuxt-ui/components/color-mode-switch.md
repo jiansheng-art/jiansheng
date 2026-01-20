@@ -6,6 +6,7 @@ A switch to toggle between light and dark mode.
 
 ```vue
 <UColorModeSwitch
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

@@ -11,6 +11,7 @@ A responsive pricing table component that displays tiered pricing plans with fea
 
 ```vue
 <UPricingTable
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

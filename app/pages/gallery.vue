@@ -19,9 +19,8 @@ const { $trpc } = useNuxtApp();
 
 const {
   data: works,
-  refresh,
 } = useQuery({
-  key: ['users'],
+  key: ['work.list'],
   query: () => $trpc.work.list.query(),
 });
 </script>

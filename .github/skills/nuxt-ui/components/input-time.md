@@ -17,6 +17,7 @@ An input for selecting a time.
 
 ```vue
 <UInputTime
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

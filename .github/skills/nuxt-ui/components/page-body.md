@@ -6,6 +6,7 @@ The main content of your page.
 
 ```vue
 <UPageBody
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

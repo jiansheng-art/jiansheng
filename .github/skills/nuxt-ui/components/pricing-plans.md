@@ -13,6 +13,7 @@ Display a list of pricing plans in a responsive grid layout.
 
 ```vue
 <UPricingPlans
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

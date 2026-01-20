@@ -10,6 +10,7 @@ A pair of prev and next links to navigate between pages.
 
 ```vue
 <UContentSurround
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

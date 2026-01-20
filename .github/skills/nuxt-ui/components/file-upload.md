@@ -19,7 +19,8 @@ An input element to upload files.
 
 ```vue
 <UFileUpload
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```
 

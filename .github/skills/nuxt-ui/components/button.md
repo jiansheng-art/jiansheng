@@ -19,6 +19,7 @@ A button element that can act as a link or trigger an action.
 
 ```vue
 <UButton
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

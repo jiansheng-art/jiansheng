@@ -13,6 +13,7 @@ An accordion-style navigation component for organizing page links.
 
 ```vue
 <UContentNavigation
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

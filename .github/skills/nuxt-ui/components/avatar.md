@@ -14,6 +14,7 @@ An img element with fallback and Nuxt Image support.
 
 ```vue
 <UAvatar
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

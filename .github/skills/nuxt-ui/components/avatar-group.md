@@ -11,6 +11,7 @@ Stack multiple avatars in a group.
 
 ```vue
 <UAvatarGroup
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

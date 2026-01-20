@@ -19,6 +19,7 @@ A textarea element to input multi-line text.
 
 ```vue
 <UTextarea
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

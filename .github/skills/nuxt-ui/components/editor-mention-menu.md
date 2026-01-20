@@ -33,6 +33,7 @@ You can also pass an array of arrays to the `items` prop to create separated gro
 
 ```vue
 <UEditorMentionMenu
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

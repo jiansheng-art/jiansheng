@@ -41,7 +41,8 @@ ignore:
 
 ```vue
 <UAccordion
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```
 

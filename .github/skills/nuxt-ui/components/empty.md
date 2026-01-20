@@ -16,6 +16,7 @@ A component to display an empty state.
 
 ```vue
 <UEmpty
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

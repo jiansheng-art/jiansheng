@@ -11,6 +11,7 @@ A list of logos or images to display on your pages.
 
 ```vue
 <UPageLogos
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

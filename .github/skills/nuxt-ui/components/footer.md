@@ -6,6 +6,7 @@ A responsive footer component.
 
 ```vue
 <UFooter
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

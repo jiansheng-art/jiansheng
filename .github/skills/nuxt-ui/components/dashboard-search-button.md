@@ -11,6 +11,7 @@ A pre-styled Button to open the DashboardSearch modal.
 
 ```vue
 <UDashboardSearchButton
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

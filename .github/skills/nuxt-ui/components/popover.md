@@ -16,7 +16,8 @@ A non-modal dialog that floats around a trigger element.
 
 ```vue
 <UPopover
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```
 

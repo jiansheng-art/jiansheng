@@ -25,6 +25,7 @@ It's highly recommended to install the icons collections you need, read more abo
 
 ```vue
 <UIcon
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

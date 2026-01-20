@@ -13,6 +13,7 @@ Display a list of chat messages, designed to work seamlessly with Vercel AI SDK.
 
 ```vue
 <UChatMessages
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

@@ -23,7 +23,7 @@ export default defineNuxtConfig({
       ],
     },
   },
-})
+});
 ```
 
 ### PostgreSQL
@@ -36,7 +36,7 @@ export default defineNuxtConfig({
       url: process.env.DATABASE_URL,
     },
   },
-})
+});
 ```
 
 ### Cloudflare D1
@@ -49,7 +49,7 @@ export default defineNuxtConfig({
       bindingName: 'DB', // Matches wrangler.toml binding
     },
   },
-})
+});
 ```
 
 ### LibSQL / Turso
@@ -63,7 +63,7 @@ export default defineNuxtConfig({
       authToken: process.env.TURSO_AUTH_TOKEN,
     },
   },
-})
+});
 ```
 
 ### PGlite (In-memory)
@@ -75,7 +75,7 @@ export default defineNuxtConfig({
       type: 'pglite',
     },
   },
-})
+});
 ```
 
 ## Local Development Database
@@ -95,7 +95,7 @@ export default defineNuxtConfig({
       filename: '.data/content-dev.db',
     },
   },
-})
+});
 ```
 
 ## Markdown Configuration
@@ -136,7 +136,7 @@ export default defineNuxtConfig({
       },
     },
   },
-})
+});
 ```
 
 ## Highlight Themes
@@ -186,7 +186,7 @@ export default defineNuxtConfig({
       },
     },
   },
-})
+});
 ```
 
 ## File Type Configuration
@@ -204,7 +204,7 @@ export default defineNuxtConfig({
       yaml: false,
     },
   },
-})
+});
 ```
 
 ### CSV
@@ -219,7 +219,7 @@ export default defineNuxtConfig({
       },
     },
   },
-})
+});
 ```
 
 ## Experimental Options
@@ -235,7 +235,7 @@ export default defineNuxtConfig({
       sqliteConnector: 'better-sqlite3', // or 'native', 'sqlite3'
     },
   },
-})
+});
 ```
 
 ## Full Configuration Example
@@ -263,7 +263,7 @@ export default defineNuxtConfig({
       anchorLinks: { h2: true, h3: true },
     },
   },
-})
+});
 ```
 
 ## Environment Variables
@@ -293,22 +293,22 @@ export default defineNuxtConfig({
     'content:file:beforeParse': function (ctx) {
       // Modify raw content before parsing
       if (ctx.file.id.endsWith('.md')) {
-        ctx.file.body = ctx.file.body.replace(/oldTerm/gi, 'newTerm')
+        ctx.file.body = ctx.file.body.replace(/oldTerm/gi, 'newTerm');
       }
     },
     'content:file:afterParse': function (ctx) {
       // Add computed fields after parsing
-      const wordCount = ctx.file.body?.split(/\s+/).length || 0
-      ctx.content.readingTime = Math.ceil(wordCount / 180)
+      const wordCount = ctx.file.body?.split(/\s+/).length || 0;
+      ctx.content.readingTime = Math.ceil(wordCount / 180);
     },
   },
-})
+});
 ```
 
 **Note:** Fields added in `afterParse` must be defined in your collection schema:
 
 ```ts
-schema: z.object({ readingTime: z.number().optional() })
+schema: z.object({ readingTime: z.number().optional() });
 ```
 
 ## LLMs Integration
@@ -329,7 +329,7 @@ export default defineNuxtConfig({
       },
     ],
   },
-})
+});
 ```
 
 Auto-generates `/llms.txt` for LLM consumption.

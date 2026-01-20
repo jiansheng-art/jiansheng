@@ -6,6 +6,7 @@ A Button for submitting chat prompts with automatic status handling.
 
 ```vue
 <UChatPromptSubmit
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

@@ -22,6 +22,7 @@ Each field must include a `type` property, which determines the input component 
 
 ```vue
 <UAuthForm
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

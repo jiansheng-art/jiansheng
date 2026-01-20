@@ -10,6 +10,7 @@ A Select to switch between locales.
 
 ```vue
 <ULocaleSelect
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

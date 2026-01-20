@@ -17,6 +17,7 @@ A control that toggles between two states.
 
 ```vue
 <USwitch
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

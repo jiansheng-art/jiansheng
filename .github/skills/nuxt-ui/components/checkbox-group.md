@@ -62,6 +62,7 @@ ignore:
 
 ```vue
 <UCheckboxGroup
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

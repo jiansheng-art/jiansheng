@@ -27,6 +27,7 @@ You can pass any property from the [Link](/docs/components/link#props) component
 
 ```vue
 <UBlogPost
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

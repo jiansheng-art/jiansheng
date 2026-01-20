@@ -36,7 +36,8 @@ You can pass any property from the [Link](/docs/components/link#props) component
 
 ```vue
 <UDropdownMenu
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```
 

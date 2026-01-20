@@ -6,6 +6,7 @@ A responsive multi-column layout system for organizing content side-by-side.
 
 ```vue
 <UPageColumns
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

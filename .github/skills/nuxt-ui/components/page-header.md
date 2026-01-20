@@ -13,6 +13,7 @@ A responsive header for your pages.
 
 ```vue
 <UPageHeader
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

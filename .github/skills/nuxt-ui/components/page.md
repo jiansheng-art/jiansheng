@@ -6,6 +6,7 @@ A grid layout for your pages with left and right columns.
 
 ```vue
 <UPage
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

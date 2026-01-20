@@ -12,7 +12,8 @@ A collapsible element to toggle visibility of its content.
 
 ```vue
 <UCollapsible
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```
 

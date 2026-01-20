@@ -19,6 +19,7 @@ An input element that displays interactive tags.
 
 ```vue
 <UInputTags
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

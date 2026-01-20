@@ -6,6 +6,7 @@ A fixed layout component that provides context for dashboard components with sid
 
 ```vue
 <UDashboardGroup
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

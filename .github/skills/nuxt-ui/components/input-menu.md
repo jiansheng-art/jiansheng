@@ -57,7 +57,8 @@ ignore:
 
 ```vue
 <UInputMenu
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```
 

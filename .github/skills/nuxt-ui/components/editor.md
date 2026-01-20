@@ -11,6 +11,7 @@ A rich text editor component based on TipTap with support for markdown, HTML, an
 
 ```vue
 <UEditor
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

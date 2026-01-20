@@ -17,7 +17,8 @@ A drawer that smoothly slides in & out of the screen.
 
 ```vue
 <UDrawer
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```
 

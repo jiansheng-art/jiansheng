@@ -82,7 +82,8 @@ When using objects, you need to reference the `value` property of the object in 
 
 ```vue
 <USelect
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```
 

@@ -16,6 +16,7 @@ An input component for date selection.
 
 ```vue
 <UInputDate
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

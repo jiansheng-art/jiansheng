@@ -14,6 +14,7 @@ A resizable and collapsible sidebar to display in a dashboard.
 
 ```vue
 <UDashboardSidebar
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

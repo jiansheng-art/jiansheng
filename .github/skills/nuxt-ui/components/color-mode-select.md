@@ -6,6 +6,7 @@ A Select to switch between system, dark & light mode.
 
 ```vue
 <UColorModeSelect
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

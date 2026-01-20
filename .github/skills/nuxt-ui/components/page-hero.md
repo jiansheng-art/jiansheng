@@ -15,6 +15,7 @@ A responsive hero for your pages.
 
 ```vue
 <UPageHero
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

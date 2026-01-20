@@ -15,6 +15,7 @@ A pre-styled card component that displays a title, description and optional link
 
 ```vue
 <UPageCard
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

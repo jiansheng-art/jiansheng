@@ -18,6 +18,7 @@ A calendar component for selecting single dates, multiple dates or date ranges.
 
 ```vue
 <UCalendar
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

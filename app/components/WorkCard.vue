@@ -163,6 +163,10 @@ async function onSubmit() {
   for (const file of images.value) {
     try {
       const { id, url } = await $trpc.work.createImage.mutate({ fileName: file.name });
+      if (!id || !url) {
+        toast.add({ title: `${file.name} 上传失败`, description: '获取上传地址失败', color: 'error' });
+        continue;
+      }
 
       await axios.put(url, file.slice(), {
         headers: { 'Content-Type': file.type },

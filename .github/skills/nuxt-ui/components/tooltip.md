@@ -16,6 +16,7 @@ A popup that reveals information when hovering over an element.
 
 ```vue
 <UTooltip
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

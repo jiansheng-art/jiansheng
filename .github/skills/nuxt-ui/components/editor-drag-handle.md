@@ -11,6 +11,7 @@ A draggable handle for reordering and selecting blocks in the editor.
 
 ```vue
 <UEditorDragHandle
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

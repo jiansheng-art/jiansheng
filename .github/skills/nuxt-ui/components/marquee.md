@@ -13,6 +13,7 @@ A component to create infinite scrolling content.
 
 ```vue
 <UMarquee
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

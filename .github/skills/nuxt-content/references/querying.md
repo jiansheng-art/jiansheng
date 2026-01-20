@@ -11,17 +11,17 @@ const posts = await queryCollection('blog')
   .where('draft', '=', false)
   .order('date', 'DESC')
   .limit(10)
-  .all()
+  .all();
 
 // Single item
 const post = await queryCollection('blog')
   .where('path', '=', '/blog/my-post')
-  .first()
+  .first();
 
 // Count
 const total = await queryCollection('blog')
   .where('category', '=', 'tech')
-  .count()
+  .count();
 ```
 
 ## Operators
@@ -47,13 +47,13 @@ const posts = await queryCollection('blog')
     .where('category', '=', 'tech')
     .orWhere('featured', '=', true)
   )
-  .all()
+  .all();
 
 // OR conditions
 const posts = await queryCollection('blog')
   .where('author', '=', 'john')
   .orWhere('author', '=', 'jane')
-  .all()
+  .all();
 ```
 
 ## Select Fields
@@ -62,7 +62,7 @@ const posts = await queryCollection('blog')
 // Select specific fields (reduces payload)
 const titles = await queryCollection('blog')
   .select('title', 'path', 'date')
-  .all()
+  .all();
 ```
 
 ## Navigation
@@ -71,10 +71,10 @@ Generate hierarchical navigation trees:
 
 ```ts
 // In pages/[...slug].vue or composables
-const navigation = await queryCollectionNavigation('docs')
+const navigation = await queryCollectionNavigation('docs');
 
 // With custom fields
-const navigation = await queryCollectionNavigation('docs', ['title', 'icon', 'description'])
+const navigation = await queryCollectionNavigation('docs', ['title', 'icon', 'description']);
 ```
 
 Returns nested structure:
@@ -89,7 +89,7 @@ Returns nested structure:
       { title: 'Configuration', path: '/docs/getting-started/configuration' },
     ]
   }
-]
+];
 ```
 
 **Navigation control** via frontmatter:
@@ -117,14 +117,14 @@ const { prev, next } = await queryCollectionItemSurroundings(
   'docs',
   '/docs/current-page',
   { before: 1, after: 1 }
-)
+);
 
 // With specific fields
 const { prev, next } = await queryCollectionItemSurroundings(
   'docs',
   currentPath,
   { before: 1, after: 1, fields: ['title', 'path', 'description'] }
-)
+);
 ```
 
 ## Search Sections
@@ -146,7 +146,7 @@ const sections = await queryCollectionSearchSections('docs', {
       content: 'Section text content...',
       path: '/docs/getting-started',
     }
-  ]
+  ];
 ```
 
 ## Server-Side Queries
@@ -158,8 +158,8 @@ In server routes, pass the event:
 export default defineEventHandler(async (event) => {
   return await queryCollection(event, 'blog')
     .where('draft', '=', false)
-    .all()
-})
+    .all();
+});
 ```
 
 ## Common Patterns
@@ -171,7 +171,7 @@ const latest = await queryCollection('blog')
   .where('draft', '=', false)
   .order('date', 'DESC')
   .limit(5)
-  .all()
+  .all();
 ```
 
 **Posts by tag:**
@@ -179,19 +179,19 @@ const latest = await queryCollection('blog')
 ```ts
 const tagged = await queryCollection('blog')
   .where('tags', 'LIKE', `%${tag}%`)
-  .all()
+  .all();
 ```
 
 **Paginated list:**
 
 ```ts
-const page = 1
-const perPage = 10
+const page = 1;
+const perPage = 10;
 const posts = await queryCollection('blog')
   .order('date', 'DESC')
   .skip((page - 1) * perPage)
   .limit(perPage)
-  .all()
+  .all();
 ```
 
 **Featured + recent:**
@@ -200,7 +200,7 @@ const posts = await queryCollection('blog')
 const [featured, recent] = await Promise.all([
   queryCollection('blog').where('featured', '=', true).first(),
   queryCollection('blog').order('date', 'DESC').limit(5).all(),
-])
+]);
 ```
 
 ## Best Practices

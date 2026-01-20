@@ -42,6 +42,7 @@ ignore:
 
 ```vue
 <UTimeline
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

@@ -15,6 +15,7 @@ Display user information with name, description and avatar.
 
 ```vue
 <UUser
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

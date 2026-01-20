@@ -17,6 +17,7 @@ A list of buttons or links to navigate through pages.
 
 ```vue
 <UPagination
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

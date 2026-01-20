@@ -54,7 +54,8 @@ Click on the items to navigate through the steps.
 
 ```vue
 <UStepper
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```
 

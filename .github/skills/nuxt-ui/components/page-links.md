@@ -19,6 +19,7 @@ You can pass any property from the [Link](/docs/components/link#props) component
 
 ```vue
 <UPageLinks
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

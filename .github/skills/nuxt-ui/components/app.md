@@ -6,6 +6,7 @@ Wraps your app to provide global configurations and more.
 
 ```vue
 <UApp
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

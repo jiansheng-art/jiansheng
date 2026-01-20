@@ -14,6 +14,7 @@ A kbd element to display a keyboard key.
 
 ```vue
 <UKbd
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

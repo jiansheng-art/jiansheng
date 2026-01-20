@@ -25,12 +25,6 @@
 ## Basic Input Examples
 
 ```vue
-<script setup>
-const email = ref('')
-const bio = ref('')
-const country = ref('')
-</script>
-
 <template>
   <!-- Text input -->
   <UInput v-model="email" type="email" placeholder="Email" icon="i-heroicons-envelope" />
@@ -44,19 +38,17 @@ const country = ref('')
   <!-- Select -->
   <USelect v-model="country" :options="['USA', 'Canada', 'Mexico']" placeholder="Country" />
 </template>
+
+<script setup>
+const email = ref('');
+const bio = ref('');
+const country = ref('');
+</script>
 ```
 
 ## SelectMenu (Custom Dropdown)
 
 ```vue
-<script setup>
-const selected = ref()
-const options = [
-  { label: 'John', value: 'john', avatar: { src: '/john.png' } },
-  { label: 'Jane', value: 'jane', avatar: { src: '/jane.png' } }
-]
-</script>
-
 <template>
   <USelectMenu v-model="selected" :options="options" searchable placeholder="Select user">
     <template #option="{ option }">
@@ -65,17 +57,19 @@ const options = [
     </template>
   </USelectMenu>
 </template>
+
+<script setup>
+const selected = ref();
+const options = [
+  { label: 'John', value: 'john', avatar: { src: '/john.png' } },
+  { label: 'Jane', value: 'jane', avatar: { src: '/jane.png' } }
+];
+</script>
 ```
 
 ## Checkbox & Radio
 
 ```vue
-<script setup>
-const agreed = ref(false)
-const plan = ref('free')
-const features = ref([])
-</script>
-
 <template>
   <!-- Single checkbox -->
   <UCheckbox v-model="agreed" label="I agree to terms" description="Required" />
@@ -85,7 +79,7 @@ const features = ref([])
     v-model="plan"
     :items="[
       { label: 'Free', value: 'free', description: '$0/mo' },
-      { label: 'Pro', value: 'pro', description: '$10/mo' }
+      { label: 'Pro', value: 'pro', description: '$10/mo' },
     ]"
   />
 
@@ -94,10 +88,16 @@ const features = ref([])
     v-model="features"
     :items="[
       { label: 'Dark mode', value: 'dark' },
-      { label: 'Notifications', value: 'notifications' }
+      { label: 'Notifications', value: 'notifications' },
     ]"
   />
 </template>
+
+<script setup>
+const agreed = ref(false);
+const plan = ref('free');
+const features = ref([]);
+</script>
 ```
 
 ## Form Validation
@@ -107,29 +107,6 @@ Uses Standard Schema (Zod, Valibot, Yup, Joi, etc.)
 ### With Zod
 
 ```vue
-<script setup lang="ts">
-import { z } from 'zod'
-
-const schema = z.object({
-  email: z.string().email('Invalid email'),
-  password: z.string().min(8, 'Min 8 characters')
-})
-
-type Schema = z.output<typeof schema>
-
-const state = reactive<Partial<Schema>>({
-  email: '',
-  password: ''
-})
-
-const form = ref()
-
-async function onSubmit() {
-  await form.value.validate()
-  // Submit logic
-}
-</script>
-
 <template>
   <UForm ref="form" :schema="schema" :state="state" @submit="onSubmit">
     <UFormField name="email" label="Email">
@@ -140,42 +117,68 @@ async function onSubmit() {
       <UInput v-model="state.password" type="password" />
     </UFormField>
 
-    <UButton type="submit">Submit</UButton>
+    <UButton type="submit">
+      Submit
+    </UButton>
   </UForm>
 </template>
+
+<script setup lang="ts">
+import { z } from 'zod';
+
+const schema = z.object({
+  email: z.string().email('Invalid email'),
+  password: z.string().min(8, 'Min 8 characters')
+});
+
+type Schema = z.output<typeof schema>;
+
+const state = reactive<Partial<Schema>>({
+  email: '',
+  password: ''
+});
+
+const form = ref();
+
+async function onSubmit() {
+  await form.value.validate();
+  // Submit logic
+}
+</script>
 ```
 
 ### With Valibot
 
 ```vue
-<script setup lang="ts">
-import * as v from 'valibot'
-
-const schema = v.object({
-  email: v.pipe(v.string(), v.email('Invalid email')),
-  password: v.pipe(v.string(), v.minLength(8, 'Min 8 characters'))
-})
-
-type Schema = v.InferOutput<typeof schema>
-
-const state = reactive<Partial<Schema>>({
-  email: '',
-  password: ''
-})
-</script>
-
 <template>
   <UForm :schema="schema" :state="state" @submit="onSubmit">
     <!-- Same as above -->
   </UForm>
 </template>
+
+<script setup lang="ts">
+import * as v from 'valibot';
+
+const schema = v.object({
+  email: v.pipe(v.string(), v.email('Invalid email')),
+  password: v.pipe(v.string(), v.minLength(8, 'Min 8 characters'))
+});
+
+type Schema = v.InferOutput<typeof schema>;
+
+const state = reactive<Partial<Schema>>({
+  email: '',
+  password: ''
+});
+</script>
 ```
 
 ## UFormField Props
 
 ```vue
 <UFormField
-  name="email"              <!-- Field name (matches state key) -->
+  name="email"              <!-- Field name (matches state key) --
+>
   label="Email"             <!-- Label text -->
   description="Your email"  <!-- Help text -->
   hint="Optional"           <!-- Right-aligned hint -->
@@ -214,25 +217,22 @@ const state = reactive<Partial<Schema>>({
 ## File Upload
 
 ```vue
-<script setup>
-const { files, open, reset } = useFileUpload()
-</script>
-
 <template>
   <UFileUpload v-model="files" accept="image/*" multiple :max-files="5">
-    <UButton @click="open">Upload</UButton>
+    <UButton @click="open">
+      Upload
+    </UButton>
   </UFileUpload>
 </template>
+
+<script setup>
+const { files, open, reset } = useFileUpload();
+</script>
 ```
 
 ## Date Picker
 
 ```vue
-<script setup>
-const date = ref(new Date())
-const range = ref({ start: new Date(), end: new Date() })
-</script>
-
 <template>
   <!-- Single date -->
   <UInputDate v-model="date" />
@@ -243,6 +243,11 @@ const range = ref({ start: new Date(), end: new Date() })
   <!-- With locale -->
   <UInputDate v-model="date" locale="es" />
 </template>
+
+<script setup>
+const date = ref(new Date());
+const range = ref({ start: new Date(), end: new Date() });
+</script>
 ```
 
 ## Common Patterns

@@ -9,7 +9,7 @@ export default antfu({
     quotes: 'single',
     semi: true,
   },
-  ignores: ['public/**'],
+  ignores: ['public/**', '.github/**'],
 }, {
   rules: {
     'vue/block-order': ['error', {

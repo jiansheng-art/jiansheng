@@ -25,6 +25,7 @@ You can pass any property from the [Link](/docs/components/link#props) component
 
 ```vue
 <UPageSection
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

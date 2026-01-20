@@ -6,6 +6,7 @@ A chat palette to create a chatbot interface inside an overlay.
 
 ```vue
 <UChatPalette
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

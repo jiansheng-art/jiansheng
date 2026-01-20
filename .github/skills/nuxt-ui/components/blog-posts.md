@@ -11,6 +11,7 @@ Display a list of blog posts in a responsive grid layout.
 
 ```vue
 <UBlogPosts
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

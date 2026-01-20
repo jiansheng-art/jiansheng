@@ -24,7 +24,7 @@ export default defineNuxtConfig({
       enabled: true,
     },
   },
-})
+});
 ```
 
 ## Preview Mode
@@ -49,7 +49,7 @@ export default defineNuxtConfig({
       api: '/__preview',
     },
   },
-})
+});
 ```
 
 ### Preview Token
@@ -65,7 +65,7 @@ export default defineNuxtConfig({
       token: process.env.PREVIEW_TOKEN,
     },
   },
-})
+});
 ```
 
 Access preview: `https://your-site.com?preview=your-token`
@@ -73,15 +73,15 @@ Access preview: `https://your-site.com?preview=your-token`
 ## Using Preview in Components
 
 ```vue
-<script setup lang="ts">
-const { enabled: previewEnabled } = useContentPreview()
-</script>
-
 <template>
   <div v-if="previewEnabled" class="preview-banner">
     Preview Mode Active
   </div>
 </template>
+
+<script setup lang="ts">
+const { enabled: previewEnabled } = useContentPreview();
+</script>
 ```
 
 ## Preview API Routes
@@ -110,7 +110,7 @@ export default defineNuxtConfig({
       },
     },
   },
-})
+});
 ```
 
 ## Schema for Studio Editor
@@ -119,8 +119,8 @@ Add editor hints to your schema:
 
 ```ts
 // content.config.ts
-import { defineCollection, defineContentConfig } from '@nuxt/content'
-import { z } from 'zod'
+import { defineCollection, defineContentConfig } from '@nuxt/content';
+import { z } from 'zod';
 
 export default defineContentConfig({
   collections: {
@@ -136,7 +136,7 @@ export default defineContentConfig({
       }),
     }),
   },
-})
+});
 ```
 
 The `.describe()` method adds labels in Studio's editor UI.
@@ -153,7 +153,7 @@ export default defineNuxtConfig({
       url: 'https://studio.nuxt.com',
     },
   },
-})
+});
 ```
 
 ## Live Editing Components
@@ -171,9 +171,9 @@ Mark components as editable in Studio:
 
 <script setup lang="ts">
 defineProps<{
-  title: string
-  description: string
-}>()
+  title: string;
+  description: string;
+}>();
 </script>
 ```
 
@@ -201,7 +201,7 @@ export default defineNuxtConfig({
       debounce: 500,
     },
   },
-})
+});
 ```
 
 ## Deployment Considerations
@@ -216,7 +216,7 @@ export default defineNuxtConfig({
       enabled: process.env.VERCEL_ENV === 'preview',
     },
   },
-})
+});
 ```
 
 ### Cloudflare Pages
@@ -229,7 +229,7 @@ export default defineNuxtConfig({
       enabled: process.env.CF_PAGES_BRANCH !== 'main',
     },
   },
-})
+});
 ```
 
 ## Common Patterns
@@ -238,25 +238,27 @@ export default defineNuxtConfig({
 
 ```vue
 <!-- components/PreviewBanner.vue -->
-<script setup lang="ts">
-const { enabled } = useContentPreview()
-</script>
-
 <template>
   <div v-if="enabled" class="fixed top-0 left-0 right-0 bg-yellow-500 text-center py-1 z-50">
-    Preview Mode - <button @click="navigateTo(useRoute().fullPath.replace('?preview', ''))">Exit</button>
+    Preview Mode - <button @click="navigateTo(useRoute().fullPath.replace('?preview', ''))">
+      Exit
+    </button>
   </div>
 </template>
+
+<script setup lang="ts">
+const { enabled } = useContentPreview();
+</script>
 ```
 
 **Conditional preview logic:**
 
 ```ts
-const { enabled } = useContentPreview()
+const { enabled } = useContentPreview();
 
 const posts = await queryCollection('blog')
   .where('draft', '=', enabled ? undefined : false) // Show drafts in preview
-  .all()
+  .all();
 ```
 
 ## Best Practices

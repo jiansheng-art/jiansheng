@@ -13,6 +13,7 @@ A sticky Table of Contents with automatic active anchor link highlighting.
 
 ```vue
 <UContentToc
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

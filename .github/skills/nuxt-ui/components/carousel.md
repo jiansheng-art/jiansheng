@@ -32,6 +32,7 @@ You can control how many items are visible by using the [`basis`](https://tailwi
 
 ```vue
 <UCarousel
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

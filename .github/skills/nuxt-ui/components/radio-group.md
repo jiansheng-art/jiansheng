@@ -62,6 +62,7 @@ ignore:
 
 ```vue
 <URadioGroup
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

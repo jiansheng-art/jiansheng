@@ -6,6 +6,7 @@ An image element with a different source for light and dark mode.
 
 ```vue
 <UColorModeImage
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

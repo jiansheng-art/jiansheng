@@ -15,6 +15,7 @@ An indicator of a numeric value or a state.
 
 ```vue
 <UChip
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

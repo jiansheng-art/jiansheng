@@ -20,7 +20,8 @@ A dialog window that can be used to display a message or request user input.
 
 ```vue
 <UModal
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```
 

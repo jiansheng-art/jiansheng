@@ -35,7 +35,7 @@ export default defineNuxtConfig({
       ]
     }
   }
-})
+});
 ```
 
 ## Runtime Config
@@ -44,13 +44,13 @@ Access runtime config in app:
 
 ```ts
 // Server-side
-const config = useRuntimeConfig()
-console.log(config.apiSecret) // Available
+const config = useRuntimeConfig();
+console.log(config.apiSecret); // Available
 
 // Client-side
-const config = useRuntimeConfig()
-console.log(config.public.apiBase) // Available
-console.log(config.apiSecret) // undefined (private)
+const config = useRuntimeConfig();
+console.log(config.public.apiBase); // Available
+console.log(config.apiSecret); // undefined (private)
 ```
 
 ### Runtime Config Validation (Recommended)
@@ -71,7 +71,7 @@ npx nuxi module add nuxt-safe-runtime-config
 **Example with Valibot:**
 
 ```ts
-import { number, object, optional, string } from 'valibot'
+import { number, object, optional, string } from 'valibot';
 
 export default defineNuxtConfig({
   modules: ['nuxt-safe-runtime-config'],
@@ -98,14 +98,14 @@ export default defineNuxtConfig({
     }),
     validateAtRuntime: true, // Optional: validate when server starts
   },
-})
+});
 ```
 
 **Usage:**
 
 ```ts
 // Auto-typed from schema - no generics needed
-const config = useSafeRuntimeConfig()
+const config = useSafeRuntimeConfig();
 // config.public.apiBase is string
 // config.databaseUrl is string
 ```
@@ -114,7 +114,8 @@ const config = useSafeRuntimeConfig()
 
 ```ts
 // ❌ Don't do this with nuxt-safe-runtime-config
-if (!config.databaseUrl) throw new Error('Missing DATABASE_URL')
+if (!config.databaseUrl)
+  throw new Error('Missing DATABASE_URL');
 
 // ✅ Schema validation handles it automatically
 // If env var is missing, build fails with detailed error
@@ -141,7 +142,7 @@ export default defineNuxtConfig({
       'types'
     ]
   }
-})
+});
 ```
 
 ### Disable Auto-Import
@@ -151,7 +152,7 @@ export default defineNuxtConfig({
   imports: {
     autoImport: false
   }
-})
+});
 ```
 
 ## Modules
@@ -168,7 +169,7 @@ export default defineNuxtConfig({
       }
     }]
   ]
-})
+});
 ```
 
 ## App Config
@@ -182,14 +183,14 @@ export default defineAppConfig({
     primaryColor: '#3b82f6',
     borderRadius: '0.5rem'
   }
-})
+});
 ```
 
 Access in app:
 
 ```ts
-const appConfig = useAppConfig()
-console.log(appConfig.theme.primaryColor)
+const appConfig = useAppConfig();
+console.log(appConfig.theme.primaryColor);
 ```
 
 ## TypeScript
@@ -201,7 +202,7 @@ export default defineNuxtConfig({
     typeCheck: true,
     shim: false
   }
-})
+});
 ```
 
 ## Build Configuration
@@ -221,7 +222,7 @@ export default defineNuxtConfig({
       }
     }
   }
-})
+});
 ```
 
 ## Route Rules
@@ -236,7 +237,7 @@ export default defineNuxtConfig({
     '/admin/**': { ssr: false },
     '/blog/**': { swr: 3600 } // Cache for 1 hour
   }
-})
+});
 ```
 
 ## Experimental Features
@@ -251,7 +252,7 @@ export default defineNuxtConfig({
     typedPages: true,
     viewTransition: true
   }
-})
+});
 ```
 
 ## Nitro Config
@@ -267,7 +268,7 @@ export default defineNuxtConfig({
       '/api/**': { cors: true }
     }
   }
-})
+});
 ```
 
 ## Layers
@@ -279,7 +280,7 @@ export default defineNuxtConfig({
   extends: [
     './base-layer'
   ]
-})
+});
 ```
 
 ## Environment Variables
@@ -301,7 +302,7 @@ export default defineNuxtConfig({
       apiBase: process.env.API_BASE
     }
   }
-})
+});
 ```
 
 ## Best Practices

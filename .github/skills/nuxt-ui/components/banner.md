@@ -14,6 +14,7 @@ Display a banner at the top of your website to inform users about important info
 
 ```vue
 <UBanner
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

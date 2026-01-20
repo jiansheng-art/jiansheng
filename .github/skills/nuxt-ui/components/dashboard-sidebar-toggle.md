@@ -6,6 +6,7 @@ A Button to toggle the sidebar on mobile.
 
 ```vue
 <UDashboardSidebarToggle
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

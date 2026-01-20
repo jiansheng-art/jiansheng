@@ -16,6 +16,7 @@ Creates scrollable containers with optional virtualization for large lists.
 
 ```vue
 <UScrollArea
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

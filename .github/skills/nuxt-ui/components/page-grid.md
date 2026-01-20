@@ -6,6 +6,7 @@ A responsive grid system for displaying content in a flexible layout.
 
 ```vue
 <UPageGrid
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

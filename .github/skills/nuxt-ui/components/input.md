@@ -18,7 +18,8 @@ An input element to enter text.
 
 ```vue
 <UInput
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```
 

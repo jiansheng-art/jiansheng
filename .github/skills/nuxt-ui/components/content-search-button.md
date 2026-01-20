@@ -11,6 +11,7 @@ A pre-styled Button to open the ContentSearch modal.
 
 ```vue
 <UContentSearchButton
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```

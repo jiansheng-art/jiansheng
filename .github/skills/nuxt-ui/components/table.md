@@ -15,6 +15,7 @@ A responsive table element to display data in rows and columns.
 
 ```vue
 <UTable
-  <!-- props here -->
+  <!-- props here --
+>
 />
 ```
