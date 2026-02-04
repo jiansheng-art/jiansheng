@@ -1,4 +1,5 @@
 <template>
+  <Analytics />
   <UApp>
     <NuxtLayout>
       <NuxtPage />
@@ -7,6 +8,8 @@
 </template>
 
 <script setup lang="ts">
+import { Analytics } from '@vercel/analytics/nuxt';
+
 useHeadSafe({
   titleTemplate: (title?: string) => !title ? 'ZhangJiansheng Art' : `${title} | ZhangJiansheng Art`,
 });

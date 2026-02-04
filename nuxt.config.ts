@@ -38,12 +38,14 @@ export default defineNuxtConfig({
     indexable: true,
   },
 
-  // studio: {
-  //   repository: {
-  //     provider: 'github',
-  //     owner: ''
-  //   }
-  // },
+  studio: {
+    repository: {
+      provider: 'github',
+      owner: 'jiansheng-art',
+      repo: 'jiansheng',
+      branch: 'main',
+    },
+  },
 
   compatibilityDate: '2025-12-14',
 });
