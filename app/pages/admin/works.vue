@@ -73,9 +73,9 @@
           lanes: 4,
           estimateSize: 480,
         }"
-        class="w-full h-[calc(100vh-var(--ui-header-height))] p-px"
+        class="max-w-6xl mx-auto w-full h-[calc(100vh-var(--ui-header-height))] p-px"
       >
-        <WorkCard :work="item" />
+        <AdminWorkCard :work="item" />
       </UScrollArea>
     </template>
   </UDashboardPanel>

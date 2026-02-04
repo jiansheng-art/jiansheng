@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxt/image',
     '@nuxtjs/seo',
+    'nuxt-studio',
   ],
 
   css: ['~/assets/css/main.css'],
@@ -36,6 +37,13 @@ export default defineNuxtConfig({
     url: 'https://jiansheng.art',
     indexable: true,
   },
+
+  // studio: {
+  //   repository: {
+  //     provider: 'github',
+  //     owner: ''
+  //   }
+  // },
 
   compatibilityDate: '2025-12-14',
 });
