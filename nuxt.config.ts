@@ -39,6 +39,9 @@ export default defineNuxtConfig({
   },
 
   studio: {
+    i18n: {
+      defaultLocale: 'zh',
+    },
     repository: {
       provider: 'github',
       owner: 'jiansheng-art',
