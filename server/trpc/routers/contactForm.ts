@@ -1,7 +1,8 @@
+import { eq } from 'drizzle-orm';
 import z from 'zod';
 import { db } from '~~/server/db';
 import { contactForms } from '~~/server/db/schema';
-import { publicProcedure, router } from '~~/server/trpc/trpc';
+import { protectedProcedure, publicProcedure, router } from '~~/server/trpc/trpc';
 
 export const contactFormRouter = router({
   create: publicProcedure.input(z.object({
@@ -20,4 +21,33 @@ export const contactFormRouter = router({
         message: input.message,
       });
     }),
+
+  list: protectedProcedure.query(async () => {
+    const forms = await db.query.contactForms.findMany({
+      orderBy: (form, { desc }) => [desc(form.createdAt)],
+    });
+    return forms;
+  }),
+
+  toggleRead: protectedProcedure.input(z.object({
+    id: z.number(),
+  })).mutation(async ({ input }) => {
+    const form = await db.query.contactForms.findFirst({
+      where: eq(contactForms.id, input.id),
+    });
+    if (form) {
+      await db.update(contactForms).set({ unread: !form.unread }).where(eq(contactForms.id, input.id));
+    }
+  }),
+
+  toggleStarred: protectedProcedure.input(z.object({
+    id: z.number(),
+  })).mutation(async ({ input }) => {
+    const form = await db.query.contactForms.findFirst({
+      where: eq(contactForms.id, input.id),
+    });
+    if (form) {
+      await db.update(contactForms).set({ starred: !form.starred }).where(eq(contactForms.id, input.id));
+    }
+  }),
 });

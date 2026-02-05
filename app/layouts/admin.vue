@@ -44,6 +44,11 @@ const items: NavigationMenuItem[][] = [[{
   icon: 'i-lucide-image',
   to: '/admin/works',
   onSelect: () => { open.value = false; },
+}, {
+  label: '联系表格',
+  icon: 'i-lucide-mail',
+  to: '/admin/contact',
+  onSelect: () => { open.value = false; },
 }]];
 
 const groups = computed(() => [{

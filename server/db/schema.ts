@@ -1,5 +1,5 @@
 import { relations, sql } from 'drizzle-orm';
-import { foreignKey, integer, pgTable, text, timestamp, unique, varchar } from 'drizzle-orm/pg-core';
+import { boolean, foreignKey, integer, pgTable, text, timestamp, unique, varchar } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -43,6 +43,9 @@ export const contactForms = pgTable('contact_forms', {
   email: varchar({ length: 255 }).notNull(),
   subject: varchar({ length: 255 }).notNull(),
   message: varchar({ length: 2000 }).notNull(),
+  unread: boolean().default(true).notNull(),
+  starred: boolean().default(false).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const worksCategories = pgTable('works_categories', {
