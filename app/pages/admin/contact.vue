@@ -5,16 +5,7 @@
     :max-size="30"
     resizable
   >
-    <UDashboardNavbar title="联系表格">
-      <template #right>
-        <UTabs
-          v-model="selectedTab"
-          :items="tabItems"
-          :content="false"
-          size="xs"
-        />
-      </template>
-    </UDashboardNavbar>
+    <UDashboardNavbar title="联系表格" />
     <AdminMailItem v-model="selectedMail" :mails="contactForms || []" />
   </UDashboardPanel>
 
@@ -62,13 +53,4 @@ const isMailPanelOpen = computed({
     }
   },
 });
-
-const selectedTab = ref('all');
-const tabItems = [{
-  label: '全部',
-  value: 'all',
-}, {
-  label: '未读',
-  value: 'unread',
-}];
 </script>

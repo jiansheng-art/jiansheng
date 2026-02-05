@@ -49,6 +49,11 @@ const items: NavigationMenuItem[][] = [[{
   icon: 'i-lucide-mail',
   to: '/admin/contact',
   onSelect: () => { open.value = false; },
+}, {
+  label: '修改网页内容',
+  icon: 'lucide:square-pen',
+  to: '/_studio',
+  onSelect: () => { open.value = false; },
 }]];
 
 const groups = computed(() => [{
