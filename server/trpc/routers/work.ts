@@ -10,13 +10,19 @@ export const workRouter = router({
   create: protectedProcedure
     .input(z.object({
       title: z.string(),
-      description: z.string(),
+      description: z.string().optional(),
       imageIds: z.array(z.number()),
+      year: z.number().int().positive().optional(),
+      material: z.string().optional(),
+      dimensions: z.string().optional(),
     }))
     .mutation(async ({ input }) => {
       const id = (await db.insert(works).values({
         title: input.title,
         description: input.description,
+        year: input.year,
+        material: input.material,
+        dimensions: input.dimensions,
       }).returning())[0]?.id;
 
       for (const fileId of input.imageIds) {
@@ -30,13 +36,19 @@ export const workRouter = router({
     .input(z.object({
       id: z.number(),
       title: z.string(),
-      description: z.string(),
+      description: z.string().optional(),
       imageIds: z.array(z.number()).optional(),
+      year: z.number().int().positive().optional(),
+      material: z.string().optional(),
+      dimensions: z.string().optional(),
     }))
     .mutation(async ({ input }) => {
       await db.update(works).set({
         title: input.title,
         description: input.description,
+        year: input.year,
+        material: input.material,
+        dimensions: input.dimensions,
       }).where(eq(works.id, input.id));
 
       if (input.imageIds) {
@@ -59,8 +71,11 @@ export const workRouter = router({
 
       const res: {
         id: number;
-        description: string;
+        description: string | null;
         title: string;
+        year: number | null;
+        material: string | null;
+        dimensions: string | null;
         images: {
           id: number;
           workId: number | null;

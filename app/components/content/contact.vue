@@ -1,6 +1,9 @@
 <template>
+  <NuxtImg src="/hero.jpg" class="w-full h-70 object-cover pb-10" />
   <div class="flex flex-col lg:flex-row gap-20">
-    <NuxtImg src="/hero.jpg" class="lg:basis-1/3" fit="cover" />
+    <div class="basis-1/2">
+      <slot />
+    </div>
     <UForm :schema="schema" :state="state" class="lg:basis-2/3 space-y-4" @submit="onSubmit">
       <div class="grid grid-cols-2 gap-4">
         <UFormField label="First Name" name="firstName">

@@ -56,8 +56,11 @@ export const worksCategories = pgTable('works_categories', {
 export const works = pgTable('works', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: varchar({ length: 255 }).notNull(),
-  description: varchar({ length: 2000 }).notNull(),
+  description: varchar({ length: 2000 }),
   categoryId: integer('category_id'),
+  year: integer(),
+  material: varchar({ length: 255 }),
+  dimensions: varchar({ length: 255 }),
 }, table => [
   foreignKey({
     columns: [table.categoryId],

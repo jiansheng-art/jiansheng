@@ -1,7 +1,7 @@
 <template>
   <UPageCard
     :title="work.title"
-    :description="work.description"
+    :description="work.description ?? ''"
     orientation="vertical"
     reverse
     :ui="{
@@ -22,9 +22,21 @@
             <UTextarea v-model="state.description" :rows="2" class="w-full" />
           </UFormField>
 
+          <UFormField label="年份" name="year">
+            <UInputNumber v-model="state.year" class="w-full" />
+          </UFormField>
+
+          <UFormField label="材料" name="material">
+            <UInput v-model="state.material" class="w-full" />
+          </UFormField>
+
+          <UFormField label="尺寸" name="dimensions">
+            <UInput v-model="state.dimensions" class="w-full" />
+          </UFormField>
+
           <UCard v-for="img in workDirty.images" :key="img.id" :ui="{ body: 'p-2!' }">
             <div class="flex gap-2 items-center">
-              <NuxtImg :src="img.url" class="w-10" />
+              <NuxtImg :src="img.url" class="w-10 aspect-square" />
               <span class="font-mono text-xs">
                 {{ img.fileName }}
               </span>
@@ -101,14 +113,14 @@
       :items="work.images"
       :ui="{
         container: '',
-        prev: 'sm:start-8',
-        next: 'sm:end-8',
+        prev: 'sm:start-4',
+        next: 'sm:end-4',
       }"
     >
-      <NuxtImg :src="item.url" class="w-full object-cover" />
+      <NuxtImg :src="item.url" class="w-full aspect-square object-cover" />
     </UCarousel>
-    <NuxtImg v-else-if="work.images[0]?.url" :src="work.images[0].url" class="w-full object-cover" />
-    <div v-else class="bg-muted flex items-center justify-center h-60">
+    <NuxtImg v-else-if="work.images[0]?.url" :src="work.images[0].url" class="w-full aspect-square object-cover" />
+    <div v-else class="bg-muted flex items-center justify-center aspect-square object-cover">
       <Icon name="lucide:image-off" size="40" />
     </div>
   </UPageCard>
@@ -128,7 +140,10 @@ const workDirty = ref(work);
 
 const schema = z.object({
   title: z.string().min(1, '请输入标题'),
-  description: z.string().min(1, '请输入描述'),
+  description: z.string().min(1, '请输入描述').optional(),
+  year: z.number().int().positive().optional(),
+  material: z.string().optional(),
+  dimensions: z.string().optional(),
 });
 const { $trpc } = useNuxtApp();
 
@@ -136,7 +151,10 @@ type Schema = z.infer<typeof schema>;
 
 const state = reactive<Schema>({
   title: work.title,
-  description: work.description,
+  description: work.description ?? undefined,
+  year: work.year ?? undefined,
+  material: work.material ?? undefined,
+  dimensions: work.dimensions ?? undefined,
 });
 
 const isDeleteImageLoading = ref(false);
@@ -186,10 +204,16 @@ async function onSubmit() {
       id: work.id,
       title: state.title,
       description: state.description,
+      year: state.year,
+      material: state.material,
+      dimensions: state.dimensions,
       imageIds: workImages.value,
     });
     workDirty.value.title = state.title;
-    workDirty.value.description = state.description;
+    workDirty.value.description = state.description ?? null;
+    workDirty.value.year = state.year ?? null;
+    workDirty.value.material = state.material ?? null;
+    workDirty.value.dimensions = state.dimensions ?? null;
     modalOpen.value = false;
     toast.add({ title: '修改成功', description: '成功修改作品', color: 'success' });
     const queryCache = useQueryCache();

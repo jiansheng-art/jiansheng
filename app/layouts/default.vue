@@ -1,10 +1,10 @@
 <template>
   <UPage>
     <UHeader
-      title="Zhang Jiansheng ART"
+      title="Jiansheng ART"
       mode="slideover"
       :ui="{
-        root: 'border-b-0 bg-white',
+        root: 'border-b-0 bg-default',
         title: 'font-serif',
         right: 'gap-5',
       }"
@@ -76,16 +76,16 @@ const items = ref([
     to: '/gallery',
   },
   {
-    label: 'CONTACT',
-    to: '/contact',
-  },
-  {
-    label: 'BLOG',
-    to: '/blog',
+    label: 'ART ACTIVITIES',
+    to: '/art-activities',
   },
   {
     label: 'SHOP',
     to: '/shop',
+  },
+  {
+    label: 'CONTACT ME',
+    to: '/contact',
   },
 ]);
 </script>

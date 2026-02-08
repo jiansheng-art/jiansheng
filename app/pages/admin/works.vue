@@ -19,6 +19,18 @@
                   <UTextarea v-model="state.description" :rows="2" class="w-full" />
                 </UFormField>
 
+                <UFormField label="年份" name="year">
+                  <UInputNumber v-model="state.year" class="w-full" />
+                </UFormField>
+
+                <UFormField label="材料" name="material">
+                  <UInput v-model="state.material" class="w-full" />
+                </UFormField>
+
+                <UFormField label="尺寸" name="dimensions">
+                  <UInput v-model="state.dimensions" class="w-full" />
+                </UFormField>
+
                 <UFormField name="image" label="图片">
                   <UFileUpload
                     v-model="images"
@@ -64,19 +76,9 @@
       </UDashboardToolbar>
     </template>
     <template #body>
-      <UScrollArea
-        v-slot="{ item }"
-        :items="works"
-        orientation="vertical"
-        :virtualize="{
-          gap: 24,
-          lanes: 4,
-          estimateSize: 480,
-        }"
-        class="max-w-6xl mx-auto w-full h-[calc(100vh-var(--ui-header-height))] p-px"
-      >
-        <AdminWorkCard :work="item" />
-      </UScrollArea>
+      <div class="grid grid-cols-5 gap-4">
+        <AdminWorkCard v-for="item in works" :key="item.id" :work="item" />
+      </div>
     </template>
   </UDashboardPanel>
 </template>
@@ -92,6 +94,9 @@ definePageMeta({
 const schema = z.object({
   title: z.string().min(1, '请输入标题'),
   description: z.string().min(1, '请输入描述'),
+  year: z.number().int().positive().optional(),
+  material: z.string().optional(),
+  dimensions: z.string().optional(),
 });
 
 const { $trpc } = useNuxtApp();
@@ -144,6 +149,9 @@ async function onSubmit() {
   await $trpc.work.create.mutate({
     title: state.title,
     description: state.description,
+    year: state.year,
+    material: state.material,
+    dimensions: state.dimensions,
     imageIds: workImages.value,
   });
 

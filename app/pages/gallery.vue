@@ -1,17 +1,7 @@
 <template>
-  <UScrollArea
-    v-slot="{ item }"
-    :items="works"
-    orientation="vertical"
-    :virtualize="{
-      gap: 24,
-      lanes: 4,
-      estimateSize: 480,
-    }"
-    class="w-full h-[calc(100vh-var(--ui-header-height))] p-px"
-  >
-    <WorkCard :work="item" />
-  </UScrollArea>
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+    <WorkCard v-for="item in works" :key="item.id" :work="item" />
+  </div>
 </template>
 
 <script setup lang="ts">
