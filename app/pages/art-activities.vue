@@ -11,7 +11,7 @@ import type { ChangelogVersionProps } from '@nuxt/ui';
 const versions = ref<ChangelogVersionProps[]>([
   {
     title: 'Early Works',
-    description: 'Nuxt 3.17 is out - bringing a major reworking of the async data layer, a new built-in component, better warnings, and performance improvements!',
+    description: 'A collection of early works by Jiansheng Zhang, showcasing his artistic journey and development.',
     image: 'https://nuxt.com/assets/blog/v3.17.png',
     ui: {
       container: 'max-w-2xl',

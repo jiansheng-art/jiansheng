@@ -10,6 +10,7 @@ export const workRouter = router({
   create: protectedProcedure
     .input(z.object({
       title: z.string(),
+      titleEnglish: z.string().optional(),
       description: z.string().optional(),
       imageIds: z.array(z.number()),
       year: z.number().int().positive().optional(),
@@ -19,6 +20,7 @@ export const workRouter = router({
     .mutation(async ({ input }) => {
       const id = (await db.insert(works).values({
         title: input.title,
+        titleEnglish: input.titleEnglish,
         description: input.description,
         year: input.year,
         material: input.material,
@@ -36,6 +38,7 @@ export const workRouter = router({
     .input(z.object({
       id: z.number(),
       title: z.string(),
+      titleEnglish: z.string().optional(),
       description: z.string().optional(),
       imageIds: z.array(z.number()).optional(),
       year: z.number().int().positive().optional(),
@@ -45,6 +48,7 @@ export const workRouter = router({
     .mutation(async ({ input }) => {
       await db.update(works).set({
         title: input.title,
+        titleEnglish: input.titleEnglish,
         description: input.description,
         year: input.year,
         material: input.material,
@@ -82,6 +86,46 @@ export const workRouter = router({
       await db.delete(works).where(eq(works.id, input.id));
     }),
 
+  get: publicProcedure
+    .input(z.object({
+      id: z.number().int().positive(),
+    }))
+    .query(async ({ input }) => {
+      const work = await db.query.works.findFirst({
+        where: eq(works.id, input.id),
+        with: {
+          images: true,
+        },
+      });
+
+      if (!work) {
+        return null;
+      }
+
+      const result: {
+        id: number;
+        description: string | null;
+        title: string;
+        titleEnglish: string | null;
+        year: number | null;
+        material: string | null;
+        dimensions: string | null;
+        images: {
+          id: number;
+          workId: number | null;
+          fileName: string | null;
+          s3FileId: string;
+          url?: string;
+        }[];
+      } = work;
+
+      for (const image of result.images) {
+        image.url = await new S3Controller().getFileUrl(image.s3FileId);
+      }
+
+      return result;
+    }),
+
   listHome: publicProcedure
     .query(async () => {
       const workRes = await db.query.works.findMany({
@@ -96,6 +140,7 @@ export const workRouter = router({
         id: number;
         description: string | null;
         title: string;
+        titleEnglish: string | null;
         year: number | null;
         material: string | null;
         dimensions: string | null;
@@ -130,6 +175,7 @@ export const workRouter = router({
         id: number;
         description: string | null;
         title: string;
+        titleEnglish: string | null;
         year: number | null;
         material: string | null;
         dimensions: string | null;

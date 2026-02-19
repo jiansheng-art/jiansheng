@@ -15,6 +15,10 @@
                   <UInput v-model="state.title" class="w-full" />
                 </UFormField>
 
+                <UFormField label="英文标题" name="titleEnglish">
+                  <UInput v-model="state.titleEnglish" class="w-full" />
+                </UFormField>
+
                 <UFormField label="描述" name="description">
                   <UTextarea v-model="state.description" :rows="2" class="w-full" />
                 </UFormField>
@@ -93,6 +97,7 @@ definePageMeta({
 
 const schema = z.object({
   title: z.string().min(1, '请输入标题'),
+  titleEnglish: z.string().optional(),
   description: z.string().optional(),
   year: z.number().int().positive().optional(),
   material: z.string().optional(),
@@ -105,6 +110,7 @@ type Schema = z.infer<typeof schema>;
 
 const state = reactive<Schema>({
   title: '',
+  titleEnglish: '',
   description: '',
 });
 
@@ -148,6 +154,7 @@ async function onSubmit() {
 
   await $trpc.work.create.mutate({
     title: state.title,
+    titleEnglish: state.titleEnglish || undefined,
     description: state.description,
     year: state.year,
     material: state.material,
@@ -160,6 +167,7 @@ async function onSubmit() {
   submitLoading.value = false;
   state.description = '';
   state.title = '';
+  state.titleEnglish = '';
   workImages.value = [];
   images.value = [];
   await refresh();

@@ -4,6 +4,7 @@
 @theme {
   --font-sans: 'Geist', sans-serif;
   --font-latin-serif: 'Noto Serif Display', serif;
+  --font-latin-text-serif: 'Noto Serif', serif;
   --font-sc-serif: 'Noto Serif SC', serif;
 }
 

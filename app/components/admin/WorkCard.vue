@@ -1,6 +1,6 @@
 <template>
   <UPageCard
-    :title="work.title"
+    :title="work.titleEnglish ? `${work.title} / ${work.titleEnglish}` : work.title"
     :description="work.description ?? ''"
     orientation="vertical"
     reverse
@@ -34,6 +34,10 @@
         <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
           <UFormField label="标题" name="title">
             <UInput v-model="state.title" class="w-full" />
+          </UFormField>
+
+          <UFormField label="英文标题" name="titleEnglish">
+            <UInput v-model="state.titleEnglish" class="w-full" />
           </UFormField>
 
           <UFormField label="描述" name="description">
@@ -158,6 +162,7 @@ const workDirty = ref(work);
 
 const schema = z.object({
   title: z.string().min(1, '请输入标题'),
+  titleEnglish: z.string().optional(),
   description: z.string().optional(),
   year: z.number().int().positive().optional(),
   material: z.string().optional(),
@@ -171,6 +176,7 @@ type Schema = z.infer<typeof schema>;
 
 const state = reactive<Schema>({
   title: work.title,
+  titleEnglish: work.titleEnglish ?? undefined,
   description: work.description ?? undefined,
   year: work.year ?? undefined,
   material: work.material ?? undefined,
@@ -240,6 +246,7 @@ async function onSubmit() {
     await $trpc.work.update.mutate({
       id: work.id,
       title: state.title,
+      titleEnglish: state.titleEnglish,
       description: state.description,
       year: state.year,
       material: state.material,
@@ -247,6 +254,7 @@ async function onSubmit() {
       imageIds: workImages.value,
     });
     workDirty.value.title = state.title;
+    workDirty.value.titleEnglish = state.titleEnglish ?? null;
     workDirty.value.description = state.description ?? null;
     workDirty.value.year = state.year ?? null;
     workDirty.value.material = state.material ?? null;

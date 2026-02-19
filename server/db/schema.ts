@@ -56,6 +56,7 @@ export const worksCategories = pgTable('works_categories', {
 export const works = pgTable('works', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: varchar({ length: 255 }).notNull(),
+  titleEnglish: varchar({ length: 255 }),
   description: varchar({ length: 2000 }),
   categoryId: integer('category_id'),
   year: integer(),
