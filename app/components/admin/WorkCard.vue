@@ -11,6 +11,24 @@
   >
     <UModal v-model:open="modalOpen" title="修改作品">
       <UButton class="absolute top-3 right-3 z-50" variant="subtle" color="neutral" icon="lucide:edit" />
+      <UPopover>
+        <UButton class="absolute top-3 right-14 z-50" variant="subtle" color="error" icon="lucide:trash" />
+        <template #content="{ close }">
+          <div class="p-4 space-y-4">
+            <p>确定要删除这个作品吗？</p>
+            <div class="flex gap-2 justify-end">
+              <UButton label="取消" variant="outline" size="sm" @click="close" />
+              <UButton
+                label="删除"
+                color="error"
+                size="sm"
+                :loading="isDeleteWorkLoading"
+                @click="deleteWork(close)"
+              />
+            </div>
+          </div>
+        </template>
+      </UPopover>
 
       <template #body>
         <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
@@ -140,12 +158,14 @@ const workDirty = ref(work);
 
 const schema = z.object({
   title: z.string().min(1, '请输入标题'),
-  description: z.string().min(1, '请输入描述').optional(),
+  description: z.string().optional(),
   year: z.number().int().positive().optional(),
   material: z.string().optional(),
   dimensions: z.string().optional(),
 });
 const { $trpc } = useNuxtApp();
+const queryCache = useQueryCache();
+const toast = useToast();
 
 type Schema = z.infer<typeof schema>;
 
@@ -158,6 +178,24 @@ const state = reactive<Schema>({
 });
 
 const isDeleteImageLoading = ref(false);
+const isDeleteWorkLoading = ref(false);
+
+async function deleteWork(close: () => void) {
+  isDeleteWorkLoading.value = true;
+  try {
+    await $trpc.work.delete.mutate({ id: work.id });
+    close();
+    modalOpen.value = false;
+    toast.add({ title: '删除成功', description: '作品已删除', color: 'success' });
+    await queryCache.invalidateQueries({ key: ['work.list'] });
+    isDeleteWorkLoading.value = false;
+  }
+  catch (error) {
+    useErrorHandler(error);
+    isDeleteWorkLoading.value = false;
+  }
+}
+
 async function deleteImage(id: number) {
   isDeleteImageLoading.value = true;
   try {
@@ -174,7 +212,6 @@ async function deleteImage(id: number) {
 const images = ref<File[]>([]);
 const workImages = ref<number[]>([]);
 
-const toast = useToast();
 const submitLoading = ref(false);
 async function onSubmit() {
   submitLoading.value = true;
@@ -216,7 +253,6 @@ async function onSubmit() {
     workDirty.value.dimensions = state.dimensions ?? null;
     modalOpen.value = false;
     toast.add({ title: '修改成功', description: '成功修改作品', color: 'success' });
-    const queryCache = useQueryCache();
     await queryCache.invalidateQueries({ key: ['work.list'] });
     submitLoading.value = false;
   }

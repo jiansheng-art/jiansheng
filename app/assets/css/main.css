@@ -3,7 +3,8 @@
 
 @theme {
   --font-sans: 'Geist', sans-serif;
-  --font-serif: 'Cormorant SC', serif;
+  --font-latin-serif: 'Noto Serif Display', serif;
+  --font-sc-serif: 'Noto Serif SC', serif;
 }
 
 :root {

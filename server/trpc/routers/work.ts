@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server';
-import { desc, eq } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import z from 'zod';
 import { db } from '~~/server/db';
@@ -58,6 +58,63 @@ export const workRouter = router({
           }).where(eq(workImages.id, fileId));
         }
       }
+    }),
+
+  delete: protectedProcedure
+    .input(z.object({
+      id: z.number(),
+    }))
+    .mutation(async ({ input }) => {
+      const work = await db.query.works.findFirst({
+        where: eq(works.id, input.id),
+        with: {
+          images: true,
+        },
+      });
+
+      if (!work) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: '作品未找到' });
+      }
+
+      const s3 = new S3Controller();
+      await Promise.all(work.images.map(image => s3.deleteFile(image.s3FileId)));
+
+      await db.delete(works).where(eq(works.id, input.id));
+    }),
+
+  listHome: publicProcedure
+    .query(async () => {
+      const workRes = await db.query.works.findMany({
+        orderBy: [sql`RANDOM()`],
+        with: {
+          images: true,
+        },
+        limit: 5,
+      });
+
+      const res: {
+        id: number;
+        description: string | null;
+        title: string;
+        year: number | null;
+        material: string | null;
+        dimensions: string | null;
+        images: {
+          id: number;
+          workId: number | null;
+          fileName: string | null;
+          s3FileId: string;
+          url?: string;
+        }[];
+      }[] = workRes;
+
+      for (const work of res) {
+        for (const image of work.images) {
+          image.url = await new S3Controller().getFileUrl(image.s3FileId);
+        }
+      }
+
+      return res;
     }),
 
   list: publicProcedure

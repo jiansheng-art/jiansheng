@@ -93,7 +93,7 @@ definePageMeta({
 
 const schema = z.object({
   title: z.string().min(1, '请输入标题'),
-  description: z.string().min(1, '请输入描述'),
+  description: z.string().optional(),
   year: z.number().int().positive().optional(),
   material: z.string().optional(),
   dimensions: z.string().optional(),
@@ -161,6 +161,7 @@ async function onSubmit() {
   state.description = '';
   state.title = '';
   workImages.value = [];
+  images.value = [];
   await refresh();
 }
 </script>
