@@ -32,10 +32,15 @@
                   'hidden lg:block': index === 3,
                 }"
               >
-                <NuxtImg
-                  v-if="preview.images[0]?.url" :src="preview.images[0].url"
-                  class="object-cover w-full h-full aspect-square"
-                />
+                <div v-if="preview.images[0]?.url" class="relative aspect-square w-full">
+                  <USkeleton v-if="!loadedImages.has(preview.images[0].url!)" class="absolute inset-0 w-full h-full" />
+                  <NuxtImg
+                    :src="preview.images[0].url"
+                    class="object-cover w-full h-full aspect-square transition-opacity duration-500 ease-in-out"
+                    :class="loadedImages.has(preview.images[0].url!) ? 'opacity-100' : 'opacity-0'"
+                    @load="loadedImages.add(preview.images[0].url!)"
+                  />
+                </div>
                 <div v-else class="bg-muted flex items-center justify-center aspect-square">
                   <Icon name="lucide:image-off" size="40" />
                 </div>
@@ -57,4 +62,6 @@ const {
   key: ['work.listSeries'],
   query: () => $trpc.work.listSeries.query(),
 });
+
+const loadedImages = reactive(new Set<string>());
 </script>

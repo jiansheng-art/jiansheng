@@ -10,10 +10,6 @@
       Back to series
     </UButton>
 
-    <div v-if="!imagesReady && !error" class="flex items-center justify-center py-32">
-      <div class="loading-spinner" />
-    </div>
-
     <UEmpty
       v-if="error"
       icon="lucide:triangle-alert"
@@ -23,14 +19,14 @@
     />
 
     <UEmpty
-      v-else-if="imagesReady && !work"
+      v-else-if="status === 'success' && !work"
       icon="lucide:file-x"
       title="Work not found"
       variant="naked"
       description="This gallery item does not exist or has been removed."
     />
 
-    <div v-else-if="work" :class="{ 'opacity-0': !imagesReady, 'animate-fade-in': imagesReady }" class="grid gap-8 md:grid-cols-5">
+    <div v-else-if="work" :class="{ 'opacity-0': status === 'pending', 'animate-fade-in': status !== 'pending' }" class="grid gap-8 md:grid-cols-5">
       <div class="md:col-span-3">
         <UCarousel
           v-if="work.images.length > 1"
@@ -46,15 +42,21 @@
             next: 'sm:end-4',
           }"
         >
-          <NuxtImg :src="item.url" class="w-full object-cover" @load="onImageLoaded" />
+          <div class="relative w-full">
+            <USkeleton v-if="!loadedImages.has(item.url!)" class="absolute inset-0 w-full h-full" />
+            <NuxtImg :src="item.url" class="w-full object-cover transition-opacity duration-500 ease-in-out" :class="loadedImages.has(item.url!) ? 'opacity-100' : 'opacity-0'" @load="onImageLoaded(item.url!)" />
+          </div>
         </UCarousel>
 
-        <NuxtImg
-          v-else-if="work.images[0]?.url"
-          :src="work.images[0].url"
-          class="w-full object-cover"
-          @load="onImageLoaded"
-        />
+        <div v-else-if="work.images[0]?.url" class="relative w-full">
+          <USkeleton v-if="!loadedImages.has(work.images[0].url)" class="absolute inset-0 w-full h-full" />
+          <NuxtImg
+            :src="work.images[0].url"
+            class="w-full object-cover transition-opacity duration-500 ease-in-out"
+            :class="loadedImages.has(work.images[0].url) ? 'opacity-100' : 'opacity-0'"
+            @load="onImageLoaded(work.images[0].url)"
+          />
+        </div>
 
         <div v-else class="bg-muted flex h-105 items-center justify-center">
           <Icon name="lucide:image-off" size="40" />
@@ -109,41 +111,20 @@ if (!Number.isInteger(workId) || workId <= 0) {
   throw createError({ statusCode: 404, statusMessage: 'Not Found' });
 }
 
-const imagesReady = ref(false);
-const loadedCount = ref(0);
+const loadedImages = reactive(new Set<string>());
 
 const {
   data: work,
+  status,
   error,
 } = useQuery({
   key: ['work.get', workId],
   query: () => $trpc.work.get.query({ id: workId }),
 });
 
-function onImageLoaded() {
-  loadedCount.value++;
-  if (!work.value)
-    return;
-  // For carousel: wait for all images; for single: 1 is enough
-  const total = work.value.images.length;
-  if (loadedCount.value >= total) {
-    imagesReady.value = true;
-  }
+function onImageLoaded(url: string) {
+  loadedImages.add(url);
 }
-
-// Handle works with no images
-watch(work, (val) => {
-  if (val && val.images.length === 0) {
-    imagesReady.value = true;
-  }
-}, { immediate: true });
-
-// Safety timeout
-onMounted(() => {
-  setTimeout(() => {
-    imagesReady.value = true;
-  }, 10000);
-});
 
 useHead({
   title: work.value ? `${work.value.title}` : 'Gallery Item',
@@ -161,20 +142,5 @@ useHead({
 }
 .animate-fade-in {
   animation: fade-in 0.5s ease forwards;
-}
-
-.loading-spinner {
-  width: 32px;
-  height: 32px;
-  border: 2px solid currentColor;
-  border-right-color: transparent;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
 }
 </style>
