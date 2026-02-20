@@ -53,12 +53,20 @@ export const worksCategories = pgTable('works_categories', {
   name: varchar({ length: 255 }).notNull(),
 });
 
+export const workSeries = pgTable('work_series', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  title: varchar({ length: 255 }).notNull(),
+  titleEnglish: varchar('title_english', { length: 255 }),
+  description: varchar({ length: 2000 }),
+});
+
 export const works = pgTable('works', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: varchar({ length: 255 }).notNull(),
   titleEnglish: varchar({ length: 255 }),
   description: varchar({ length: 2000 }),
   categoryId: integer('category_id'),
+  seriesId: integer('series_id'),
   year: integer(),
   material: varchar({ length: 255 }),
   dimensions: varchar({ length: 255 }),
@@ -67,6 +75,11 @@ export const works = pgTable('works', {
     columns: [table.categoryId],
     foreignColumns: [worksCategories.id],
     name: 'fk_category',
+  }).onDelete('set null'),
+  foreignKey({
+    columns: [table.seriesId],
+    foreignColumns: [workSeries.id],
+    name: 'fk_series',
   }).onDelete('set null'),
 ]);
 
@@ -86,6 +99,10 @@ export const workImages = pgTable('work_images', {
 export const workRelations = relations(works, ({ many, one }) => ({
   images: many(workImages),
   category: one(worksCategories),
+  series: one(workSeries, {
+    fields: [works.seriesId],
+    references: [workSeries.id],
+  }),
 }));
 
 export const workImageRelations = relations(workImages, ({ one }) => ({
@@ -96,5 +113,9 @@ export const workImageRelations = relations(workImages, ({ one }) => ({
 }));
 
 export const worksCategoryRelations = relations(worksCategories, ({ many }) => ({
+  works: many(works),
+}));
+
+export const workSeriesRelations = relations(workSeries, ({ many }) => ({
   works: many(works),
 }));

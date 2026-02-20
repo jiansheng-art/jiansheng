@@ -3,16 +3,146 @@ import { desc, eq, sql } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import z from 'zod';
 import { db } from '~~/server/db';
-import { workImages, works } from '~~/server/db/schema';
+import { workImages, works, workSeries } from '~~/server/db/schema';
 import { protectedProcedure, publicProcedure, router } from '~~/server/trpc/trpc';
 
+interface WorkListItem {
+  id: number;
+  description: string | null;
+  title: string;
+  titleEnglish: string | null;
+  year: number | null;
+  material: string | null;
+  dimensions: string | null;
+  seriesId: number | null;
+  series: {
+    id: number;
+    title: string;
+    titleEnglish: string | null;
+    description: string | null;
+  } | null;
+  images: {
+    id: number;
+    workId: number | null;
+    fileName: string | null;
+    s3FileId: string;
+    url?: string;
+  }[];
+}
+
+interface SeriesListItem {
+  id: number;
+  title: string;
+  titleEnglish: string | null;
+  description: string | null;
+  works: WorkListItem[];
+}
+
+async function attachImageUrls(workItems: WorkListItem[]) {
+  const s3 = new S3Controller();
+  for (const work of workItems) {
+    for (const image of work.images) {
+      image.url = await s3.getFileUrl(image.s3FileId);
+    }
+  }
+
+  return workItems;
+}
+
 export const workRouter = router({
+  createSeries: protectedProcedure
+    .input(z.object({
+      title: z.string().min(1),
+      titleEnglish: z.string().optional(),
+      description: z.string().optional(),
+    }))
+    .mutation(async ({ input }) => {
+      return (await db.insert(workSeries).values({
+        title: input.title,
+        titleEnglish: input.titleEnglish,
+        description: input.description,
+      }).returning())[0] ?? null;
+    }),
+
+  updateSeries: protectedProcedure
+    .input(z.object({
+      id: z.number().int().positive(),
+      title: z.string().min(1),
+      titleEnglish: z.string().optional(),
+      description: z.string().optional(),
+    }))
+    .mutation(async ({ input }) => {
+      await db.update(workSeries).set({
+        title: input.title,
+        titleEnglish: input.titleEnglish,
+        description: input.description,
+      }).where(eq(workSeries.id, input.id));
+    }),
+
+  deleteSeries: protectedProcedure
+    .input(z.object({
+      id: z.number().int().positive(),
+    }))
+    .mutation(async ({ input }) => {
+      await db.delete(workSeries).where(eq(workSeries.id, input.id));
+    }),
+
+  listSeries: publicProcedure
+    .query(async () => {
+      const res = await db.query.workSeries.findMany({
+        orderBy: [desc(workSeries.id)],
+        with: {
+          works: {
+            orderBy: [desc(works.id)],
+            with: {
+              images: true,
+              series: true,
+            },
+            limit: 4,
+          },
+        },
+      }) as unknown as SeriesListItem[];
+
+      for (const series of res) {
+        await attachImageUrls(series.works);
+      }
+
+      return res;
+    }),
+
+  getSeries: publicProcedure
+    .input(z.object({
+      id: z.number().int().positive(),
+    }))
+    .query(async ({ input }) => {
+      const series = await db.query.workSeries.findFirst({
+        where: eq(workSeries.id, input.id),
+        with: {
+          works: {
+            orderBy: [desc(works.id)],
+            with: {
+              images: true,
+              series: true,
+            },
+          },
+        },
+      }) as unknown as SeriesListItem | undefined;
+
+      if (!series) {
+        return null;
+      }
+
+      await attachImageUrls(series.works);
+      return series;
+    }),
+
   create: protectedProcedure
     .input(z.object({
       title: z.string(),
       titleEnglish: z.string().optional(),
       description: z.string().optional(),
       imageIds: z.array(z.number()),
+      seriesId: z.number().int().positive().optional(),
       year: z.number().int().positive().optional(),
       material: z.string().optional(),
       dimensions: z.string().optional(),
@@ -22,6 +152,7 @@ export const workRouter = router({
         title: input.title,
         titleEnglish: input.titleEnglish,
         description: input.description,
+        seriesId: input.seriesId,
         year: input.year,
         material: input.material,
         dimensions: input.dimensions,
@@ -41,6 +172,7 @@ export const workRouter = router({
       titleEnglish: z.string().optional(),
       description: z.string().optional(),
       imageIds: z.array(z.number()).optional(),
+      seriesId: z.number().int().positive().optional(),
       year: z.number().int().positive().optional(),
       material: z.string().optional(),
       dimensions: z.string().optional(),
@@ -50,6 +182,7 @@ export const workRouter = router({
         title: input.title,
         titleEnglish: input.titleEnglish,
         description: input.description,
+        seriesId: input.seriesId,
         year: input.year,
         material: input.material,
         dimensions: input.dimensions,
@@ -73,6 +206,7 @@ export const workRouter = router({
         where: eq(works.id, input.id),
         with: {
           images: true,
+          series: true,
         },
       });
 
@@ -95,6 +229,7 @@ export const workRouter = router({
         where: eq(works.id, input.id),
         with: {
           images: true,
+          series: true,
         },
       });
 
@@ -110,6 +245,13 @@ export const workRouter = router({
         year: number | null;
         material: string | null;
         dimensions: string | null;
+        seriesId: number | null;
+        series: {
+          id: number;
+          title: string;
+          titleEnglish: string | null;
+          description: string | null;
+        } | null;
         images: {
           id: number;
           workId: number | null;
@@ -132,34 +274,12 @@ export const workRouter = router({
         orderBy: [sql`RANDOM()`],
         with: {
           images: true,
+          series: true,
         },
         limit: 5,
       });
 
-      const res: {
-        id: number;
-        description: string | null;
-        title: string;
-        titleEnglish: string | null;
-        year: number | null;
-        material: string | null;
-        dimensions: string | null;
-        images: {
-          id: number;
-          workId: number | null;
-          fileName: string | null;
-          s3FileId: string;
-          url?: string;
-        }[];
-      }[] = workRes;
-
-      for (const work of res) {
-        for (const image of work.images) {
-          image.url = await new S3Controller().getFileUrl(image.s3FileId);
-        }
-      }
-
-      return res;
+      return await attachImageUrls(workRes as WorkListItem[]);
     }),
 
   list: publicProcedure
@@ -168,33 +288,11 @@ export const workRouter = router({
         orderBy: [desc(works.id)],
         with: {
           images: true,
+          series: true,
         },
       });
 
-      const res: {
-        id: number;
-        description: string | null;
-        title: string;
-        titleEnglish: string | null;
-        year: number | null;
-        material: string | null;
-        dimensions: string | null;
-        images: {
-          id: number;
-          workId: number | null;
-          fileName: string | null;
-          s3FileId: string;
-          url?: string;
-        }[];
-      }[] = workRes;
-
-      for (const work of res) {
-        for (const image of work.images) {
-          image.url = await new S3Controller().getFileUrl(image.s3FileId);
-        }
-      }
-
-      return res;
+      return await attachImageUrls(workRes as WorkListItem[]);
     }),
 
   createImage: protectedProcedure

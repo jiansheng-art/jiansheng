@@ -9,6 +9,15 @@
       wrapper: 'px-4! pt-4 lg:pt-0 lg:pb-4',
     }"
   >
+    <template #footer>
+      <p v-if="work.series" class="text-xs text-muted">
+        系列：{{ work.series.title }}
+      </p>
+      <p v-else class="text-xs text-muted">
+        未分配系列
+      </p>
+    </template>
+
     <UModal v-model:open="modalOpen" title="修改作品">
       <UButton class="absolute top-3 right-3 z-50" variant="subtle" color="neutral" icon="lucide:edit" />
       <UPopover>
@@ -42,6 +51,15 @@
 
           <UFormField label="描述" name="description">
             <UTextarea v-model="state.description" :rows="2" class="w-full" />
+          </UFormField>
+
+          <UFormField label="系列" name="seriesId">
+            <USelect
+              v-model="state.seriesId"
+              :items="seriesOptions"
+              placeholder="选择系列"
+              class="w-full"
+            />
           </UFormField>
 
           <UFormField label="年份" name="year">
@@ -164,6 +182,7 @@ const schema = z.object({
   title: z.string().min(1, '请输入标题'),
   titleEnglish: z.string().optional(),
   description: z.string().optional(),
+  seriesId: z.number().int().positive().optional(),
   year: z.number().int().positive().optional(),
   material: z.string().optional(),
   dimensions: z.string().optional(),
@@ -172,12 +191,27 @@ const { $trpc } = useNuxtApp();
 const queryCache = useQueryCache();
 const toast = useToast();
 
+const { data: seriesList } = useQuery({
+  key: ['work.listSeries'],
+  query: () => $trpc.work.listSeries.query(),
+});
+
+const seriesOptions = computed(() => {
+  const base = [{ label: '不分配系列', value: null as number | null }];
+  const items = (seriesList.value ?? []).map(series => ({
+    label: series.titleEnglish ? `${series.title} / ${series.titleEnglish}` : series.title,
+    value: series.id,
+  }));
+  return [...base, ...items];
+});
+
 type Schema = z.infer<typeof schema>;
 
 const state = reactive<Schema>({
   title: work.title,
   titleEnglish: work.titleEnglish ?? undefined,
   description: work.description ?? undefined,
+  seriesId: work.seriesId ?? undefined,
   year: work.year ?? undefined,
   material: work.material ?? undefined,
   dimensions: work.dimensions ?? undefined,
@@ -248,6 +282,7 @@ async function onSubmit() {
       title: state.title,
       titleEnglish: state.titleEnglish,
       description: state.description,
+      seriesId: state.seriesId,
       year: state.year,
       material: state.material,
       dimensions: state.dimensions,
@@ -256,6 +291,7 @@ async function onSubmit() {
     workDirty.value.title = state.title;
     workDirty.value.titleEnglish = state.titleEnglish ?? null;
     workDirty.value.description = state.description ?? null;
+    workDirty.value.seriesId = state.seriesId ?? null;
     workDirty.value.year = state.year ?? null;
     workDirty.value.material = state.material ?? null;
     workDirty.value.dimensions = state.dimensions ?? null;

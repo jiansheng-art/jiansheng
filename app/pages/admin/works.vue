@@ -4,6 +4,32 @@
       <UDashboardNavbar title="作品管理" />
       <UDashboardToolbar>
         <template #left>
+          <UModal v-model:open="seriesModalOpen" title="新建系列">
+            <UButton color="neutral" variant="soft" icon="lucide:folder-plus">
+              新建系列
+            </UButton>
+
+            <template #body>
+              <UForm :schema="seriesSchema" :state="seriesState" class="space-y-4" @submit="onSubmitSeries">
+                <UFormField label="标题" name="title">
+                  <UInput v-model="seriesState.title" class="w-full" />
+                </UFormField>
+
+                <UFormField label="英文标题" name="titleEnglish">
+                  <UInput v-model="seriesState.titleEnglish" class="w-full" />
+                </UFormField>
+
+                <UFormField label="描述" name="description">
+                  <UTextarea v-model="seriesState.description" :rows="2" class="w-full" />
+                </UFormField>
+
+                <UButton type="submit" :loading="seriesSubmitLoading">
+                  创建系列
+                </UButton>
+              </UForm>
+            </template>
+          </UModal>
+
           <UModal v-model:open="modalOpen" title="新建作品">
             <UButton color="neutral" variant="soft" icon="lucide:plus">
               新建作品
@@ -21,6 +47,10 @@
 
                 <UFormField label="描述" name="description">
                   <UTextarea v-model="state.description" :rows="2" class="w-full" />
+                </UFormField>
+
+                <UFormField label="系列 ID" name="seriesId" description="先在上方创建系列，再填写系列ID">
+                  <UInputNumber v-model="state.seriesId" class="w-full" />
                 </UFormField>
 
                 <UFormField label="年份" name="year">
@@ -80,6 +110,20 @@
       </UDashboardToolbar>
     </template>
     <template #body>
+      <div class="mb-8">
+        <h2 class="mb-4 text-lg font-semibold">
+          系列列表
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          <AdminSeriesCard
+            v-for="series in seriesList"
+            :key="series.id"
+            :series="series"
+            @changed="onSeriesChanged"
+          />
+        </div>
+      </div>
+
       <div class="grid grid-cols-5 gap-4">
         <AdminWorkCard v-for="item in works" :key="item.id" :work="item" />
       </div>
@@ -99,14 +143,22 @@ const schema = z.object({
   title: z.string().min(1, '请输入标题'),
   titleEnglish: z.string().optional(),
   description: z.string().optional(),
+  seriesId: z.number().int().positive().optional(),
   year: z.number().int().positive().optional(),
   material: z.string().optional(),
   dimensions: z.string().optional(),
 });
 
+const seriesSchema = z.object({
+  title: z.string().min(1, '请输入标题'),
+  titleEnglish: z.string().optional(),
+  description: z.string().optional(),
+});
+
 const { $trpc } = useNuxtApp();
 
 type Schema = z.infer<typeof schema>;
+type SeriesSchema = z.infer<typeof seriesSchema>;
 
 const state = reactive<Schema>({
   title: '',
@@ -114,7 +166,14 @@ const state = reactive<Schema>({
   description: '',
 });
 
+const seriesState = reactive<SeriesSchema>({
+  title: '',
+  titleEnglish: '',
+  description: '',
+});
+
 const modalOpen = ref(false);
+const seriesModalOpen = ref(false);
 
 const {
   data: works,
@@ -124,11 +183,49 @@ const {
   query: () => $trpc.work.list.query(),
 });
 
+const {
+  data: seriesList,
+  refresh: refreshSeries,
+} = useQuery({
+  key: ['work.listSeries'],
+  query: () => $trpc.work.listSeries.query(),
+});
+
 const images = ref<File[]>([]);
 const workImages = ref<number[]>([]);
 
 const toast = useToast();
 const submitLoading = ref(false);
+const seriesSubmitLoading = ref(false);
+
+async function onSeriesChanged() {
+  await refreshSeries();
+  await refresh();
+}
+
+async function onSubmitSeries() {
+  seriesSubmitLoading.value = true;
+  try {
+    await $trpc.work.createSeries.mutate({
+      title: seriesState.title,
+      titleEnglish: seriesState.titleEnglish || undefined,
+      description: seriesState.description || undefined,
+    });
+
+    await refreshSeries();
+    toast.add({ title: '新建成功', description: '成功新建系列', color: 'success' });
+    seriesModalOpen.value = false;
+    seriesState.title = '';
+    seriesState.titleEnglish = '';
+    seriesState.description = '';
+    seriesSubmitLoading.value = false;
+  }
+  catch (error) {
+    seriesSubmitLoading.value = false;
+    useErrorHandler(error);
+  }
+}
+
 async function onSubmit() {
   submitLoading.value = true;
   for (const file of images.value) {
@@ -156,6 +253,7 @@ async function onSubmit() {
     title: state.title,
     titleEnglish: state.titleEnglish || undefined,
     description: state.description,
+    seriesId: state.seriesId,
     year: state.year,
     material: state.material,
     dimensions: state.dimensions,
@@ -168,6 +266,7 @@ async function onSubmit() {
   state.description = '';
   state.title = '';
   state.titleEnglish = '';
+  state.seriesId = undefined;
   workImages.value = [];
   images.value = [];
   await refresh();
