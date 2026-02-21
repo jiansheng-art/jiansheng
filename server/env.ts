@@ -18,6 +18,11 @@ const envSchema = z.object({
   S3_ACCESS_KEY_ID: z.string(),
   S3_SECRET_ACCESS_KEY: z.string(),
   S3_BUCKET_NAME: z.string(),
+  S3_PUBLIC_BASE_URL: z.string().url().optional(),
+
+  STRIPE_SECRET_KEY: z.string(),
+  STRIPE_CHECKOUT_SUCCESS_URL: z.string().url(),
+  STRIPE_CHECKOUT_CANCEL_URL: z.string().url(),
 
   TOKEN_EXPIRATION_TIME: z.string().default('24h'),
 });

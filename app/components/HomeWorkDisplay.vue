@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="border-x border-neutral-200 mx-5 md:mx-10 h-[calc(32svh+200px)]" />
+    <div class="border-x border-default mx-5 md:mx-10 h-[calc(32svh+200px)]" />
     <NuxtLink :to="`/gallery/${work.id}`" class="block">
       <UCard :ui="{ body: 'p-2!' }">
         <div v-if="work.images[0]?.url" class="relative w-full">

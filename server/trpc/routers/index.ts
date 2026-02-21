@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { db } from '~~/server/db';
 import { contactFormRouter } from '~~/server/trpc/routers/contactForm';
+import { productRouter } from '~~/server/trpc/routers/product';
 import { userRouter } from '~~/server/trpc/routers/user';
 import { workRouter } from '~~/server/trpc/routers/work';
 import { publicProcedure, router } from '../trpc';
@@ -19,6 +20,7 @@ export const appRouter = router({
     }),
 
   contactForm: contactFormRouter,
+  product: productRouter,
   work: workRouter,
   user: userRouter,
 });

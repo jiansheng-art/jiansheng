@@ -17,8 +17,8 @@
     "auth:createAdmin": "bun run ./scripts/createAdmin.ts"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.993.0",
-    "@aws-sdk/s3-request-presigner": "^3.993.0",
+    "@aws-sdk/client-s3": "^3.995.0",
+    "@aws-sdk/s3-request-presigner": "^3.995.0",
     "@nuxt/content": "^3.11.2",
     "@nuxt/image": "2.0.0",
     "@nuxt/ui": "^4.4.0",
@@ -42,6 +42,7 @@
     "pg": "^8.18.0",
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",
+    "stripe": "^20.3.1",
     "superjson": "^2.2.6",
     "trpc-nuxt": "^2.0.1",
     "vue": "latest",
@@ -49,17 +50,17 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^7.4.3",
-    "@iconify-json/lucide": "^1.2.91",
+    "@iconify-json/lucide": "^1.2.92",
     "@types/bcrypt": "^6.0.0",
     "@types/pg": "^8.16.0",
     "@unocss/eslint-plugin": "^66.6.0",
     "@vueuse/core": "^14.2.1",
     "@vueuse/nuxt": "^14.2.1",
     "drizzle-kit": "^0.31.9",
-    "eslint": "^10.0.0",
+    "eslint": "^10.0.1",
     "eslint-plugin-format": "^1.4.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "vue-tsc": "^3.2.4"
+    "vue-tsc": "^3.2.5"
   }
 }

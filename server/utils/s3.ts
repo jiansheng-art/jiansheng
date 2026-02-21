@@ -1,4 +1,4 @@
-import { GetObjectCommand, PutObjectCommand, S3, UploadPartCommand } from '@aws-sdk/client-s3';
+import { PutObjectCommand, S3, UploadPartCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { env } from '../env';
 
@@ -13,6 +13,20 @@ export class S3Controller {
         secretAccessKey: env.S3_SECRET_ACCESS_KEY,
       },
     });
+  }
+
+  private encodeS3Key(key: string) {
+    return key.split('/').map(segment => encodeURIComponent(segment)).join('/');
+  }
+
+  getPermanentFileUrl(key: string) {
+    const encodedKey = this.encodeS3Key(key);
+
+    if (env.S3_PUBLIC_BASE_URL) {
+      return new URL(encodedKey, `${env.S3_PUBLIC_BASE_URL.replace(/\/$/, '')}/`).toString();
+    }
+
+    return new URL(`${env.S3_BUCKET_NAME}/${encodedKey}`, `${env.S3_SERVER_URL.replace(/\/$/, '')}/`).toString();
   }
 
   /**
@@ -38,20 +52,12 @@ export class S3Controller {
   /**
    * ## INTERNAL USE ONLY
    *
-   * Retrieves the signed URL for a file with the given key.
+   * Retrieves the public URL for a file with the given key.
    * @param key - The key of the file.
-   * @returns The signed URL if successful, otherwise false.
+   * @returns The public URL.
    */
   async getFileUrl(key: string) {
-    try {
-      return await getSignedUrl(this.s3, new GetObjectCommand({
-        Bucket: env.S3_BUCKET_NAME,
-        Key: key,
-      }));
-    }
-    catch {
-      return undefined;
-    }
+    return this.getPermanentFileUrl(key);
   }
 
   /**

@@ -1,6 +1,6 @@
 <template>
   <Transition name="fade">
-    <div v-if="loading" class="fixed inset-0 z-50 flex items-center justify-center bg-white dark:bg-black">
+    <div v-if="loading" class="fixed inset-0 z-50 flex items-center justify-center bg-default">
       <div class="flex flex-col items-center gap-4">
         <div class="loading-spinner" />
       </div>

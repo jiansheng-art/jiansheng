@@ -5,7 +5,7 @@
       mode="slideover"
       :ui="{
         root: 'border-b-0 bg-default',
-        title: 'font-serif',
+        title: 'font-latin-serif',
         right: 'gap-5',
       }"
     >
@@ -17,15 +17,7 @@
       />
 
       <template #right>
-        <USlideover title="Cart">
-          <UButton icon="lucide:shopping-cart" variant="ghost" color="neutral">
-            <UBadge label="0" variant="soft" color="neutral" size="sm" />
-          </UButton>
-
-          <template #body>
-            aa
-          </template>
-        </USlideover>
+        <CartSlideover />
       </template>
 
       <template #body>

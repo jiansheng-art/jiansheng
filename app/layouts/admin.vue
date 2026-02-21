@@ -6,7 +6,7 @@
         class="bg-elevated/25"
       >
         <template #header>
-          <span class="h-5 w-auto shrink-0 font-serif font-bold">Zhang Jiansheng ART</span>
+          <span class="h-5 w-auto shrink-0 font-serif font-bold">Jiansheng ART</span>
         </template>
 
         <UDashboardSearchButton class="bg-transparent ring-default" />
@@ -43,6 +43,11 @@ const items: NavigationMenuItem[][] = [[{
   label: '作品管理',
   icon: 'i-lucide-image',
   to: '/admin/works',
+  onSelect: () => { open.value = false; },
+}, {
+  label: '商品管理',
+  icon: 'i-lucide-shopping-bag',
+  to: '/admin/products',
   onSelect: () => { open.value = false; },
 }, {
   label: '联系表格',

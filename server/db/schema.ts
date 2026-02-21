@@ -1,6 +1,44 @@
 import { relations, sql } from 'drizzle-orm';
 import { boolean, foreignKey, integer, pgTable, text, timestamp, unique, varchar } from 'drizzle-orm/pg-core';
 
+export const products = pgTable('products', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  stripeProductId: varchar('stripe_product_id', { length: 255 }).unique().notNull(),
+  stripePriceId: varchar('stripe_price_id', { length: 255 }),
+  name: varchar({ length: 255 }).notNull(),
+  description: varchar({ length: 2000 }),
+  active: boolean().default(true).notNull(),
+  unitAmount: integer('unit_amount'),
+  currency: varchar({ length: 10 }),
+  metadata: text(),
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`).$onUpdate(() => new Date()),
+});
+
+export const productImages = pgTable('product_images', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  productId: integer('product_id'),
+  fileName: varchar({ length: 255 }),
+  s3FileId: varchar({ length: 255 }).notNull(),
+}, table => [
+  foreignKey({
+    columns: [table.productId],
+    foreignColumns: [products.id],
+    name: 'fk_product',
+  }).onDelete('cascade'),
+]);
+
+export const productRelations = relations(products, ({ many }) => ({
+  images: many(productImages),
+}));
+
+export const productImageRelations = relations(productImages, ({ one }) => ({
+  product: one(products, {
+    fields: [productImages.productId],
+    references: [products.id],
+  }),
+}));
+
 export const users = pgTable('users', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   name: varchar({ length: 255 }).unique().notNull(),
