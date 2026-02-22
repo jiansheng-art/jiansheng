@@ -41,12 +41,24 @@
     </div>
 
     <div v-if="series.description">
-      <p class="text-lg font-bold">
-        Work Introduction
+      <p class="text-lg font-bold mb-4">
+        Series Introduction
       </p>
-      <p class="text-muted">
-        {{ series.description }}
-      </p>
+      <USkeleton
+        v-if="!seriesDescriptionEditorReady"
+        class="h-28 w-full rounded-md transition-opacity duration-300"
+      />
+      <UEditor
+        :model-value="series.description"
+        content-type="markdown"
+        :editable="false"
+        :on-mount="() => seriesDescriptionEditorReady = true"
+        :ui="{
+          base: 'px-0!',
+        }"
+        class="w-full transition-opacity duration-300"
+        :class="seriesDescriptionEditorReady ? 'opacity-100' : 'opacity-0'"
+      />
     </div>
   </div>
 </template>
@@ -69,6 +81,8 @@ const {
   key: ['work.getSeries', seriesId],
   query: () => $trpc.work.getSeries.query({ id: seriesId }),
 });
+
+const seriesDescriptionEditorReady = ref(false);
 
 useHead({
   title: series.value ? `${series.value.title}` : 'Exhibition',

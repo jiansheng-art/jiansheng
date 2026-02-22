@@ -1,7 +1,7 @@
 <template>
   <UPageCard
-    :title="work.titleEnglish ? `${work.title} / ${work.titleEnglish}` : work.title"
-    :description="work.description ?? ''"
+    :title="work.title"
+    :description="work.titleEnglish ?? undefined"
     orientation="vertical"
     reverse
     :ui="{
@@ -9,15 +9,6 @@
       wrapper: 'px-4! pt-4 lg:pt-0 lg:pb-4',
     }"
   >
-    <template #footer>
-      <p v-if="work.series" class="text-xs text-muted">
-        系列：{{ work.series.title }}
-      </p>
-      <p v-else class="text-xs text-muted">
-        未分配系列
-      </p>
-    </template>
-
     <UModal v-model:open="modalOpen" title="修改作品">
       <UButton class="absolute top-3 right-3 z-50" variant="subtle" color="neutral" icon="lucide:edit" />
       <UPopover>
@@ -50,7 +41,19 @@
           </UFormField>
 
           <UFormField label="描述" name="description">
-            <UTextarea v-model="state.description" :rows="2" class="w-full" />
+            <UEditor
+              v-slot="{ editor }"
+              v-model="state.description"
+              content-type="markdown"
+              placeholder="输入作品描述..."
+              class="w-full min-h-40 border border-default rounded-md"
+            >
+              <UEditorToolbar
+                :editor="editor"
+                :items="editorToolbarItems"
+                class="border-b border-default px-3 py-2 overflow-x-auto"
+              />
+            </UEditor>
           </UFormField>
 
           <UFormField label="系列" name="seriesId">
@@ -167,6 +170,7 @@
 </template>
 
 <script setup lang="ts">
+import type { EditorToolbarItem } from '@nuxt/ui';
 import type { RouterOutput } from '~/types/trpc';
 import axios from 'axios';
 import z from 'zod';
@@ -216,6 +220,25 @@ const state = reactive<Schema>({
   material: work.material ?? undefined,
   dimensions: work.dimensions ?? undefined,
 });
+
+const editorToolbarItems: EditorToolbarItem[][] = [
+  [
+    { kind: 'heading', level: 1, icon: 'i-lucide-heading-1', label: 'Heading 1' },
+    { kind: 'heading', level: 2, icon: 'i-lucide-heading-2', label: 'Heading 2' },
+  ],
+  [
+    { kind: 'mark', mark: 'bold', icon: 'i-lucide-bold' },
+    { kind: 'mark', mark: 'italic', icon: 'i-lucide-italic' },
+    { kind: 'mark', mark: 'underline', icon: 'i-lucide-underline' },
+  ],
+  [
+    { kind: 'bulletList', icon: 'i-lucide-list' },
+    { kind: 'orderedList', icon: 'i-lucide-list-ordered' },
+    { kind: 'blockquote', icon: 'i-lucide-text-quote' },
+    { kind: 'codeBlock', icon: 'i-lucide-square-code' },
+    { kind: 'link', icon: 'i-lucide-link' },
+  ],
+];
 
 const isDeleteImageLoading = ref(false);
 const isDeleteWorkLoading = ref(false);

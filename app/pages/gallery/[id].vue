@@ -26,7 +26,7 @@
       description="This gallery item does not exist or has been removed."
     />
 
-    <div v-else-if="work" :class="{ 'opacity-0': status === 'pending', 'animate-fade-in': status !== 'pending' }" class="grid gap-8 md:grid-cols-5">
+    <div v-else-if="work" :class="{ 'opacity-0': status === 'pending', 'animate-fade-in': status !== 'pending' }" class="grid gap-4 md:gap-8 md:grid-cols-5">
       <div class="md:col-span-3">
         <UCarousel
           v-if="work.images.length > 1"
@@ -63,40 +63,60 @@
         </div>
       </div>
 
-      <UCard class="h-min md:col-span-2">
-        <h1 class="pb-3 text-4xl font-extrabold font-sc-serif">
-          {{ work.title }}
-        </h1>
+      <div class="md:col-span-2">
+        <div class="md:sticky top-[calc(var(--ui-header-height)+1px)] flex flex-col gap-4 md:gap-8">
+          <UCard>
+            <div class="flex flex-col gap-3">
+              <h1 class="text-4xl font-extrabold font-sc-serif">
+                {{ work.title }}
+              </h1>
 
-        <p v-if="work.titleEnglish" class="pb-3 text-muted text-xl font-latin-text-serif">
-          {{ work.titleEnglish }}
-        </p>
+              <p v-if="work.titleEnglish" class="text-muted text-xl font-latin-text-serif">
+                {{ work.titleEnglish }}
+              </p>
 
-        <p v-if="work.description" class="text-sm text-muted">
-          {{ work.description }}
-        </p>
+              <dl v-if="work.year || work.material || work.dimensions" class="mt-2 space-y-2 text-md text-muted">
+                <div v-if="work.year">
+                  <dt class="font-medium text-toned">
+                    Year
+                  </dt>
+                  <dd>{{ work.year }}</dd>
+                </div>
+                <div v-if="work.material">
+                  <dt class="font-medium text-toned">
+                    Material
+                  </dt>
+                  <dd>{{ work.material }}</dd>
+                </div>
+                <div v-if="work.dimensions">
+                  <dt class="font-medium text-toned">
+                    Dimensions
+                  </dt>
+                  <dd>{{ work.dimensions }}</dd>
+                </div>
+              </dl>
+            </div>
+          </UCard>
 
-        <dl class="mt-5 space-y-2 text-md text-muted">
-          <div v-if="work.year">
-            <dt class="font-medium text-toned">
-              Year
-            </dt>
-            <dd>{{ work.year }}</dd>
-          </div>
-          <div v-if="work.material">
-            <dt class="font-medium text-toned">
-              Material
-            </dt>
-            <dd>{{ work.material }}</dd>
-          </div>
-          <div v-if="work.dimensions">
-            <dt class="font-medium text-toned">
-              Dimensions
-            </dt>
-            <dd>{{ work.dimensions }}</dd>
-          </div>
-        </dl>
-      </UCard>
+          <UPageCard v-if="work.description" title="Work Description">
+            <USkeleton
+              v-if="!workDescriptionEditorReady"
+              class="h-28 w-full rounded-md transition-opacity duration-300"
+            />
+            <UEditor
+              :model-value="work.description"
+              content-type="markdown"
+              :editable="false"
+              :on-mount="() => workDescriptionEditorReady = true"
+              :ui="{
+                base: 'px-0!',
+              }"
+              class="w-full transition-opacity duration-300"
+              :class="workDescriptionEditorReady ? 'opacity-100' : 'opacity-0'"
+            />
+          </UPageCard>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -112,6 +132,7 @@ if (!Number.isInteger(workId) || workId <= 0) {
 }
 
 const loadedImages = reactive(new Set<string>());
+const workDescriptionEditorReady = ref(false);
 
 const {
   data: work,

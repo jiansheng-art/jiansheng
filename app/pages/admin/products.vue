@@ -16,7 +16,19 @@
                 </UFormField>
 
                 <UFormField label="描述" name="description">
-                  <UTextarea v-model="state.description" :rows="2" class="w-full" />
+                  <UEditor
+                    v-slot="{ editor }"
+                    v-model="state.description"
+                    content-type="markdown"
+                    placeholder="输入商品描述..."
+                    class="w-full min-h-40 border border-default rounded-md"
+                  >
+                    <UEditorToolbar
+                      :editor="editor"
+                      :items="editorToolbarItems"
+                      class="border-b border-default px-3 py-2 overflow-x-auto"
+                    />
+                  </UEditor>
                 </UFormField>
 
                 <UFormField label="价格（分）" name="unitAmount" description="以货币最小单位计，如 CNY 的分">
@@ -84,6 +96,7 @@
 </template>
 
 <script setup lang="ts">
+import type { EditorToolbarItem } from '@nuxt/ui';
 import axios from 'axios';
 import * as z from 'zod';
 
@@ -110,6 +123,24 @@ const state = reactive<Schema>({
   currency: 'cny',
   active: true,
 });
+
+const editorToolbarItems: EditorToolbarItem[][] = [
+  [
+    { kind: 'heading', level: 2, icon: 'i-lucide-heading-2' },
+    { kind: 'heading', level: 3, icon: 'i-lucide-heading-3' },
+  ],
+  [
+    { kind: 'mark', mark: 'bold', icon: 'i-lucide-bold' },
+    { kind: 'mark', mark: 'italic', icon: 'i-lucide-italic' },
+    { kind: 'mark', mark: 'underline', icon: 'i-lucide-underline' },
+  ],
+  [
+    { kind: 'bulletList', icon: 'i-lucide-list' },
+    { kind: 'orderedList', icon: 'i-lucide-list-ordered' },
+    { kind: 'blockquote', icon: 'i-lucide-text-quote' },
+    { kind: 'link', icon: 'i-lucide-link' },
+  ],
+];
 
 const modalOpen = ref(false);
 

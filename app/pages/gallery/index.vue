@@ -15,7 +15,7 @@
               {{ series.titleEnglish }}
             </p>
             <p v-if="series.description" class="line-clamp-3 mt-4 text-sm leading-relaxed text-muted">
-              {{ series.description }}
+              {{ toPlainText(series.description) }}
             </p>
           </div>
 
@@ -64,4 +64,18 @@ const {
 });
 
 const loadedImages = reactive(new Set<string>());
+
+function toPlainText(value: string): string {
+  return value
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/[#>*_~\-]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .replace(/\n/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\+\+([^+]+)\+\+/g, '$1')
+    .trim();
+}
 </script>

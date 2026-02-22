@@ -20,7 +20,19 @@
                 </UFormField>
 
                 <UFormField label="描述" name="description">
-                  <UTextarea v-model="seriesState.description" :rows="2" class="w-full" />
+                  <UEditor
+                    v-slot="{ editor }"
+                    v-model="seriesState.description"
+                    content-type="markdown"
+                    placeholder="输入系列描述..."
+                    class="w-full min-h-40 border border-default rounded-md"
+                  >
+                    <UEditorToolbar
+                      :editor="editor"
+                      :items="editorToolbarItems"
+                      class="border-b border-default px-3 py-2 overflow-x-auto"
+                    />
+                  </UEditor>
                 </UFormField>
 
                 <UButton type="submit" :loading="seriesSubmitLoading">
@@ -46,7 +58,19 @@
                 </UFormField>
 
                 <UFormField label="描述" name="description">
-                  <UTextarea v-model="state.description" :rows="2" class="w-full" />
+                  <UEditor
+                    v-slot="{ editor }"
+                    v-model="state.description"
+                    content-type="markdown"
+                    placeholder="输入作品描述..."
+                    class="w-full min-h-40 border border-default rounded-md"
+                  >
+                    <UEditorToolbar
+                      :editor="editor"
+                      :items="editorToolbarItems"
+                      class="border-b border-default px-3 py-2 overflow-x-auto"
+                    />
+                  </UEditor>
                 </UFormField>
 
                 <UFormField label="系列" name="seriesId">
@@ -137,6 +161,7 @@
 </template>
 
 <script setup lang="ts">
+import type { EditorToolbarItem } from '@nuxt/ui';
 import axios from 'axios';
 import * as z from 'zod';
 
@@ -176,6 +201,25 @@ const seriesState = reactive<SeriesSchema>({
   titleEnglish: '',
   description: '',
 });
+
+const editorToolbarItems: EditorToolbarItem[][] = [
+  [
+    { kind: 'heading', level: 1, icon: 'i-lucide-heading-1', label: 'Heading 1' },
+    { kind: 'heading', level: 2, icon: 'i-lucide-heading-2', label: 'Heading 2' },
+  ],
+  [
+    { kind: 'mark', mark: 'bold', icon: 'i-lucide-bold' },
+    { kind: 'mark', mark: 'italic', icon: 'i-lucide-italic' },
+    { kind: 'mark', mark: 'underline', icon: 'i-lucide-underline' },
+  ],
+  [
+    { kind: 'bulletList', icon: 'i-lucide-list' },
+    { kind: 'orderedList', icon: 'i-lucide-list-ordered' },
+    { kind: 'blockquote', icon: 'i-lucide-text-quote' },
+    { kind: 'codeBlock', icon: 'i-lucide-square-code' },
+    { kind: 'link', icon: 'i-lucide-link' },
+  ],
+];
 
 const modalOpen = ref(false);
 const seriesModalOpen = ref(false);

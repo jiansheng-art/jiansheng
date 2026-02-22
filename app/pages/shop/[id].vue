@@ -68,7 +68,21 @@
         </div>
 
         <UPageCard v-if="product.description" title="Description" class="hidden md:block mt-4 md:mt-8">
-          {{ product.description }}
+          <USkeleton
+            v-if="!desktopDescriptionEditorReady"
+            class="h-28 w-full rounded-md transition-opacity duration-300"
+          />
+          <UEditor
+            :model-value="product.description"
+            content-type="markdown"
+            :editable="false"
+            :on-mount="() => desktopDescriptionEditorReady = true"
+            :ui="{
+              base: 'px-0!',
+            }"
+            class="w-full transition-opacity duration-300"
+            :class="desktopDescriptionEditorReady ? 'opacity-100' : 'opacity-0'"
+          />
         </UPageCard>
       </div>
 
@@ -122,7 +136,18 @@
           </UCard>
 
           <UPageCard v-if="product.description" title="Description" class="block md:hidden">
-            {{ product.description }}
+            <USkeleton
+              v-if="!mobileDescriptionEditorReady"
+              class="h-28 w-full rounded-md transition-opacity duration-300"
+            />
+            <UEditor
+              :model-value="product.description"
+              content-type="markdown"
+              :editable="false"
+              :on-mount="() => mobileDescriptionEditorReady = true"
+              class="w-full transition-opacity duration-300"
+              :class="mobileDescriptionEditorReady ? 'opacity-100' : 'opacity-0'"
+            />
           </UPageCard>
 
           <UCard>
@@ -166,6 +191,8 @@ if (!Number.isInteger(productId) || productId <= 0) {
 }
 
 const loadedImages = reactive(new Set<string>());
+const desktopDescriptionEditorReady = ref(false);
+const mobileDescriptionEditorReady = ref(false);
 
 const quantity = ref(1);
 
