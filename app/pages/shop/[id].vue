@@ -26,7 +26,7 @@
       description="This product does not exist or has been removed."
     />
 
-    <div v-else-if="product" :class="{ 'opacity-0': status === 'pending', 'animate-fade-in': status !== 'pending' }" class="grid gap-8 md:grid-cols-5">
+    <div v-else-if="product" :class="{ 'opacity-0': status === 'pending', 'animate-fade-in': status !== 'pending' }" class="grid gap-4 md:gap-8 md:grid-cols-5">
       <div class="md:col-span-3">
         <UCarousel
           v-if="product.images.length > 1"
@@ -66,33 +66,70 @@
         <div v-else class="bg-muted flex h-105 items-center justify-center">
           <Icon name="lucide:image-off" size="40" />
         </div>
+
+        <UPageCard v-if="product.description" title="Description" class="hidden md:block mt-4 md:mt-8">
+          {{ product.description }}
+        </UPageCard>
       </div>
 
-      <UCard class="h-min md:col-span-2">
-        <div class="flex flex-col gap-8">
-          <h1 class="text-4xl font-extrabold font-sc-serif">
-            {{ product.name }}
-          </h1>
+      <div class="md:col-span-2">
+        <div class="md:sticky top-[calc(var(--ui-header-height)+1px)] flex flex-col gap-4 md:gap-8">
+          <UCard>
+            <div class="flex flex-col gap-4 md:gap-8">
+              <h1 class="text-4xl font-extrabold font-sc-serif">
+                {{ product.name }}
+              </h1>
 
-          <p v-if="product.unitAmount != null && product.currency" class="text-2xl font-latin-text-serif">
-            {{ formatPrice(product.unitAmount, product.currency) }}
-          </p>
+              <dl class="space-y-2 text-md text-muted">
+                <div v-if="product.unitAmount != null && product.currency">
+                  <dt>
+                    Price:
+                  </dt>
+                  <dd class="text-2xl text-toned font-semibold font-latin-text-serif">
+                    {{ formatPrice(product.unitAmount, product.currency) }}
+                  </dd>
+                </div>
+                <div>
+                  <dt>
+                    Quantity:
+                  </dt>
+                  <dd class="mt-2">
+                    <UInputNumber v-model="quantity" class="w-24" />
+                  </dd>
+                </div>
+              </dl>
+            </div>
+            <template #footer>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-4">
+                <UButton
+                  class="w-full"
+                  size="lg"
+                  icon="lucide:shopping-cart"
+                  label="Add to Cart"
+                  @click="addToCart"
+                />
+                <UButton
+                  class="w-full"
+                  size="lg"
+                  variant="soft"
+                  icon="lucide:credit-card"
+                  label="Shop Now"
+                  :loading="checkoutLoading"
+                  @click="shopNow"
+                />
+              </div>
+            </template>
+          </UCard>
 
-          <p v-if="product.description" class="text-sm text-muted">
+          <UPageCard v-if="product.description" title="Description" class="block md:hidden">
             {{ product.description }}
-          </p>
+          </UPageCard>
 
-          <UButton
-            class="w-full"
-            size="lg"
-            icon="lucide:shopping-cart"
-            label="Add to Cart"
-            @click="addToCart"
-          />
-
-          <UAccordion :items="items" />
+          <UCard>
+            <UAccordion :items="items" />
+          </UCard>
         </div>
-      </UCard>
+      </div>
     </div>
   </div>
 </template>
@@ -130,6 +167,8 @@ if (!Number.isInteger(productId) || productId <= 0) {
 
 const loadedImages = reactive(new Set<string>());
 
+const quantity = ref(1);
+
 const {
   data: product,
   status,
@@ -149,12 +188,36 @@ function formatPrice(amount: number, currency: string) {
 
 const cart = useCartStore();
 const toast = useToast();
+const checkoutLoading = ref(false);
 
 function addToCart() {
   if (!product.value)
     return;
-  cart.addItem(product.value);
+  cart.addItem(product.value, quantity.value);
   toast.add({ title: 'Added to cart', description: `${product.value.name} has been added to your cart.`, color: 'success' });
+}
+
+async function shopNow() {
+  if (!product.value)
+    return;
+
+  checkoutLoading.value = true;
+  try {
+    const { url } = await $trpc.product.createCheckoutSession.mutate({
+      items: [{
+        productId: product.value.id,
+        quantity: quantity.value,
+      }],
+    });
+
+    await navigateTo(url, { external: true });
+  }
+  catch (err) {
+    useErrorHandler(err);
+  }
+  finally {
+    checkoutLoading.value = false;
+  }
 }
 
 useHead({

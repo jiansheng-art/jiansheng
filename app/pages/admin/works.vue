@@ -37,11 +37,11 @@
 
             <template #body>
               <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-                <UFormField label="标题" name="title">
+                <UFormField label="名称" name="title">
                   <UInput v-model="state.title" class="w-full" />
                 </UFormField>
 
-                <UFormField label="英文标题" name="titleEnglish">
+                <UFormField label="英文名称" name="titleEnglish">
                   <UInput v-model="state.titleEnglish" class="w-full" />
                 </UFormField>
 
@@ -49,8 +49,13 @@
                   <UTextarea v-model="state.description" :rows="2" class="w-full" />
                 </UFormField>
 
-                <UFormField label="系列 ID" name="seriesId" description="先在上方创建系列，再填写系列ID">
-                  <UInputNumber v-model="state.seriesId" class="w-full" />
+                <UFormField label="系列" name="seriesId">
+                  <USelect
+                    v-model="state.seriesId"
+                    :items="seriesOptions"
+                    placeholder="选择系列"
+                    class="w-full"
+                  />
                 </UFormField>
 
                 <UFormField label="年份" name="year">
@@ -191,6 +196,15 @@ const {
   query: () => $trpc.work.listSeries.query(),
 });
 
+const seriesOptions = computed(() => {
+  const base = [{ label: '不分配系列', value: null as number | null }];
+  const items = (seriesList.value ?? []).map(series => ({
+    label: series.titleEnglish ? `${series.title} / ${series.titleEnglish}` : series.title,
+    value: series.id,
+  }));
+  return [...base, ...items];
+});
+
 const images = ref<File[]>([]);
 const workImages = ref<number[]>([]);
 
@@ -253,7 +267,7 @@ async function onSubmit() {
     title: state.title,
     titleEnglish: state.titleEnglish || undefined,
     description: state.description,
-    seriesId: state.seriesId,
+    seriesId: state.seriesId ?? undefined,
     year: state.year,
     material: state.material,
     dimensions: state.dimensions,

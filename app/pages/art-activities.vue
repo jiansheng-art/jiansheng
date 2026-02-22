@@ -12,7 +12,7 @@ const versions = ref<ChangelogVersionProps[]>([
   {
     title: 'Early Works',
     description: 'A collection of early works by Jiansheng Zhang, showcasing his artistic journey and development.',
-    image: 'https://nuxt.com/assets/blog/v3.17.png',
+    image: '',
     ui: {
       container: 'max-w-2xl',
     },

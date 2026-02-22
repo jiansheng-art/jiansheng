@@ -123,7 +123,7 @@ export const productRouter = router({
     .input(z.object({
       id: z.number().int().positive(),
       name: z.string().min(1).max(255).optional(),
-      description: z.string().max(2000).nullable().optional(),
+      description: z.string().max(10000).nullable().optional(),
       active: z.boolean().optional(),
       unitAmount: z.number().int().nonnegative().nullable().optional(),
       currency: z.string().min(1).max(10).nullable().optional(),

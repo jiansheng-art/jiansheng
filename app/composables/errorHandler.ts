@@ -10,8 +10,9 @@ export async function useErrorHandler(err: any): Promise<void> {
 
   if (useIsTRPCClientError(err)) {
     if (err.data?.zodError) {
-      for (const issue of err.data.zodError.issues)
+      for (const issue of err.data.zodError.issues) {
         toast.add({ title: 'Error', description: issue.message, color: 'error' });
+      }
     }
     else {
       if (err.data?.code === 'UNAUTHORIZED') {

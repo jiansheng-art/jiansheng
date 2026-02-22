@@ -79,6 +79,7 @@ export const contactForms = pgTable('contact_forms', {
   firstName: varchar({ length: 255 }).notNull(),
   lastName: varchar({ length: 255 }).notNull(),
   email: varchar({ length: 255 }).notNull(),
+  requestFingerprint: varchar({ length: 255 }),
   subject: varchar({ length: 255 }).notNull(),
   message: varchar({ length: 2000 }).notNull(),
   unread: boolean().default(true).notNull(),
