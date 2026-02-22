@@ -56,5 +56,12 @@ export default defineNuxtConfig({
     },
   },
 
+  content: {
+    experimental: {
+      nativeSqlite: true,
+      sqliteConnector: 'native',
+    },
+  },
+
   compatibilityDate: '2025-12-14',
 });
