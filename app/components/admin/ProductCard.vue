@@ -77,6 +77,15 @@
             <USwitch v-model="state.active" />
           </UFormField>
 
+          <UFormField label="关联作品" name="workId">
+            <USelect
+              v-model="state.workId"
+              :items="workOptions"
+              placeholder="选择作品"
+              class="w-full"
+            />
+          </UFormField>
+
           <UCard v-for="img in productDirty.images" :key="img.id" :ui="{ body: 'p-2!' }">
             <div class="flex gap-2 items-center">
               <NuxtImg :src="img.url" class="w-10 aspect-square" />
@@ -186,6 +195,7 @@ const productDirty = ref(product);
 const schema = z.object({
   name: z.string().min(1, '请输入名称'),
   description: z.string().optional(),
+  workId: z.number().int().positive().nullable().optional(),
   unitAmount: z.number().int().nonnegative().optional(),
   currency: z.string().optional(),
   active: z.boolean().optional(),
@@ -197,9 +207,24 @@ const { $trpc } = useNuxtApp();
 const queryCache = useQueryCache();
 const toast = useToast();
 
+const { data: works } = useQuery({
+  key: ['work.list'],
+  query: () => $trpc.work.list.query(),
+});
+
+const workOptions = computed(() => {
+  const base = [{ label: '不关联作品', value: null as number | null }];
+  const items = (works.value ?? []).map(workItem => ({
+    label: workItem.titleEnglish ? `${workItem.title} / ${workItem.titleEnglish}` : workItem.title,
+    value: workItem.id,
+  }));
+  return [...base, ...items];
+});
+
 const state = reactive<Schema>({
   name: product.name,
   description: product.description ?? undefined,
+  workId: product.workId ?? undefined,
   unitAmount: product.unitAmount ?? undefined,
   currency: product.currency ?? undefined,
   active: product.active,
@@ -295,6 +320,7 @@ async function onSubmit() {
       id: product.id,
       name: state.name,
       description: state.description,
+      workId: state.workId ?? null,
       unitAmount: state.unitAmount,
       currency: state.currency,
       active: state.active,
@@ -303,6 +329,7 @@ async function onSubmit() {
 
     productDirty.value.name = state.name;
     productDirty.value.description = state.description ?? null;
+    productDirty.value.workId = state.workId ?? null;
     productDirty.value.unitAmount = state.unitAmount ?? null;
     productDirty.value.currency = state.currency ?? null;
     productDirty.value.active = state.active ?? true;

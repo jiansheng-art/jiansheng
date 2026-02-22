@@ -15,6 +15,7 @@ interface ProductListItem {
   id: number;
   stripeProductId: string;
   stripePriceId: string | null;
+  workId: number | null;
   name: string;
   description: string | null;
   active: boolean;
@@ -61,6 +62,7 @@ export const productRouter = router({
     .input(z.object({
       name: z.string().min(1).max(255),
       description: z.string().max(2000).optional(),
+      workId: z.number().int().positive().nullable().optional(),
       active: z.boolean().optional(),
       unitAmount: z.number().int().nonnegative(),
       currency: z.string().min(1).max(10),
@@ -88,6 +90,7 @@ export const productRouter = router({
         product = (await db.insert(products).values({
           stripeProductId: stripeProduct.id,
           stripePriceId: stripePrice.id,
+          workId: input.workId,
           name: input.name,
           description: input.description,
           active: input.active,
@@ -124,6 +127,7 @@ export const productRouter = router({
       id: z.number().int().positive(),
       name: z.string().min(1).max(255).optional(),
       description: z.string().max(10000).nullable().optional(),
+      workId: z.number().int().positive().nullable().optional(),
       active: z.boolean().optional(),
       unitAmount: z.number().int().nonnegative().nullable().optional(),
       currency: z.string().min(1).max(10).nullable().optional(),
@@ -169,6 +173,7 @@ export const productRouter = router({
         stripePriceId,
         name: input.name,
         description: input.description,
+        workId: input.workId,
         active: input.active,
         unitAmount: input.unitAmount,
         currency: input.currency ? input.currency.toLowerCase() : input.currency,

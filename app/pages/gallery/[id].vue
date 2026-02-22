@@ -27,7 +27,7 @@
     />
 
     <div v-else-if="work" :class="{ 'opacity-0': status === 'pending', 'animate-fade-in': status !== 'pending' }" class="grid gap-4 md:gap-8 md:grid-cols-5">
-      <div class="md:col-span-3">
+      <div class="md:col-span-3 flex flex-col gap-4 md:gap-8">
         <UCarousel
           v-if="work.images.length > 1"
           v-slot="{ item }"
@@ -118,10 +118,49 @@
         </div>
       </div>
     </div>
+
+    <div v-if="relatedProducts.length" class="mt-10 md:mt-20">
+      <h2 class="text-xl font-bold mb-4">
+        Related Products
+      </h2>
+
+      <div class="flex gap-4 overflow-x-auto p-[1px]">
+        <NuxtLink
+          v-for="product in relatedProducts"
+          :key="product.id"
+          :to="`/shop/${product.id}`"
+          class="block"
+        >
+          <UCard :ui="{ body: 'p-2!' }">
+            <div class="flex flex-col gap-2">
+              <NuxtImg
+                v-if="product.images[0]?.url"
+                :src="product.images[0].url"
+                class="size-40 md:size-48 object-cover shrink-0"
+              />
+              <div v-else class="bg-muted size-40 md:size-48 items-center justify-center flex shrink-0">
+                <Icon name="lucide:image-off" size="20" />
+              </div>
+
+              <div>
+                <p class="font-semibold truncate">
+                  {{ product.name }}
+                </p>
+                <p v-if="product.unitAmount != null && product.currency" class="text-sm text-muted">
+                  {{ formatPrice(product.unitAmount, product.currency) }}
+                </p>
+              </div>
+            </div>
+          </UCard>
+        </NuxtLink>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
+
 const route = useRoute();
 const { $trpc } = useNuxtApp();
 
@@ -143,8 +182,21 @@ const {
   query: () => $trpc.work.get.query({ id: workId }),
 });
 
+const { data: products } = useQuery({
+  key: ['product.list'],
+  query: () => $trpc.product.list.query(),
+});
+
+const relatedProducts = computed(() => {
+  return (products.value ?? []).filter(product => product.active && product.workId === workId);
+});
+
 function onImageLoaded(url: string) {
   loadedImages.add(url);
+}
+
+function formatPrice(amount: number, currency: string) {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.toUpperCase() }).format(amount / 100);
 }
 
 useHead({

@@ -5,6 +5,7 @@ export const products = pgTable('products', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   stripeProductId: varchar('stripe_product_id', { length: 255 }).unique().notNull(),
   stripePriceId: varchar('stripe_price_id', { length: 255 }),
+  workId: integer('work_id'),
   name: varchar({ length: 255 }).notNull(),
   description: varchar({ length: 2000 }),
   active: boolean().default(true).notNull(),

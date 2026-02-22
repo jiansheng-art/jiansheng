@@ -43,6 +43,15 @@
                   <USwitch v-model="state.active" />
                 </UFormField>
 
+                <UFormField label="关联作品" name="workId">
+                  <USelect
+                    v-model="state.workId"
+                    :items="workOptions"
+                    placeholder="选择作品"
+                    class="w-full"
+                  />
+                </UFormField>
+
                 <UFormField name="image" label="图片">
                   <UFileUpload
                     v-model="images"
@@ -107,6 +116,7 @@ definePageMeta({
 const schema = z.object({
   name: z.string().min(1, '请输入名称'),
   description: z.string().optional(),
+  workId: z.number().int().positive().nullable().optional(),
   unitAmount: z.number().int().nonnegative({ message: '请输入价格' }),
   currency: z.string().min(1, '请输入货币'),
   active: z.boolean().optional(),
@@ -119,6 +129,7 @@ const { $trpc } = useNuxtApp();
 const state = reactive<Schema>({
   name: '',
   description: '',
+  workId: undefined,
   unitAmount: 0,
   currency: 'cny',
   active: true,
@@ -150,6 +161,20 @@ const {
 } = useQuery({
   key: ['product.list'],
   query: () => $trpc.product.list.query(),
+});
+
+const { data: works } = useQuery({
+  key: ['work.list'],
+  query: () => $trpc.work.list.query(),
+});
+
+const workOptions = computed(() => {
+  const base = [{ label: '不关联作品', value: null as number | null }];
+  const items = (works.value ?? []).map(work => ({
+    label: work.titleEnglish ? `${work.title} / ${work.titleEnglish}` : work.title,
+    value: work.id,
+  }));
+  return [...base, ...items];
 });
 
 const images = ref<File[]>([]);
@@ -186,6 +211,7 @@ async function onSubmit() {
     await $trpc.product.create.mutate({
       name: state.name,
       description: state.description || undefined,
+      workId: state.workId ?? null,
       unitAmount: state.unitAmount,
       currency: state.currency,
       active: state.active,
@@ -196,6 +222,7 @@ async function onSubmit() {
     toast.add({ title: '新建成功', description: '成功新建商品', color: 'success' });
     state.name = '';
     state.description = '';
+    state.workId = undefined;
     state.unitAmount = 0;
     state.currency = 'cny';
     state.active = true;
