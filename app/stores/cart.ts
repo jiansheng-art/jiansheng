@@ -17,7 +17,7 @@ export const useCartStore = defineStore('cart', () => {
 
   const totalAmount = computed(() => items.value.reduce((sum, item) => sum + item.unitAmount * item.quantity, 0));
 
-  const currency = computed(() => items.value[0]?.currency ?? 'cny');
+  const currency = computed(() => items.value[0]?.currency ?? 'cad');
 
   function addItem(product: RouterOutput['product']['list'][number], quantity = 1) {
     const existing = items.value.find(item => item.productId === product.id);
@@ -30,7 +30,7 @@ export const useCartStore = defineStore('cart', () => {
         productId: product.id,
         name: product.name,
         unitAmount: product.unitAmount ?? 0,
-        currency: product.currency ?? 'cny',
+        currency: product.currency ?? 'cad',
         imageUrl: product.images[0]?.url,
         quantity,
       });

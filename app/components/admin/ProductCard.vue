@@ -69,10 +69,6 @@
             <UInputNumber v-model="state.unitAmount" class="w-full" />
           </UFormField>
 
-          <UFormField label="货币" name="currency">
-            <UInput v-model="state.currency" class="w-full" placeholder="cny" />
-          </UFormField>
-
           <UFormField label="上架" name="active">
             <USwitch v-model="state.active" />
           </UFormField>
@@ -156,23 +152,7 @@
       </template>
     </UModal>
 
-    <UCarousel
-      v-if="product.images.length > 1"
-      v-slot="{ item }"
-      loop
-      arrows
-      :prev="{ variant: 'soft' }"
-      :next="{ variant: 'soft' }"
-      :items="product.images"
-      :ui="{
-        container: '',
-        prev: 'sm:start-4',
-        next: 'sm:end-4',
-      }"
-    >
-      <NuxtImg :src="item.url" class="w-full aspect-square object-cover" />
-    </UCarousel>
-    <NuxtImg v-else-if="product.images[0]?.url" :src="product.images[0].url" class="w-full aspect-square object-cover" />
+    <NuxtImg v-if="product.images[0]?.url" :src="product.images[0].url" class="w-full aspect-square object-cover" />
     <div v-else class="bg-muted flex items-center justify-center aspect-square object-cover">
       <Icon name="lucide:image-off" size="40" />
     </div>
@@ -197,7 +177,6 @@ const schema = z.object({
   description: z.string().optional(),
   workId: z.number().int().positive().nullable().optional(),
   unitAmount: z.number().int().nonnegative().optional(),
-  currency: z.string().optional(),
   active: z.boolean().optional(),
 });
 
@@ -226,7 +205,6 @@ const state = reactive<Schema>({
   description: product.description ?? undefined,
   workId: product.workId ?? undefined,
   unitAmount: product.unitAmount ?? undefined,
-  currency: product.currency ?? undefined,
   active: product.active,
 });
 
@@ -322,7 +300,6 @@ async function onSubmit() {
       description: state.description,
       workId: state.workId ?? null,
       unitAmount: state.unitAmount,
-      currency: state.currency,
       active: state.active,
       imageIds: productImageIds.value.length ? productImageIds.value : undefined,
     });
@@ -331,7 +308,7 @@ async function onSubmit() {
     productDirty.value.description = state.description ?? null;
     productDirty.value.workId = state.workId ?? null;
     productDirty.value.unitAmount = state.unitAmount ?? null;
-    productDirty.value.currency = state.currency ?? null;
+    productDirty.value.currency = 'cad';
     productDirty.value.active = state.active ?? true;
     modalOpen.value = false;
     toast.add({ title: '修改成功', description: '成功修改商品', color: 'success' });

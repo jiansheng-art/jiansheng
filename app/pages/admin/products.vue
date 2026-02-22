@@ -31,12 +31,8 @@
                   </UEditor>
                 </UFormField>
 
-                <UFormField label="价格（分）" name="unitAmount" description="以货币最小单位计，如 CNY 的分">
+                <UFormField label="价格（分）" name="unitAmount" description="以货币最小单位计，如 CAD 的分">
                   <UInputNumber v-model="state.unitAmount" class="w-full" />
-                </UFormField>
-
-                <UFormField label="货币" name="currency">
-                  <UInput v-model="state.currency" class="w-full" placeholder="cny" />
                 </UFormField>
 
                 <UFormField label="上架" name="active">
@@ -118,7 +114,6 @@ const schema = z.object({
   description: z.string().optional(),
   workId: z.number().int().positive().nullable().optional(),
   unitAmount: z.number().int().nonnegative({ message: '请输入价格' }),
-  currency: z.string().min(1, '请输入货币'),
   active: z.boolean().optional(),
 });
 
@@ -131,7 +126,6 @@ const state = reactive<Schema>({
   description: '',
   workId: undefined,
   unitAmount: 0,
-  currency: 'cny',
   active: true,
 });
 
@@ -213,7 +207,6 @@ async function onSubmit() {
       description: state.description || undefined,
       workId: state.workId ?? null,
       unitAmount: state.unitAmount,
-      currency: state.currency,
       active: state.active,
       imageIds: productImageIds.value.length ? productImageIds.value : undefined,
     });
@@ -224,7 +217,6 @@ async function onSubmit() {
     state.description = '';
     state.workId = undefined;
     state.unitAmount = 0;
-    state.currency = 'cny';
     state.active = true;
     productImageIds.value = [];
     images.value = [];

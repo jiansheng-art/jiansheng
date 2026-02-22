@@ -146,23 +146,7 @@
         </UForm>
       </template>
     </UModal>
-    <UCarousel
-      v-if="work.images.length > 1"
-      v-slot="{ item }"
-      loop
-      arrows
-      :prev="{ variant: 'soft' }"
-      :next="{ variant: 'soft' }"
-      :items="work.images"
-      :ui="{
-        container: '',
-        prev: 'sm:start-4',
-        next: 'sm:end-4',
-      }"
-    >
-      <NuxtImg :src="item.url" class="w-full aspect-square object-cover" />
-    </UCarousel>
-    <NuxtImg v-else-if="work.images[0]?.url" :src="work.images[0].url" class="w-full aspect-square object-cover" />
+    <NuxtImg v-if="work.images[0]?.url" :src="work.images[0].url" class="w-full aspect-square object-cover" />
     <div v-else class="bg-muted flex items-center justify-center aspect-square object-cover">
       <Icon name="lucide:image-off" size="40" />
     </div>

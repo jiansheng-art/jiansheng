@@ -10,6 +10,7 @@ import { protectedProcedure, publicProcedure, router } from '~~/server/trpc/trpc
 import { S3Controller } from '~~/server/utils/s3';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+const CAD_CURRENCY = 'cad';
 
 interface ProductListItem {
   id: number;
@@ -65,7 +66,6 @@ export const productRouter = router({
       workId: z.number().int().positive().nullable().optional(),
       active: z.boolean().optional(),
       unitAmount: z.number().int().nonnegative(),
-      currency: z.string().min(1).max(10),
       metadata: z.record(z.string(), z.string()).optional(),
       imageIds: z.array(z.number().int().positive()).optional(),
     }))
@@ -80,7 +80,7 @@ export const productRouter = router({
       const stripePrice = await stripe.prices.create({
         product: stripeProduct.id,
         unit_amount: input.unitAmount,
-        currency: input.currency.toLowerCase(),
+        currency: CAD_CURRENCY,
         active: input.active,
       });
 
@@ -95,7 +95,7 @@ export const productRouter = router({
           description: input.description,
           active: input.active,
           unitAmount: input.unitAmount,
-          currency: input.currency.toLowerCase(),
+          currency: CAD_CURRENCY,
           metadata: input.metadata ? JSON.stringify(input.metadata) : undefined,
         }).returning())[0];
       }
@@ -130,7 +130,6 @@ export const productRouter = router({
       workId: z.number().int().positive().nullable().optional(),
       active: z.boolean().optional(),
       unitAmount: z.number().int().nonnegative().nullable().optional(),
-      currency: z.string().min(1).max(10).nullable().optional(),
       metadata: z.record(z.string(), z.string()).nullable().optional(),
       imageIds: z.array(z.number().int().positive()).optional(),
     }))
@@ -144,7 +143,6 @@ export const productRouter = router({
       }
 
       const nextStripeProductId = existing.stripeProductId;
-      const nextCurrency = input.currency === undefined ? existing.currency : input.currency;
       const nextUnitAmount = input.unitAmount === undefined ? existing.unitAmount : input.unitAmount;
 
       await stripe.products.update(nextStripeProductId, {
@@ -155,15 +153,15 @@ export const productRouter = router({
       });
 
       let stripePriceId = existing.stripePriceId;
-      if (input.unitAmount !== undefined || input.currency !== undefined || input.active !== undefined) {
-        if (nextUnitAmount == null || !nextCurrency) {
-          throw new TRPCError({ code: 'BAD_REQUEST', message: 'currency and unitAmount are required to create a Stripe price' });
+      if (input.unitAmount !== undefined || input.active !== undefined) {
+        if (nextUnitAmount == null) {
+          throw new TRPCError({ code: 'BAD_REQUEST', message: 'unitAmount is required to create a Stripe price' });
         }
 
         const stripePrice = await stripe.prices.create({
           product: nextStripeProductId,
           unit_amount: nextUnitAmount,
-          currency: nextCurrency.toLowerCase(),
+          currency: CAD_CURRENCY,
           active: input.active ?? existing.active,
         });
         stripePriceId = stripePrice.id;
@@ -176,7 +174,7 @@ export const productRouter = router({
         workId: input.workId,
         active: input.active,
         unitAmount: input.unitAmount,
-        currency: input.currency ? input.currency.toLowerCase() : input.currency,
+        currency: CAD_CURRENCY,
         metadata: input.metadata === undefined ? undefined : input.metadata === null ? null : JSON.stringify(input.metadata),
       }).where(eq(products.id, input.id));
 
