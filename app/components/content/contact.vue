@@ -37,9 +37,6 @@
 import type { FormSubmitEvent } from '@nuxt/ui';
 import * as z from 'zod';
 
-useHeadSafe({
-  title: 'Contact',
-});
 useSeoMeta({
   title: 'Contact',
   description: 'Get in touch with ZhangJiansheng Art for inquiries, collaborations, or feedback. We look forward to hearing from you!',

@@ -65,17 +65,8 @@ const {
 
 const loadedImages = reactive(new Set<string>());
 
-function toPlainText(value: string): string {
-  return value
-    .replace(/```[\s\S]*?```/g, ' ')
-    .replace(/`([^`]+)`/g, '$1')
-    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
-    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
-    .replace(/[#>*_~\-]+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .replace(/\n/g, ' ')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/\+\+([^+]+)\+\+/g, '$1')
-    .trim();
-}
+useSeoMeta({
+  title: 'Gallery',
+  description: 'Explore the art series by Jiansheng.',
+});
 </script>

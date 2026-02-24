@@ -199,8 +199,9 @@ function formatPrice(amount: number, currency: string) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.toUpperCase() }).format(amount / 100);
 }
 
-useHead({
-  title: work.value ? `${work.value.title}` : 'Gallery Item',
+useSeoMeta({
+  title: () => work.value?.titleEnglish || 'Gallery Item',
+  description: () => work.value ? toPlainText(work.value.description) : undefined,
 });
 </script>
 

@@ -73,8 +73,9 @@ function formatPrice(amount: number, currency: string) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.toUpperCase() }).format(amount / 100);
 }
 
-useHead({
+useSeoMeta({
   title: 'Shop',
+  description: 'Browse and purchase artworks by Jiansheng.',
 });
 </script>
 

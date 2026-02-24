@@ -247,8 +247,9 @@ async function shopNow() {
   }
 }
 
-useHead({
-  title: product.value ? product.value.name : 'Product',
+useSeoMeta({
+  title: () => product.value?.name || 'Product',
+  description: () => product.value ? toPlainText(product.value.description) : undefined,
 });
 </script>
 

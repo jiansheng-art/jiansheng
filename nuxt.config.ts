@@ -38,8 +38,12 @@ export default defineNuxtConfig({
     disallow: ['/admin'],
   },
 
+  routeRules: {
+    '/admin/**': { robots: false },
+  },
+
   site: {
-    name: 'ZhangJiansheng Art',
+    name: 'Jiansheng Art',
     url: 'https://jiansheng.art',
     indexable: true,
   },

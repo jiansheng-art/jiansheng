@@ -84,8 +84,9 @@ const {
 
 const seriesDescriptionEditorReady = ref(false);
 
-useHead({
-  title: series.value ? `${series.value.title}` : 'Exhibition',
+useSeoMeta({
+  title: () => series.value?.title || 'Exhibition',
+  description: () => series.value ? toPlainText(series.value.description) : undefined,
 });
 </script>
 
