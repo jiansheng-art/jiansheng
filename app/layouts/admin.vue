@@ -50,6 +50,11 @@ const items: NavigationMenuItem[][] = [[{
   to: '/admin/products',
   onSelect: () => { open.value = false; },
 }, {
+  label: '订单管理',
+  icon: 'i-lucide-receipt',
+  to: '/admin/orders',
+  onSelect: () => { open.value = false; },
+}, {
   label: '联系表格',
   icon: 'i-lucide-mail',
   to: '/admin/contact',

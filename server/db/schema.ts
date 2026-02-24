@@ -159,3 +159,16 @@ export const worksCategoryRelations = relations(worksCategories, ({ many }) => (
 export const workSeriesRelations = relations(workSeries, ({ many }) => ({
   works: many(works),
 }));
+
+export const orderShipments = pgTable('order_shipments', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  stripeSessionId: varchar('stripe_session_id', { length: 255 }).unique().notNull(),
+  shippingStatus: varchar('shipping_status', { length: 50 }).default('pending').notNull(),
+  trackingNumber: varchar('tracking_number', { length: 255 }),
+  carrier: varchar({ length: 255 }),
+  notes: text(),
+  shippedAt: timestamp('shipped_at', { withTimezone: true, mode: 'date' }),
+  deliveredAt: timestamp('delivered_at', { withTimezone: true, mode: 'date' }),
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`).$onUpdate(() => new Date()),
+});

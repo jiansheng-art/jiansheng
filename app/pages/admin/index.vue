@@ -1,79 +1,89 @@
 <template>
-  <UDashboardPanel>
+  <UDashboardPanel id="admin-home">
     <template #header>
       <UDashboardNavbar title="主页" />
     </template>
-    <template #body>
-      <!-- Stats overview -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
-        <UCard
-          v-for="stat in stats"
-          :key="stat.label"
-          class="hover:ring-primary/50 transition-colors cursor-pointer"
-          @click="navigateTo(stat.to)"
-        >
-          <div class="flex items-center gap-4">
-            <div class="rounded-lg bg-primary/10 p-3">
-              <UIcon :name="stat.icon" class="size-6 text-primary" />
-            </div>
-            <div>
-              <p class="text-2xl font-bold">
-                {{ stat.value ?? '–' }}
-              </p>
-              <p class="text-sm text-muted">
-                {{ stat.label }}
-              </p>
-            </div>
-          </div>
-        </UCard>
-      </div>
 
-      <!-- Recent contact forms -->
-      <h2 class="text-lg font-semibold mb-4">
-        最近联系表格
-      </h2>
-      <UCard v-if="recentContacts?.length">
-        <div class="divide-y divide-default">
-          <div
-            v-for="contact in recentContacts"
-            :key="contact.id"
-            class="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"
-          >
-            <div class="flex items-center gap-3 min-w-0">
-              <UIcon
-                :name="contact.unread ? 'i-lucide-mail' : 'i-lucide-mail-open'"
-                class="size-5 shrink-0"
-                :class="contact.unread ? 'text-primary' : 'text-muted'"
-              />
-              <div class="min-w-0">
-                <p class="font-medium truncate">
-                  {{ contact.firstName }} {{ contact.lastName }}
-                  <span class="text-muted font-normal">– {{ contact.subject }}</span>
-                </p>
-                <p class="text-sm text-muted truncate">
-                  {{ contact.email }}
-                </p>
-              </div>
-            </div>
-            <span class="text-xs text-muted whitespace-nowrap">
-              {{ contact.createdAt ? formatDate(contact.createdAt) : '' }}
+    <template #body>
+      <!-- Stats row -->
+      <UPageGrid class="lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-px">
+        <UPageCard
+          v-for="(stat, index) in stats"
+          :key="index"
+          :icon="stat.icon"
+          :title="stat.label"
+          :to="stat.to"
+          variant="subtle"
+          :ui="{
+            container: 'gap-y-1.5',
+            wrapper: 'items-start',
+            leading: 'p-2.5 rounded-full bg-primary/10 ring ring-inset ring-primary/25 flex-col',
+            title: 'font-normal text-muted text-xs uppercase',
+          }"
+          class="lg:rounded-none first:rounded-l-lg last:rounded-r-lg hover:z-1"
+        >
+          <div class="flex items-center gap-2">
+            <span class="text-2xl font-semibold text-highlighted">
+              {{ stat.value ?? '–' }}
             </span>
           </div>
-        </div>
-      </UCard>
-      <p v-else class="text-muted">
-        暂无联系表格
-      </p>
+        </UPageCard>
+      </UPageGrid>
+
+      <!-- Recent contacts table -->
+      <div class="mt-8">
+        <h2 class="text-lg font-semibold mb-4">
+          最近联系表格
+        </h2>
+
+        <UTable
+          v-if="recentContacts?.length"
+          :data="recentContacts"
+          :columns="contactColumns"
+          :ui="{
+            base: 'table-fixed border-separate border-spacing-0',
+            thead: '[&>tr]:bg-elevated/50 [&>tr]:after:content-none',
+            tbody: '[&>tr]:last:[&>td]:border-b-0',
+            th: 'first:rounded-l-lg last:rounded-r-lg border-y border-default first:border-l last:border-r',
+            td: 'border-b border-default',
+          }"
+        >
+          <template #unread-cell="{ row }">
+            <UIcon
+              :name="row.original.unread ? 'i-lucide-mail' : 'i-lucide-mail-open'"
+              class="size-5"
+              :class="row.original.unread ? 'text-primary' : 'text-muted'"
+            />
+          </template>
+
+          <template #name-cell="{ row }">
+            <span class="font-medium">{{ row.original.firstName }} {{ row.original.lastName }}</span>
+          </template>
+
+          <template #date-cell="{ row }">
+            <span class="text-muted">{{ row.original.createdAt ? formatDate(row.original.createdAt) : '' }}</span>
+          </template>
+        </UTable>
+
+        <p v-else class="text-muted">
+          暂无联系表格
+        </p>
+      </div>
     </template>
   </UDashboardPanel>
 </template>
 
 <script setup lang="ts">
+import type { TableColumn } from '@nuxt/ui';
+import { h, resolveComponent } from 'vue';
+
 definePageMeta({
   layout: 'admin',
 });
 
 const { $trpc } = useNuxtApp();
+
+const UBadge = resolveComponent('UBadge');
 
 const { data: works } = useQuery({
   key: ['work.list'],
@@ -124,7 +134,56 @@ const stats = computed(() => [
   },
 ]);
 
-const recentContacts = computed(() => contactForms.value?.slice(0, 5));
+interface ContactForm {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  subject: string;
+  unread: boolean;
+  createdAt: Date | null;
+}
+
+const recentContacts = computed(() => (contactForms.value?.slice(0, 5) ?? []) as ContactForm[]);
+
+const contactColumns: TableColumn<ContactForm>[] = [
+  {
+    accessorKey: 'unread',
+    header: '',
+    id: 'unread',
+  },
+  {
+    accessorKey: 'firstName',
+    header: '姓名',
+    id: 'name',
+  },
+  {
+    accessorKey: 'email',
+    header: '邮箱',
+  },
+  {
+    accessorKey: 'subject',
+    header: '主题',
+  },
+  {
+    accessorKey: 'unread',
+    header: '状态',
+    id: 'status',
+    cell: ({ row }) => {
+      const unread = row.original.unread;
+      return h(UBadge, {
+        color: unread ? 'primary' : 'neutral',
+        variant: 'subtle',
+        class: 'capitalize',
+      }, () => unread ? '未读' : '已读');
+    },
+  },
+  {
+    accessorKey: 'createdAt',
+    header: '时间',
+    id: 'date',
+  },
+];
 
 function formatDate(date: Date | string) {
   const d = typeof date === 'string' ? new Date(date) : date;

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { db } from '~~/server/db';
 import { contactFormRouter } from '~~/server/trpc/routers/contactForm';
+import { orderRouter } from '~~/server/trpc/routers/order';
 import { productRouter } from '~~/server/trpc/routers/product';
 import { userRouter } from '~~/server/trpc/routers/user';
 import { workRouter } from '~~/server/trpc/routers/work';
@@ -20,6 +21,7 @@ export const appRouter = router({
     }),
 
   contactForm: contactFormRouter,
+  order: orderRouter,
   product: productRouter,
   work: workRouter,
   user: userRouter,
