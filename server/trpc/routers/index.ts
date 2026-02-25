@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { db } from '~~/server/db';
+import { artActivityRouter } from '~~/server/trpc/routers/artActivity';
 import { contactFormRouter } from '~~/server/trpc/routers/contactForm';
 import { orderRouter } from '~~/server/trpc/routers/order';
 import { pageContentRouter } from '~~/server/trpc/routers/pageContent';
@@ -21,6 +22,7 @@ export const appRouter = router({
       };
     }),
 
+  artActivity: artActivityRouter,
   contactForm: contactFormRouter,
   order: orderRouter,
   pageContent: pageContentRouter,

@@ -173,6 +173,40 @@ export const orderShipments = pgTable('order_shipments', {
   updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`).$onUpdate(() => new Date()),
 });
 
+export const artActivities = pgTable('art_activities', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  title: varchar({ length: 255 }).notNull(),
+  description: varchar({ length: 2000 }),
+  markdown: text(),
+  date: timestamp('date', { withTimezone: true, mode: 'date' }),
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`).$onUpdate(() => new Date()),
+});
+
+export const artActivityImages = pgTable('art_activity_images', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  activityId: integer('activity_id'),
+  fileName: varchar({ length: 255 }),
+  s3FileId: varchar({ length: 255 }).notNull(),
+}, table => [
+  foreignKey({
+    columns: [table.activityId],
+    foreignColumns: [artActivities.id],
+    name: 'fk_activity',
+  }).onDelete('cascade'),
+]);
+
+export const artActivityRelations = relations(artActivities, ({ many }) => ({
+  images: many(artActivityImages),
+}));
+
+export const artActivityImageRelations = relations(artActivityImages, ({ one }) => ({
+  activity: one(artActivities, {
+    fields: [artActivityImages.activityId],
+    references: [artActivities.id],
+  }),
+}));
+
 export const pageContents = pgTable('page_contents', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   slug: varchar({ length: 255 }).unique().notNull(),

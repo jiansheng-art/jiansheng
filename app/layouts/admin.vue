@@ -6,10 +6,8 @@
         class="bg-elevated/25"
       >
         <template #header>
-          <span class="h-5 w-auto shrink-0 font-serif font-bold">Jiansheng ART</span>
+          <AdminUserMenu />
         </template>
-
-        <UDashboardSearchButton class="bg-transparent ring-default" />
 
         <UNavigationMenu
           :items="items[0]"
@@ -17,13 +15,8 @@
           tooltip
           popover
         />
-        <template #footer>
-          <AdminUserMenu />
-        </template>
+        <template #footer />
       </UDashboardSidebar>
-
-      <UDashboardSearch :groups="groups" />
-
       <slot />
     </UDashboardGroup>
   </UPage>
@@ -55,6 +48,11 @@ const items: NavigationMenuItem[][] = [[{
   to: '/admin/orders',
   onSelect: () => { open.value = false; },
 }, {
+  label: '艺术活动',
+  icon: 'i-lucide-palette',
+  to: '/admin/art-activities',
+  onSelect: () => { open.value = false; },
+}, {
   label: '联系表格',
   icon: 'i-lucide-mail',
   to: '/admin/contact',
@@ -65,10 +63,4 @@ const items: NavigationMenuItem[][] = [[{
   to: '/admin/page-content',
   onSelect: () => { open.value = false; },
 }]];
-
-const groups = computed(() => [{
-  id: 'links',
-  label: 'Go to',
-  items: items.flat(),
-}]);
 </script>
