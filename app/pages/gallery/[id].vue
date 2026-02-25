@@ -124,7 +124,7 @@
         Related Products
       </h2>
 
-      <div class="flex gap-4 overflow-x-auto p-[1px]">
+      <div class="flex gap-4 overflow-x-auto p-px">
         <NuxtLink
           v-for="product in relatedProducts"
           :key="product.id"
@@ -200,8 +200,8 @@ function formatPrice(amount: number, currency: string) {
 }
 
 useSeoMeta({
-  title: () => work.value?.titleEnglish || 'Gallery Item',
-  description: () => work.value ? toPlainText(work.value.description) : undefined,
+  title: () => work.value?.titleEnglish || work.value?.title || 'Gallery Item',
+  description: () => (work.value?.description ? toPlainText(work.value.description) : undefined),
 });
 </script>
 

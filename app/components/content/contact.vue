@@ -37,11 +37,6 @@
 import type { FormSubmitEvent } from '@nuxt/ui';
 import * as z from 'zod';
 
-useSeoMeta({
-  title: 'Contact',
-  description: 'Get in touch with ZhangJiansheng Art for inquiries, collaborations, or feedback. We look forward to hearing from you!',
-});
-
 const schema = z.object({
   firstName: z.string('First name is required').min(1, 'First name is required').max(255, 'First name is too long'),
   lastName: z.string('Last name is required').min(1, 'Last name is required').max(255, 'Last name is too long'),

@@ -60,9 +60,9 @@ const items: NavigationMenuItem[][] = [[{
   to: '/admin/contact',
   onSelect: () => { open.value = false; },
 }, {
-  label: '修改网页内容',
+  label: '网页内容',
   icon: 'lucide:square-pen',
-  to: '/_studio',
+  to: '/admin/page-content',
   onSelect: () => { open.value = false; },
 }]];
 

@@ -2,10 +2,6 @@
 export default defineNuxtConfig({
   devtools: {
     enabled: true,
-
-    timeline: {
-      enabled: true,
-    },
   },
 
   modules: [
@@ -14,11 +10,13 @@ export default defineNuxtConfig({
     'pinia-plugin-persistedstate/nuxt',
     '@vueuse/nuxt',
     '@pinia/colada-nuxt',
-    '@nuxt/content',
     '@nuxt/image',
     '@nuxtjs/seo',
-    'nuxt-studio',
   ],
+
+  ogImage: {
+    enabled: false,
+  },
 
   css: ['~/assets/css/main.css'],
 
@@ -46,25 +44,6 @@ export default defineNuxtConfig({
     name: 'Jiansheng Art',
     url: 'https://jiansheng.art',
     indexable: true,
-  },
-
-  studio: {
-    i18n: {
-      defaultLocale: 'zh',
-    },
-    repository: {
-      provider: 'github',
-      owner: 'jiansheng-art',
-      repo: 'jiansheng',
-      branch: 'main',
-    },
-  },
-
-  content: {
-    experimental: {
-      nativeSqlite: true,
-      sqliteConnector: 'native',
-    },
   },
 
   compatibilityDate: '2025-12-14',

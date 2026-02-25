@@ -172,3 +172,13 @@ export const orderShipments = pgTable('order_shipments', {
   createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
   updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`).$onUpdate(() => new Date()),
 });
+
+export const pageContents = pgTable('page_contents', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  slug: varchar({ length: 255 }).unique().notNull(),
+  title: varchar({ length: 255 }).notNull(),
+  description: varchar({ length: 2000 }),
+  markdown: text().notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`).$onUpdate(() => new Date()),
+});

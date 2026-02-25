@@ -41,10 +41,10 @@
 ## Developer workflow
 - Install deps: `bun install` (README standard).
 - Local dev: `bun run dev`.
-- Type-check before handoff: `npx nuxi typecheck` (or `npm run typecheck`).
-- Lint: `npm run lint` / `npm run lint:fix`.
-- DB schema sync (no handwritten migrations in this repo flow): `npm run db:push`.
-- Admin bootstrap helpers: `npm run auth:genKey`, `npm run auth:createAdmin`.
+- Type-check before handoff: `bun run typecheck`.
+- Lint: `bun run lint` / `bun run lint:fix`.
+- DB schema sync (no handwritten migrations in this repo flow): `bun run db:push`.
+- Admin bootstrap helpers: `bun run auth:genKey`, `bun run auth:createAdmin`.
 
 ## Implementation guardrails for agents
 - Preserve existing Nuxt UI + Tailwind utility style; avoid introducing alternate UI libraries.
