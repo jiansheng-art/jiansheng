@@ -99,21 +99,7 @@
           </UCard>
 
           <UPageCard v-if="work.description" title="Work Description">
-            <USkeleton
-              v-if="!workDescriptionEditorReady"
-              class="h-28 w-full rounded-md transition-opacity duration-300"
-            />
-            <UEditor
-              :model-value="work.description"
-              content-type="markdown"
-              :editable="false"
-              :on-mount="() => workDescriptionEditorReady = true"
-              :ui="{
-                base: 'px-0!',
-              }"
-              class="w-full transition-opacity duration-300"
-              :class="workDescriptionEditorReady ? 'opacity-100' : 'opacity-0'"
-            />
+            <MarkdownViewer :markdown="work.description" />
           </UPageCard>
         </div>
       </div>
@@ -171,7 +157,6 @@ if (!Number.isInteger(workId) || workId <= 0) {
 }
 
 const loadedImages = reactive(new Set<string>());
-const workDescriptionEditorReady = ref(false);
 
 const {
   data: work,
