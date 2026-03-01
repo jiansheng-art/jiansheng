@@ -23,10 +23,11 @@
 <script setup lang="ts">
 const { $trpc } = useNuxtApp();
 
-const { data } = useQuery({
-  key: ['artActivity.list'],
-  query: () => $trpc.artActivity.list.query(),
+const { data, suspense } = useQuery({
+  queryKey: ['artActivity.list'],
+  queryFn: () => $trpc.artActivity.list.query(),
 });
+await suspense();
 
 const activities = computed(() => data.value ?? []);
 </script>

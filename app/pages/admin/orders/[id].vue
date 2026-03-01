@@ -193,10 +193,12 @@ const toast = useToast();
 
 const sessionId = computed(() => route.params.id as string);
 
-const { data: order, status, refresh } = useQuery({
-  key: () => ['order.get', sessionId.value],
-  query: () => $trpc.order.get.query({ id: sessionId.value }),
+const { data: order, status, refetch, suspense } = useQuery({
+  queryKey: computed(() => ['order.get', sessionId.value]),
+  queryFn: () => $trpc.order.get.query({ id: sessionId.value }),
 });
+
+await suspense();
 
 const isLoading = computed(() => status.value === 'pending');
 
@@ -312,7 +314,7 @@ async function onShippingSubmit() {
       notes: shippingForm.notes || null,
     });
     toast.add({ title: '物流状态已更新', color: 'success' });
-    refresh();
+    refetch();
   }
   catch (err) {
     useErrorHandler(err);

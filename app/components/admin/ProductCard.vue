@@ -183,12 +183,12 @@ const schema = z.object({
 type Schema = z.infer<typeof schema>;
 
 const { $trpc } = useNuxtApp();
-const queryCache = useQueryCache();
+const queryCache = useQueryClient();
 const toast = useToast();
 
 const { data: works } = useQuery({
-  key: ['work.list'],
-  query: () => $trpc.work.list.query(),
+  queryKey: ['work.list'],
+  queryFn: () => $trpc.work.list.query(),
 });
 
 const workOptions = computed(() => {
@@ -240,7 +240,7 @@ async function deleteProduct(close: () => void) {
     close();
     modalOpen.value = false;
     toast.add({ title: '删除成功', description: '商品已删除', color: 'success' });
-    await queryCache.invalidateQueries({ key: ['product.list'] });
+    await queryCache.invalidateQueries({ queryKey: ['product.list'] });
   }
   catch (error) {
     useErrorHandler(error);
@@ -312,7 +312,7 @@ async function onSubmit() {
     productDirty.value.active = state.active ?? true;
     modalOpen.value = false;
     toast.add({ title: '修改成功', description: '成功修改商品', color: 'success' });
-    await queryCache.invalidateQueries({ key: ['product.list'] });
+    await queryCache.invalidateQueries({ queryKey: ['product.list'] });
   }
   catch (err) {
     useErrorHandler(err);

@@ -168,11 +168,14 @@ const submitLoading = ref(false);
 
 const {
   data: activities,
-  refresh,
+  refetch,
+  suspense,
 } = useQuery({
-  key: ['artActivity.list'],
-  query: () => $trpc.artActivity.list.query(),
+  queryKey: ['artActivity.list'],
+  queryFn: () => $trpc.artActivity.list.query(),
 });
+
+await suspense();
 
 async function onSubmit() {
   submitLoading.value = true;
@@ -213,7 +216,7 @@ async function onSubmit() {
     state.markdown = '';
     dateValue.value = undefined;
     images.value = [];
-    await refresh();
+    await refetch();
   }
   catch (err) {
     useErrorHandler(err);

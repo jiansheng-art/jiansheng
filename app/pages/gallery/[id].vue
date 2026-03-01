@@ -162,15 +162,19 @@ const {
   data: work,
   status,
   error,
+  suspense: workSuspense,
 } = useQuery({
-  key: ['work.get', workId],
-  query: () => $trpc.work.get.query({ id: workId }),
+  queryKey: ['work.get', workId],
+  queryFn: () => $trpc.work.get.query({ id: workId }),
 });
 
-const { data: products } = useQuery({
-  key: ['product.list'],
-  query: () => $trpc.product.list.query(),
+const { data: products, suspense: productsSuspense } = useQuery({
+  queryKey: ['product.list'],
+  queryFn: () => $trpc.product.list.query(),
 });
+
+await workSuspense();
+await productsSuspense();
 
 const relatedProducts = computed(() => {
   return (products.value ?? []).filter(product => product.active && product.workId === workId);

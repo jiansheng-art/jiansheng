@@ -151,16 +151,22 @@ const modalOpen = ref(false);
 
 const {
   data: products,
-  refresh,
+  refetch,
+  suspense: productsSuspense,
 } = useQuery({
-  key: ['product.list'],
-  query: () => $trpc.product.list.query(),
+  queryKey: ['product.list'],
+  queryFn: () => $trpc.product.list.query(),
 });
 
-const { data: works } = useQuery({
-  key: ['work.list'],
-  query: () => $trpc.work.list.query(),
+const { data: works, suspense: worksSuspense } = useQuery({
+  queryKey: ['work.list'],
+  queryFn: () => $trpc.work.list.query(),
 });
+
+await Promise.all([
+  productsSuspense(),
+  worksSuspense(),
+]);
 
 const workOptions = computed(() => {
   const base = [{ label: '不关联作品', value: null as number | null }];
@@ -220,7 +226,7 @@ async function onSubmit() {
     state.active = true;
     productImageIds.value = [];
     images.value = [];
-    await refresh();
+    await refetch();
   }
   catch (err) {
     useErrorHandler(err);

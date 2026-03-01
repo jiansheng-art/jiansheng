@@ -85,8 +85,8 @@ async function toggleRead() {
     readButtonLoading.value = true;
     await $trpc.contactForm.toggleRead.mutate({ id: mail.id });
     dirtyMail.value.unread = !dirtyMail.value.unread;
-    const queryCache = useQueryCache();
-    await queryCache.invalidateQueries({ key: ['contactForm.list'] });
+    const queryCache = useQueryClient();
+    await queryCache.invalidateQueries({ queryKey: ['contactForm.list'] });
     readButtonLoading.value = false;
   }
   catch {
@@ -104,8 +104,8 @@ async function toggleStarred() {
     starButtonLoading.value = true;
     await $trpc.contactForm.toggleStarred.mutate({ id: mail.id });
     dirtyMail.value.starred = !dirtyMail.value.starred;
-    const queryCache = useQueryCache();
-    await queryCache.invalidateQueries({ key: ['contactForm.list'] });
+    const queryCache = useQueryClient();
+    await queryCache.invalidateQueries({ queryKey: ['contactForm.list'] });
     starButtonLoading.value = false;
   }
   catch {

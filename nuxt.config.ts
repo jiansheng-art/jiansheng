@@ -10,10 +10,18 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
     '@vueuse/nuxt',
-    '@pinia/colada-nuxt',
     '@nuxt/image',
     '@nuxtjs/seo',
   ],
+
+  imports: {
+    presets: [
+      {
+        from: '@tanstack/vue-query',
+        imports: ['useMutation', 'useQuery', 'useQueryClient'],
+      },
+    ],
+  },
 
   ogImage: {
     enabled: false,

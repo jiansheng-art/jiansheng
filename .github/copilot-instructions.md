@@ -32,7 +32,7 @@
 - Use `S3Controller` in `server/utils/s3.ts` for all signed URL and delete operations.
 
 ## Frontend data/state patterns
-- Use `useQuery` from `@pinia/colada` for reads; invalidate with `useQueryCache().invalidateQueries({ key: [...] })` after mutations.
+- Use `useQuery` / `useMutation` from `@tanstack/vue-query` for data fetching and mutations; invalidate with `useQueryClient().invalidateQueries({ queryKey: [...] })` after mutations.
 - Use Pinia stores with persisted state:
   - `useUserStore`: cookies (auth)
   - `useCartStore`: localStorage (shop cart)

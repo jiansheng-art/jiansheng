@@ -85,25 +85,32 @@ const { $trpc } = useNuxtApp();
 
 const UBadge = resolveComponent('UBadge');
 
-const { data: works } = useQuery({
-  key: ['work.list'],
-  query: () => $trpc.work.list.query(),
+const { data: works, suspense: worksSuspense } = useQuery({
+  queryKey: ['work.list'],
+  queryFn: () => $trpc.work.list.query(),
 });
 
-const { data: seriesList } = useQuery({
-  key: ['work.listSeries'],
-  query: () => $trpc.work.listSeries.query(),
+const { data: seriesList, suspense: seriesListSuspense } = useQuery({
+  queryKey: ['work.listSeries'],
+  queryFn: () => $trpc.work.listSeries.query(),
 });
 
-const { data: products } = useQuery({
-  key: ['product.list'],
-  query: () => $trpc.product.list.query(),
+const { data: products, suspense: productsSuspense } = useQuery({
+  queryKey: ['product.list'],
+  queryFn: () => $trpc.product.list.query(),
 });
 
-const { data: contactForms } = useQuery({
-  key: ['contactForm.list'],
-  query: () => $trpc.contactForm.list.query(),
+const { data: contactForms, suspense: contactFormsSuspense } = useQuery({
+  queryKey: ['contactForm.list'],
+  queryFn: () => $trpc.contactForm.list.query(),
 });
+
+await Promise.all([
+  worksSuspense(),
+  seriesListSuspense(),
+  productsSuspense(),
+  contactFormsSuspense(),
+]);
 
 const unreadCount = computed(() => contactForms.value?.filter(f => f.unread).length ?? 0);
 

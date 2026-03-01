@@ -41,13 +41,15 @@ const loadedCount = ref(0);
 
 const {
   data: works,
+  suspense,
 } = useQuery({
-  key: ['work.listHome'],
+  queryKey: ['work.listHome'],
   refetchOnMount: false,
   refetchOnReconnect: false,
   refetchOnWindowFocus: false,
-  query: () => $trpc.work.listHome.query(),
+  queryFn: () => $trpc.work.listHome.query(),
 });
+await suspense();
 
 function onImageLoaded() {
   loadedCount.value++;

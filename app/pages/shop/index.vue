@@ -62,10 +62,12 @@ const {
   data: products,
   status,
   error,
+  suspense,
 } = useQuery({
-  key: ['product.list'],
-  query: () => $trpc.product.list.query(),
+  queryKey: ['product.list'],
+  queryFn: () => $trpc.product.list.query(),
 });
+await suspense();
 
 const loadedImages = reactive(new Set<string>());
 

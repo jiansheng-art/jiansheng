@@ -10,7 +10,7 @@
           :submit="{
             label: '登录',
           }"
-          :loading="isLoading"
+          :loading="isPending"
           @submit="(payload: FormSubmitEvent<Schema>) => login(payload.data)"
         />
       </UPageCard>
@@ -49,8 +49,8 @@ const schema = z.object({
 
 type Schema = z.output<typeof schema>;
 
-const { mutate: login, isLoading } = useMutation({
-  mutation: $trpc.user.login.mutate,
+const { mutate: login, isPending } = useMutation({
+  mutationFn: (data: Schema) => $trpc.user.login.mutate(data),
   onSuccess: (res) => {
     useUserStore().login(res);
     useLoginRedirect().redirect();

@@ -124,10 +124,12 @@ const editorToolbarItems: EditorToolbarItem[][] = [
   ],
 ];
 
-const { data: pages, refresh } = useQuery({
-  key: ['pageContent.list'],
-  query: () => $trpc.pageContent.list.query(),
+const { data: pages, refetch, suspense } = useQuery({
+  queryKey: ['pageContent.list'],
+  queryFn: () => $trpc.pageContent.list.query(),
 });
+
+await suspense();
 
 watch(
   pages,
@@ -161,7 +163,7 @@ async function onSubmit(slug: PageSlug) {
     });
 
     toast.add({ title: '保存成功', description: '网页内容已更新', color: 'success' });
-    await refresh();
+    await refetch();
   }
   catch (error) {
     useErrorHandler(error);

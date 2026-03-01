@@ -58,10 +58,12 @@ const { $trpc } = useNuxtApp();
 
 const {
   data: seriesList,
+  suspense,
 } = useQuery({
-  key: ['work.listSeries'],
-  query: () => $trpc.work.listSeries.query(),
+  queryKey: ['work.listSeries'],
+  queryFn: () => $trpc.work.listSeries.query(),
 });
+await suspense();
 
 const loadedImages = reactive(new Set<string>());
 

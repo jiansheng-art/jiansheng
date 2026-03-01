@@ -200,10 +200,12 @@ const {
   data: product,
   status,
   error,
+  suspense,
 } = useQuery({
-  key: ['product.get', productId],
-  query: () => $trpc.product.get.query({ id: productId }),
+  queryKey: ['product.get', productId],
+  queryFn: () => $trpc.product.get.query({ id: productId }),
 });
+await suspense();
 
 function onImageLoaded(url: string) {
   loadedImages.add(url);

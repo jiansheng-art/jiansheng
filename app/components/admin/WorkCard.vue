@@ -176,12 +176,12 @@ const schema = z.object({
   dimensions: z.string().optional(),
 });
 const { $trpc } = useNuxtApp();
-const queryCache = useQueryCache();
+const queryCache = useQueryClient();
 const toast = useToast();
 
 const { data: seriesList } = useQuery({
-  key: ['work.listSeries'],
-  query: () => $trpc.work.listSeries.query(),
+  queryKey: ['work.listSeries'],
+  queryFn: () => $trpc.work.listSeries.query(),
 });
 
 const seriesOptions = computed(() => {
@@ -234,7 +234,7 @@ async function deleteWork(close: () => void) {
     close();
     modalOpen.value = false;
     toast.add({ title: '删除成功', description: '作品已删除', color: 'success' });
-    await queryCache.invalidateQueries({ key: ['work.list'] });
+    await queryCache.invalidateQueries({ queryKey: ['work.list'] });
     isDeleteWorkLoading.value = false;
   }
   catch (error) {
@@ -304,7 +304,7 @@ async function onSubmit() {
     workDirty.value.dimensions = state.dimensions ?? null;
     modalOpen.value = false;
     toast.add({ title: '修改成功', description: '成功修改作品', color: 'success' });
-    await queryCache.invalidateQueries({ key: ['work.list'] });
+    await queryCache.invalidateQueries({ queryKey: ['work.list'] });
     submitLoading.value = false;
   }
   catch (error) {

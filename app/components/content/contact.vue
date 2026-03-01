@@ -26,7 +26,7 @@
         <UTextarea v-model="state.message" :rows="5" class="w-full" />
       </UFormField>
 
-      <UButton size="lg" type="submit" :loading="isLoading">
+      <UButton size="lg" type="submit" :loading="isPending">
         Submit
       </UButton>
     </UForm>
@@ -59,9 +59,9 @@ const { $trpc } = useNuxtApp();
 const {
   mutate: createContactForm,
   status,
-  isLoading,
+  isPending,
 } = useMutation({
-  mutation: $trpc.contactForm.create.mutate,
+  mutationFn: (data: Schema) => $trpc.contactForm.create.mutate(data),
 });
 
 const toast = useToast();

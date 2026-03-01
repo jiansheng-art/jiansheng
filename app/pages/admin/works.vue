@@ -226,19 +226,26 @@ const seriesModalOpen = ref(false);
 
 const {
   data: works,
-  refresh,
+  refetch,
+  suspense: worksSuspense,
 } = useQuery({
-  key: ['work.list'],
-  query: () => $trpc.work.list.query(),
+  queryKey: ['work.list'],
+  queryFn: () => $trpc.work.list.query(),
 });
 
 const {
   data: seriesList,
-  refresh: refreshSeries,
+  refetch: refreshSeries,
+  suspense: seriesListSuspense,
 } = useQuery({
-  key: ['work.listSeries'],
-  query: () => $trpc.work.listSeries.query(),
+  queryKey: ['work.listSeries'],
+  queryFn: () => $trpc.work.listSeries.query(),
 });
+
+await Promise.all([
+  worksSuspense(),
+  seriesListSuspense(),
+]);
 
 const seriesOptions = computed(() => {
   const base = [{ label: '不分配系列', value: null as number | null }];
@@ -258,7 +265,7 @@ const seriesSubmitLoading = ref(false);
 
 async function onSeriesChanged() {
   await refreshSeries();
-  await refresh();
+  await refetch();
 }
 
 async function onSubmitSeries() {
@@ -327,6 +334,6 @@ async function onSubmit() {
   state.seriesId = undefined;
   workImages.value = [];
   images.value = [];
-  await refresh();
+  await refetch();
 }
 </script>

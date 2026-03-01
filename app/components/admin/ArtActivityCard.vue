@@ -147,7 +147,7 @@ type Schema = z.infer<typeof schema>;
 
 const { $trpc } = useNuxtApp();
 const toast = useToast();
-const queryCache = useQueryCache();
+const queryCache = useQueryClient();
 
 const activityDirty = ref(structuredClone(toRaw(props.activity)));
 
@@ -194,7 +194,7 @@ async function deleteActivity(closeFn: () => void) {
     await $trpc.artActivity.delete.mutate({ id: props.activity.id });
     toast.add({ title: '删除成功', color: 'success' });
     closeFn();
-    queryCache.invalidateQueries({ key: ['artActivity.list'] });
+    queryCache.invalidateQueries({ queryKey: ['artActivity.list'] });
   }
   catch (err) {
     useErrorHandler(err);
@@ -210,7 +210,7 @@ async function deleteImage(imageId: number) {
     await $trpc.artActivity.deleteImage.mutate({ id: imageId });
     activityDirty.value.images = activityDirty.value.images.filter(i => i.id !== imageId);
     toast.add({ title: '图片已删除', color: 'success' });
-    queryCache.invalidateQueries({ key: ['artActivity.list'] });
+    queryCache.invalidateQueries({ queryKey: ['artActivity.list'] });
   }
   catch (err) {
     useErrorHandler(err);
@@ -256,7 +256,7 @@ async function onSubmit() {
     modalOpen.value = false;
     toast.add({ title: '保存成功', color: 'success' });
     images.value = [];
-    queryCache.invalidateQueries({ key: ['artActivity.list'] });
+    queryCache.invalidateQueries({ queryKey: ['artActivity.list'] });
   }
   catch (err) {
     useErrorHandler(err);
