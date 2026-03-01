@@ -1,16 +1,28 @@
-# Fullstack
+# Jiansheng Monorepo
 
-[![Built With Nuxt][build-with-nuxt-src]][build-with-nuxt-href]
+This repository is a Bun workspace with two separate Nuxt projects:
 
-## Usage
+- `apps/web`: public website + public tRPC backend
+- `apps/admin`: admin UI + admin tRPC backend
+- `packages/db`: shared Drizzle schema/connection used by both apps
 
-- Install the dependencies: `bun install`
-- Start the development server: `bun run dev`
-- Build the application: `bun run build`
+## Install
 
-## License
+- `bun install`
 
-MIT
+## Develop
 
-[build-with-nuxt-src]: https://img.shields.io/badge/Built%20With%20Nuxt-18181B?logo=nuxt.js
-[build-with-nuxt-href]: https://nuxt.com/
+- `bun run dev:web` (public app)
+- `bun run dev:admin` (admin app)
+
+## Quality checks
+
+- `bun run typecheck`
+- `bun run lint`
+
+## Database/auth helpers
+
+- `bun run db:push`
+- `bun run db:studio`
+- `bun run auth:genKey`
+- `bun run auth:createAdmin`

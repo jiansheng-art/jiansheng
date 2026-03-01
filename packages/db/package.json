@@ -1,0 +1,16 @@
+{
+  "name": "@jiansheng/db",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./env": "./src/env.ts",
+    "./schema": "./src/schema.ts"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "drizzle-orm": "^0.45.1",
+    "pg": "^8.18.0",
+    "zod": "^4.3.6"
+  }
+}
