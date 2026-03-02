@@ -27,9 +27,6 @@
 import type { RouterOutput } from '~/types/trpc';
 import { breakpointsTailwind } from '@vueuse/core';
 
-definePageMeta({
-  layout: 'admin',
-});
 const { $trpc } = useNuxtApp();
 
 const {

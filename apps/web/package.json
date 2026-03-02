@@ -15,9 +15,9 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@jiansheng/db": "workspace:*",
     "@aws-sdk/client-s3": "^3.995.0",
     "@aws-sdk/s3-request-presigner": "^3.995.0",
+    "@jiansheng/db": "workspace:*",
     "@nuxt/fonts": "^0.14.0",
     "@nuxt/image": "2.0.0",
     "@nuxt/ui": "^4.4.0",

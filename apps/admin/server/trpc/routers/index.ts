@@ -1,5 +1,3 @@
-import { z } from 'zod';
-import { db } from '~~/server/db';
 import { artActivityRouter } from '~~/server/trpc/routers/artActivity';
 import { contactFormRouter } from '~~/server/trpc/routers/contactForm';
 import { orderRouter } from '~~/server/trpc/routers/order';

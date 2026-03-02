@@ -16,4 +16,9 @@ export default antfu({
       order: ['template', 'script', 'style'],
     }],
   },
+}, {
+  files: ['**/*.md'],
+  rules: {
+    'vue/block-order': 'off',
+  },
 });

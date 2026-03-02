@@ -24,6 +24,10 @@ import type { AuthFormField, FormSubmitEvent } from '@nuxt/ui';
 import * as z from 'zod';
 import { zhCN } from 'zod/locales';
 
+definePageMeta({
+  layout: 'login',
+});
+
 z.config(zhCN());
 const { $trpc } = useNuxtApp();
 const toast = useToast();
@@ -53,7 +57,7 @@ const { mutate: login, isPending } = useMutation({
   mutationFn: (data: Schema) => $trpc.user.login.mutate(data),
   onSuccess: (res) => {
     useUserStore().login(res);
-    useLoginRedirect().redirect();
+    navigateTo('/');
     toast.add({ title: 'Success', description: 'Logged in successfully' });
   },
   onError: err => useErrorHandler(err),

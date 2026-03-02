@@ -47,10 +47,6 @@
 import type { EditorToolbarItem, NavigationMenuItem } from '@nuxt/ui';
 import * as z from 'zod';
 
-definePageMeta({
-  layout: 'admin',
-});
-
 const { $trpc } = useNuxtApp();
 const toast = useToast();
 

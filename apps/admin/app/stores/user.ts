@@ -22,7 +22,7 @@ export const useUserStore = defineStore('user', () => {
     const { $trpc } = useNuxtApp();
     try {
       await $trpc.user.logout.mutate();
-      navigateTo('/');
+      navigateTo('/login');
 
       loggedIn.value = false;
       accessToken.value = undefined;

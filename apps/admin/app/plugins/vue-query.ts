@@ -15,14 +15,8 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   const queryClient = new QueryClient({
     queryCache: new QueryCache({
-      onError(error) {
-        if (!import.meta.client)
-          return;
-
-        if (!window.location.pathname.startsWith('/admin'))
-          return;
-
-        useErrorHandler(error);
+      onError: async (error) => {
+        await useErrorHandler(error);
       },
     }),
   });

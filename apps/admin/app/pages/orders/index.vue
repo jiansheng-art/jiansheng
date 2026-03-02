@@ -36,7 +36,7 @@
             color="neutral"
             icon="i-lucide-arrow-right"
             size="sm"
-            :to="`/admin/orders/${row.original.id}`"
+            :to="`/orders/${row.original.id}`"
             @click.stop
           />
         </template>
@@ -70,10 +70,6 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui';
 import { h, resolveComponent } from 'vue';
-
-definePageMeta({
-  layout: 'admin',
-});
 
 const { $trpc } = useNuxtApp();
 const router = useRouter();
@@ -169,7 +165,7 @@ const columns: TableColumn<Order>[] = [
 ];
 
 function onRowSelect(_event: Event, row: { original: Order }) {
-  router.push(`/admin/orders/${row.original.id}`);
+  router.push(`/orders/${row.original.id}`);
 }
 
 // --- Pagination ---

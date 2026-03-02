@@ -159,7 +159,10 @@ const state = reactive<Schema>({
 
 const dateValue = shallowRef<CalendarDate | undefined>(
   props.activity.date
-    ? (() => { const d = new Date(props.activity.date); return new CalendarDate(d.getFullYear(), d.getMonth() + 1, d.getDate()); })()
+    ? (() => {
+        const d = new Date(props.activity.date);
+        return new CalendarDate(d.getFullYear(), d.getMonth() + 1, d.getDate());
+      })()
     : undefined,
 );
 

@@ -105,10 +105,6 @@ import type { EditorToolbarItem } from '@nuxt/ui';
 import axios from 'axios';
 import * as z from 'zod';
 
-definePageMeta({
-  layout: 'admin',
-});
-
 const schema = z.object({
   name: z.string().min(1, '请输入名称'),
   description: z.string().optional(),

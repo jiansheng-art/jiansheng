@@ -17,8 +17,7 @@ export async function useErrorHandler(err: any): Promise<void> {
     else {
       if (err.data?.code === 'UNAUTHORIZED') {
         onNuxtReady(() => {
-          useLoginRedirect().setRedirect(useRoute().path);
-          navigateTo('/admin/login');
+          navigateTo('/login');
         });
       }
       toast.add({ title: 'Error', description: err.message, color: 'error' });

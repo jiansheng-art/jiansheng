@@ -183,10 +183,6 @@
 import type { TableColumn } from '@nuxt/ui';
 import { h } from 'vue';
 
-definePageMeta({
-  layout: 'admin',
-});
-
 const route = useRoute();
 const { $trpc } = useNuxtApp();
 const toast = useToast();

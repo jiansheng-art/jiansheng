@@ -9,7 +9,6 @@ import { publicProcedure, router } from '~~/server/trpc/trpc';
 import { S3Controller } from '~~/server/utils/s3';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
-const CAD_CURRENCY = 'cad';
 
 interface ProductListItem {
   id: number;
