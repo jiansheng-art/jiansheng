@@ -117,7 +117,6 @@
 <script setup lang="ts">
 import type { CalendarDate } from '@internationalized/date';
 import type { EditorToolbarItem } from '@nuxt/ui';
-import axios from 'axios';
 import * as z from 'zod';
 
 const schema = z.object({
@@ -165,13 +164,10 @@ const submitLoading = ref(false);
 const {
   data: activities,
   refetch,
-  suspense,
 } = useQuery({
   queryKey: ['artActivity.list'],
   queryFn: () => $trpc.artActivity.list.query(),
 });
-
-await suspense();
 
 async function onSubmit() {
   submitLoading.value = true;
@@ -184,7 +180,9 @@ async function onSubmit() {
         toast.add({ title: `${file.name} 上传失败`, description: '获取上传地址失败', color: 'error' });
         continue;
       }
-      await axios.put(url, file.slice(), {
+      await $fetch(url, {
+        method: 'PUT',
+        body: file.slice(),
         headers: { 'Content-Type': file.type },
       });
       imageIds.push(id);

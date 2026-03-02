@@ -1,9 +1,9 @@
 <template>
-  <Analytics />
-  <SpeedInsights />
   <UApp>
     <NuxtLoadingIndicator :color="false" class="z-100 bg-primary" />
     <NuxtLayout>
+      <Analytics />
+      <SpeedInsights />
       <NuxtPage />
     </NuxtLayout>
   </UApp>

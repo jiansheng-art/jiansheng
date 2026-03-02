@@ -11,7 +11,6 @@ export default defineNuxtConfig({
     'pinia-plugin-persistedstate/nuxt',
     '@vueuse/nuxt',
     '@nuxt/image',
-    '@nuxtjs/seo',
   ],
 
   imports: {
@@ -21,10 +20,6 @@ export default defineNuxtConfig({
         imports: ['useMutation', 'useQuery', 'useQueryClient'],
       },
     ],
-  },
-
-  ogImage: {
-    enabled: false,
   },
 
   css: ['~/assets/css/main.css'],
@@ -38,16 +33,6 @@ export default defineNuxtConfig({
 
   build: {
     transpile: ['trpc-nuxt'],
-  },
-
-  robots: {
-    disallow: ['/'],
-  },
-
-  site: {
-    name: 'Jiansheng Art Admin',
-    url: 'https://admin.jiansheng.art',
-    indexable: false,
   },
 
   compatibilityDate: '2025-12-14',

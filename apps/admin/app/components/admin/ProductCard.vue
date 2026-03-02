@@ -162,7 +162,6 @@
 <script setup lang="ts">
 import type { EditorToolbarItem } from '@nuxt/ui';
 import type { RouterOutput } from '~/types/trpc';
-import axios from 'axios';
 import z from 'zod';
 
 const { product } = defineProps<{
@@ -280,7 +279,9 @@ async function onSubmit() {
         continue;
       }
 
-      await axios.put(url, file.slice(), {
+      await $fetch(url, {
+        method: 'PUT',
+        body: file.slice(),
         headers: { 'Content-Type': file.type },
       });
 

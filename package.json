@@ -18,5 +18,8 @@
     "db:studio": "bun run --filter '@jiansheng/admin' db:studio",
     "auth:genKey": "bun run --filter '@jiansheng/admin' auth:genKey",
     "auth:createAdmin": "bun run --filter '@jiansheng/admin' auth:createAdmin"
+  },
+  "dependencies": {
+    "taze": "^19.9.2"
   }
 }

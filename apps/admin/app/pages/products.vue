@@ -102,7 +102,6 @@
 
 <script setup lang="ts">
 import type { EditorToolbarItem } from '@nuxt/ui';
-import axios from 'axios';
 import * as z from 'zod';
 
 const schema = z.object({
@@ -148,21 +147,15 @@ const modalOpen = ref(false);
 const {
   data: products,
   refetch,
-  suspense: productsSuspense,
 } = useQuery({
   queryKey: ['product.list'],
   queryFn: () => $trpc.product.list.query(),
 });
 
-const { data: works, suspense: worksSuspense } = useQuery({
+const { data: works } = useQuery({
   queryKey: ['work.list'],
   queryFn: () => $trpc.work.list.query(),
 });
-
-await Promise.all([
-  productsSuspense(),
-  worksSuspense(),
-]);
 
 const workOptions = computed(() => {
   const base = [{ label: '不关联作品', value: null as number | null }];
@@ -190,7 +183,9 @@ async function onSubmit() {
         continue;
       }
 
-      await axios.put(url, file.slice(), {
+      await $fetch(url, {
+        method: 'PUT',
+        body: file.slice(),
         headers: { 'Content-Type': file.type },
       });
 

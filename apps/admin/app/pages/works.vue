@@ -162,7 +162,6 @@
 
 <script setup lang="ts">
 import type { EditorToolbarItem } from '@nuxt/ui';
-import axios from 'axios';
 import * as z from 'zod';
 
 const schema = z.object({
@@ -223,7 +222,6 @@ const seriesModalOpen = ref(false);
 const {
   data: works,
   refetch,
-  suspense: worksSuspense,
 } = useQuery({
   queryKey: ['work.list'],
   queryFn: () => $trpc.work.list.query(),
@@ -232,16 +230,10 @@ const {
 const {
   data: seriesList,
   refetch: refreshSeries,
-  suspense: seriesListSuspense,
 } = useQuery({
   queryKey: ['work.listSeries'],
   queryFn: () => $trpc.work.listSeries.query(),
 });
-
-await Promise.all([
-  worksSuspense(),
-  seriesListSuspense(),
-]);
 
 const seriesOptions = computed(() => {
   const base = [{ label: '不分配系列', value: null as number | null }];
@@ -297,7 +289,9 @@ async function onSubmit() {
         continue;
       }
 
-      await axios.put(url, file.slice(), {
+      await $fetch(url, {
+        method: 'PUT',
+        body: file.slice(),
         headers: { 'Content-Type': file.type },
       });
 

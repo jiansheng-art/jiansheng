@@ -101,7 +101,6 @@ const cursorStack = ref<string[]>([]);
 const {
   data,
   status,
-  suspense,
 } = useQuery({
   queryKey: computed(() => ['order.list', cursor.value ?? '']),
   queryFn: () => $trpc.order.list.query({
@@ -109,8 +108,6 @@ const {
     startingAfter: cursor.value,
   }),
 });
-
-await suspense();
 
 const isLoading = computed(() => status.value === 'pending');
 const orders = computed(() => data.value?.orders as Order[] | undefined);

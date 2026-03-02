@@ -7,7 +7,7 @@
             variant="ghost"
             color="neutral"
             icon="i-lucide-arrow-left"
-            to="/admin/orders"
+            to="/orders"
             class="mr-2"
           />
           <span class="text-lg font-semibold">订单详情</span>
@@ -189,12 +189,10 @@ const toast = useToast();
 
 const sessionId = computed(() => route.params.id as string);
 
-const { data: order, status, refetch, suspense } = useQuery({
+const { data: order, status, refetch } = useQuery({
   queryKey: computed(() => ['order.get', sessionId.value]),
   queryFn: () => $trpc.order.get.query({ id: sessionId.value }),
 });
-
-await suspense();
 
 const isLoading = computed(() => status.value === 'pending');
 

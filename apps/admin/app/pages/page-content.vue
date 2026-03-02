@@ -120,12 +120,10 @@ const editorToolbarItems: EditorToolbarItem[][] = [
   ],
 ];
 
-const { data: pages, refetch, suspense } = useQuery({
+const { data: pages, refetch } = useQuery({
   queryKey: ['pageContent.list'],
   queryFn: () => $trpc.pageContent.list.query(),
 });
-
-await suspense();
 
 watch(
   pages,
