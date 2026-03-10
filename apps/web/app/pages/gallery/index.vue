@@ -8,7 +8,7 @@
       <UCard>
         <div class="grid gap-6 md:grid-cols-6">
           <div class="col-span-2">
-            <h2 class="mt-2 text-4xl font-bold font-sc-serif">
+            <h2 class="mt-2 text-4xl font-bold font-tc-serif">
               {{ series.title }}
             </h2>
             <p v-if="series.titleEnglish" class="mt-1 text-xl text-muted font-latin-serif font-semibold">

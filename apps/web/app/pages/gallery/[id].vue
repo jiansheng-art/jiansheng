@@ -65,7 +65,7 @@
         <div class="md:sticky top-[calc(var(--ui-header-height)+1px)] flex flex-col gap-4 md:gap-8">
           <UCard>
             <div class="flex flex-col gap-3">
-              <h1 class="text-4xl font-extrabold font-sc-serif">
+              <h1 class="text-4xl font-extrabold font-tc-serif">
                 {{ work.title }}
               </h1>
 

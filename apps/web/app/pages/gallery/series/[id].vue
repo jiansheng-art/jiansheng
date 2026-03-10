@@ -28,7 +28,7 @@
 
   <div v-else :class="{ 'opacity-0': status === 'pending', 'animate-fade-in': status !== 'pending' }" class="flex flex-col gap-12">
     <div>
-      <h2 class="mt-3 mb-3 text-4xl md:text-6xl font-extrabold font-sc-serif">
+      <h2 class="mt-3 mb-3 text-4xl md:text-6xl font-extrabold font-tc-serif">
         {{ series.title }}
       </h2>
       <p v-if="series.titleEnglish" class="text-muted text-xl font-latin-serif font-semibold">

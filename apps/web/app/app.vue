@@ -14,7 +14,7 @@ import { Analytics } from '@vercel/analytics/nuxt';
 import { SpeedInsights } from '@vercel/speed-insights/nuxt';
 
 useSeoMeta({
-  titleTemplate: (title?: string) => !title ? 'ZhangJiansheng Art' : `${title} | ZhangJiansheng Art`,
+  titleTemplate: (title?: string) => !title ? 'Jiansheng Art' : `${title} | Jiansheng Art`,
   ogImage: '/hero.jpg',
 });
 </script>

@@ -23,11 +23,11 @@
     </div>
 
     <UPageHero
-      title="张间生"
+      title="張間生"
       description="Jiansheng Zhang"
       :ui="{
-        header: 'font-sc-serif font-extrabold',
-        description: 'font-latin-serif',
+        title: 'font-tc-serif font-extrabold sm:text-5xl',
+        description: 'font-latin-serif font-extrabold sm:text-lg mt-4',
       }"
     />
   </div>
