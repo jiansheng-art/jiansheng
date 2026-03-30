@@ -73,7 +73,7 @@ defineShortcuts({
     const index = props.mails.findIndex((mail: Mail) => mail.id === selectedMail.value?.id);
 
     if (index === -1) {
-      selectedMail.value = props.mails[props.mails.length - 1];
+      selectedMail.value = props.mails.at(-1);
     }
     else if (index > 0) {
       selectedMail.value = props.mails[index - 1];

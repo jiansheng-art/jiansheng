@@ -16,7 +16,7 @@ export async function produceAccessToken(id: number) {
     .setSubject(id.toString())
     .setIssuedAt()
     .setExpirationTime(env.TOKEN_EXPIRATION_TIME)
-    .setIssuer('invizible')
+    .setIssuer('jianshengadmin')
     .setJti(nanoid(32))
     .setProtectedHeader({
       alg: 'RS512',
@@ -91,6 +91,9 @@ export async function getUserFromHeader(token: string | undefined) {
   return result.user;
 }
 
+const durationREGEX
+  = /^(\+|-)? ?(\d+|\d+\.\d+) ?(seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)(?: (ago|from now))?$/i;
+
 // Converts env.TOKEN_EXPIRATION_TIME to milliseconds
 // Modified from https://github.com/panva/jose/blob/main/src/lib/secs.ts
 export function parseDuration(duration: string): number {
@@ -100,10 +103,7 @@ export function parseDuration(duration: string): number {
   const week = day * 7;
   const year = day * 365.25;
 
-  const REGEX
-    = /^(\+|-)? ?(\d+|\d+\.\d+) ?(seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)(?: (ago|from now))?$/i;
-
-  const matched = REGEX.exec(duration);
+  const matched = durationREGEX.exec(duration);
 
   if (!matched || (matched[4] && matched[1]) || !matched[2] || !matched[3]) {
     return week * 1000; // Defaults to one week

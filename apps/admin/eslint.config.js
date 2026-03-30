@@ -15,6 +15,7 @@ export default antfu({
     'vue/block-order': ['error', {
       order: ['template', 'script', 'style'],
     }],
+    'e18e/prefer-static-regex': 'off',
   },
 }, {
   files: ['**/*.md'],
