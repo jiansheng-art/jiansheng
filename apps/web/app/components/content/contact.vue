@@ -62,6 +62,9 @@ const {
   isPending,
 } = useMutation({
   mutationFn: (data: Schema) => $trpc.contactForm.create.mutate(data),
+  onError(error) {
+    useErrorHandler(error);
+  },
 });
 
 const toast = useToast();
@@ -79,9 +82,6 @@ watch(status, (newStatus) => {
     state.email = undefined;
     state.subject = undefined;
     state.message = undefined;
-  }
-  else if (newStatus === 'error') {
-    toast.add({ title: 'Error', description: 'There was an error submitting the form.', color: 'error' });
   }
 });
 </script>

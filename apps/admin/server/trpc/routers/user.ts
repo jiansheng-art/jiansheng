@@ -17,7 +17,10 @@ export const userRouter = router({
         where: (users, { eq }) => eq(users.name, input.name),
       });
 
-      if (!user || !user.password || !await bcrypt.compare(input.password, user.password))
+      if (!await bcrypt.compare(input.password, user?.password ?? ''))
+        throw new TRPCError({ code: 'BAD_REQUEST', message: 'Invalid email or password.' });
+
+      if (!user)
         throw new TRPCError({ code: 'BAD_REQUEST', message: 'Invalid email or password.' });
 
       return await loginUser(user, undefined, ctx.userAgent);

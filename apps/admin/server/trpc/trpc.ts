@@ -32,9 +32,6 @@ export const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   });
 });
 
-/**
- * Unprotected procedure
- */
 export const router = t.router;
 export const middleware = t.middleware;
 

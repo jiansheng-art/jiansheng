@@ -2,6 +2,7 @@ import type { Context } from './context';
 import { initTRPC, TRPCError } from '@trpc/server';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
+import { MemoryStore } from '../utils/store';
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
@@ -32,6 +33,21 @@ export const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   });
 });
 
+const store = new MemoryStore({ windowMs: 30 * 1000 }); // 30 seconds
+
+const rateLimiter = t.middleware(async ({ ctx, next }) => {
+  const { totalHits, resetTime } = await store.increment(ctx.fingerprint);
+
+  if (totalHits > 1) {
+    throw new TRPCError({
+      code: 'TOO_MANY_REQUESTS',
+      message: `You have exceeded the maximum number of requests. Please try again after ${Math.ceil((resetTime.getTime() - Date.now()) / 1000)} seconds.`,
+    });
+  }
+
+  return next();
+});
+
 /**
  * Unprotected procedure
  */
@@ -40,3 +56,5 @@ export const middleware = t.middleware;
 
 export const publicProcedure = t.procedure;
 export const protectedProcedure = publicProcedure.use(enforceUserIsAuthed);
+
+export const rateLimitedPublicProcedure = publicProcedure.use(rateLimiter);
