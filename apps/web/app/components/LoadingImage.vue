@@ -12,7 +12,13 @@
 </template>
 
 <script setup lang="ts">
-const { src, alt = '', wrapperClass = 'relative aspect-square w-full', imageClass = 'object-cover w-full h-full aspect-square transition-opacity duration-500 ease-in-out', skeletonClass = 'absolute inset-0 w-full h-full' } = defineProps<{
+const {
+  src,
+  alt = '',
+  wrapperClass = 'relative aspect-square w-full',
+  imageClass = 'object-cover w-full h-full aspect-square transition-opacity duration-500 ease-in-out',
+  skeletonClass = 'absolute inset-0 w-full h-full',
+} = defineProps<{
   src: string;
   alt?: string;
   wrapperClass?: string;
