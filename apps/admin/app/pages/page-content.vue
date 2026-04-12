@@ -45,6 +45,7 @@
 
 <script setup lang="ts">
 import type { EditorToolbarItem, NavigationMenuItem } from '@nuxt/ui';
+import { getQueryKey } from 'trpc-nuxt/client';
 import * as z from 'zod';
 
 const { $trpc } = useNuxtApp();
@@ -120,10 +121,8 @@ const editorToolbarItems: EditorToolbarItem[][] = [
   ],
 ];
 
-const { data: pages, refetch } = useQuery({
-  queryKey: ['pageContent.list'],
-  queryFn: () => $trpc.pageContent.list.query(),
-});
+const pageContentListKey = getQueryKey($trpc.pageContent.list, undefined);
+const { data: pages } = await $trpc.pageContent.list.useQuery();
 
 watch(
   pages,
@@ -157,7 +156,7 @@ async function onSubmit(slug: PageSlug) {
     });
 
     toast.add({ title: '保存成功', description: '网页内容已更新', color: 'success' });
-    await refetch();
+    await refreshNuxtData(pageContentListKey);
   }
   catch (error) {
     useErrorHandler(error);

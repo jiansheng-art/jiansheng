@@ -102,6 +102,7 @@
 
 <script setup lang="ts">
 import type { EditorToolbarItem } from '@nuxt/ui';
+import { getQueryKey } from 'trpc-nuxt/client';
 import * as z from 'zod';
 
 const schema = z.object({
@@ -144,18 +145,13 @@ const editorToolbarItems: EditorToolbarItem[][] = [
 
 const modalOpen = ref(false);
 
+const productListKey = getQueryKey($trpc.product.list, undefined);
+
 const {
   data: products,
-  refetch,
-} = useQuery({
-  queryKey: ['product.list'],
-  queryFn: () => $trpc.product.list.query(),
-});
+} = await $trpc.product.list.useQuery();
 
-const { data: works } = useQuery({
-  queryKey: ['work.list'],
-  queryFn: () => $trpc.work.list.query(),
-});
+const { data: works } = await $trpc.work.list.useQuery();
 
 const workOptions = computed(() => {
   const base = [{ label: '不关联作品', value: null as number | null }];
@@ -217,7 +213,7 @@ async function onSubmit() {
     state.active = true;
     productImageIds.value = [];
     images.value = [];
-    await refetch();
+    await refreshNuxtData(productListKey);
   }
   catch (err) {
     useErrorHandler(err);

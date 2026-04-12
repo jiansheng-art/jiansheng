@@ -64,6 +64,7 @@
 
 <script setup lang="ts">
 import type { RouterOutput } from '~/types/trpc';
+import { getQueryKey } from 'trpc-nuxt/client';
 
 type Mail = RouterOutput['contactForm']['list'][number];
 
@@ -78,6 +79,7 @@ watch(() => mail, (newMail) => {
 
 const { $trpc } = useNuxtApp();
 const toast = useToast();
+const contactFormListKey = getQueryKey($trpc.contactForm.list, undefined);
 
 const readButtonLoading = ref(false);
 async function toggleRead() {
@@ -85,8 +87,7 @@ async function toggleRead() {
     readButtonLoading.value = true;
     await $trpc.contactForm.toggleRead.mutate({ id: mail.id });
     dirtyMail.value.unread = !dirtyMail.value.unread;
-    const queryCache = useQueryClient();
-    await queryCache.invalidateQueries({ queryKey: ['contactForm.list'] });
+    await refreshNuxtData(contactFormListKey);
     readButtonLoading.value = false;
   }
   catch {
@@ -104,8 +105,7 @@ async function toggleStarred() {
     starButtonLoading.value = true;
     await $trpc.contactForm.toggleStarred.mutate({ id: mail.id });
     dirtyMail.value.starred = !dirtyMail.value.starred;
-    const queryCache = useQueryClient();
-    await queryCache.invalidateQueries({ queryKey: ['contactForm.list'] });
+    await refreshNuxtData(contactFormListKey);
     starButtonLoading.value = false;
   }
   catch {

@@ -13,15 +13,6 @@ export default defineNuxtConfig({
     '@nuxt/image',
   ],
 
-  imports: {
-    presets: [
-      {
-        from: '@tanstack/vue-query',
-        imports: ['useMutation', 'useQuery', 'useQueryClient'],
-      },
-    ],
-  },
-
   css: ['~/assets/css/main.css'],
 
   icon: {

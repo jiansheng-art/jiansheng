@@ -53,13 +53,21 @@ const schema = z.object({
 
 type Schema = z.output<typeof schema>;
 
-const { mutate: login, isPending } = useMutation({
-  mutationFn: (data: Schema) => $trpc.user.login.mutate(data),
-  onSuccess: (res) => {
+const isPending = ref(false);
+
+async function login(data: Schema) {
+  isPending.value = true;
+  try {
+    const res = await $trpc.user.login.mutate(data);
     useUserStore().login(res);
     navigateTo('/');
     toast.add({ title: 'Success', description: 'Logged in successfully' });
-  },
-  onError: err => useErrorHandler(err),
-});
+  }
+  catch (err) {
+    useErrorHandler(err);
+  }
+  finally {
+    isPending.value = false;
+  }
+}
 </script>

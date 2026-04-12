@@ -117,6 +117,7 @@
 <script setup lang="ts">
 import type { CalendarDate } from '@internationalized/date';
 import type { EditorToolbarItem } from '@nuxt/ui';
+import { getQueryKey } from 'trpc-nuxt/client';
 import * as z from 'zod';
 
 const schema = z.object({
@@ -161,13 +162,11 @@ const modalOpen = ref(false);
 const images = ref<File[]>([]);
 const submitLoading = ref(false);
 
+const artActivityListKey = getQueryKey($trpc.artActivity.list, undefined);
+
 const {
   data: activities,
-  refetch,
-} = useQuery({
-  queryKey: ['artActivity.list'],
-  queryFn: () => $trpc.artActivity.list.query(),
-});
+} = await $trpc.artActivity.list.useQuery();
 
 async function onSubmit() {
   submitLoading.value = true;
@@ -210,7 +209,7 @@ async function onSubmit() {
     state.markdown = '';
     dateValue.value = undefined;
     images.value = [];
-    await refetch();
+    await refreshNuxtData(artActivityListKey);
   }
   catch (err) {
     useErrorHandler(err);

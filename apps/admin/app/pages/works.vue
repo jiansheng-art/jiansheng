@@ -162,6 +162,7 @@
 
 <script setup lang="ts">
 import type { EditorToolbarItem } from '@nuxt/ui';
+import { getQueryKey } from 'trpc-nuxt/client';
 import * as z from 'zod';
 
 const schema = z.object({
@@ -219,21 +220,16 @@ const editorToolbarItems: EditorToolbarItem[][] = [
 const modalOpen = ref(false);
 const seriesModalOpen = ref(false);
 
+const workListKey = getQueryKey($trpc.work.list, undefined);
+const seriesListKey = getQueryKey($trpc.work.listSeries, undefined);
+
 const {
   data: works,
-  refetch,
-} = useQuery({
-  queryKey: ['work.list'],
-  queryFn: () => $trpc.work.list.query(),
-});
+} = await $trpc.work.list.useQuery();
 
 const {
   data: seriesList,
-  refetch: refreshSeries,
-} = useQuery({
-  queryKey: ['work.listSeries'],
-  queryFn: () => $trpc.work.listSeries.query(),
-});
+} = await $trpc.work.listSeries.useQuery();
 
 const seriesOptions = computed(() => {
   const base = [{ label: '不分配系列', value: null as number | null }];
@@ -252,8 +248,8 @@ const submitLoading = ref(false);
 const seriesSubmitLoading = ref(false);
 
 async function onSeriesChanged() {
-  await refreshSeries();
-  await refetch();
+  await refreshNuxtData(seriesListKey);
+  await refreshNuxtData(workListKey);
 }
 
 async function onSubmitSeries() {
@@ -265,7 +261,7 @@ async function onSubmitSeries() {
       description: seriesState.description || undefined,
     });
 
-    await refreshSeries();
+    await refreshNuxtData(seriesListKey);
     toast.add({ title: '新建成功', description: '成功新建系列', color: 'success' });
     seriesModalOpen.value = false;
     seriesState.title = '';
@@ -324,6 +320,6 @@ async function onSubmit() {
   state.seriesId = undefined;
   workImages.value = [];
   images.value = [];
-  await refetch();
+  await refreshNuxtData(workListKey);
 }
 </script>

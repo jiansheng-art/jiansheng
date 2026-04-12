@@ -31,10 +31,7 @@ const { $trpc } = useNuxtApp();
 
 const {
   data: contactForms,
-} = useQuery({
-  queryKey: ['contactForm.list'],
-  queryFn: () => $trpc.contactForm.list.query(),
-});
+} = await $trpc.contactForm.list.useQuery();
 
 const selectedMail = ref<null | RouterOutput['contactForm']['list'][number]>(null);
 const breakpoints = useBreakpoints(breakpointsTailwind);

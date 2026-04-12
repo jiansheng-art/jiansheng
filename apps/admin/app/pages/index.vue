@@ -81,25 +81,13 @@ const { $trpc } = useNuxtApp();
 
 const UBadge = resolveComponent('UBadge');
 
-const { data: works } = useQuery({
-  queryKey: ['work.list'],
-  queryFn: () => $trpc.work.list.query(),
-});
+const { data: works } = await $trpc.work.list.useQuery();
 
-const { data: seriesList } = useQuery({
-  queryKey: ['work.listSeries'],
-  queryFn: () => $trpc.work.listSeries.query(),
-});
+const { data: seriesList } = await $trpc.work.listSeries.useQuery();
 
-const { data: products } = useQuery({
-  queryKey: ['product.list'],
-  queryFn: () => $trpc.product.list.query(),
-});
+const { data: products } = await $trpc.product.list.useQuery();
 
-const { data: contactForms } = useQuery({
-  queryKey: ['contactForm.list'],
-  queryFn: () => $trpc.contactForm.list.query(),
-});
+const { data: contactForms } = await $trpc.contactForm.list.useQuery();
 
 const unreadCount = computed(() => contactForms.value?.filter(f => f.unread).length ?? 0);
 

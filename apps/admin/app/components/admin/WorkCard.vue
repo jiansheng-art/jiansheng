@@ -156,6 +156,7 @@
 <script setup lang="ts">
 import type { EditorToolbarItem } from '@nuxt/ui';
 import type { RouterOutput } from '~/types/trpc';
+import { getQueryKey } from 'trpc-nuxt/client';
 import z from 'zod';
 
 const { work } = defineProps<{
@@ -175,13 +176,12 @@ const schema = z.object({
   dimensions: z.string().optional(),
 });
 const { $trpc } = useNuxtApp();
-const queryCache = useQueryClient();
 const toast = useToast();
 
-const { data: seriesList } = useQuery({
-  queryKey: ['work.listSeries'],
-  queryFn: () => $trpc.work.listSeries.query(),
-});
+const workListKey = getQueryKey($trpc.work.list, undefined);
+const seriesListKey = getQueryKey($trpc.work.listSeries, undefined);
+
+const { data: seriesList } = await $trpc.work.listSeries.useQuery();
 
 const seriesOptions = computed(() => {
   const base = [{ label: '不分配系列', value: null as number | null }];
@@ -233,7 +233,7 @@ async function deleteWork(close: () => void) {
     close();
     modalOpen.value = false;
     toast.add({ title: '删除成功', description: '作品已删除', color: 'success' });
-    await queryCache.invalidateQueries({ queryKey: ['work.list'] });
+    await refreshNuxtData(workListKey);
     isDeleteWorkLoading.value = false;
   }
   catch (error) {
@@ -305,7 +305,8 @@ async function onSubmit() {
     workDirty.value.dimensions = state.dimensions ?? null;
     modalOpen.value = false;
     toast.add({ title: '修改成功', description: '成功修改作品', color: 'success' });
-    await queryCache.invalidateQueries({ queryKey: ['work.list'] });
+    await refreshNuxtData(workListKey);
+    await refreshNuxtData(seriesListKey);
     submitLoading.value = false;
   }
   catch (error) {

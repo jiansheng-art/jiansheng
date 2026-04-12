@@ -181,6 +181,7 @@
 
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui';
+import { getQueryKey } from 'trpc-nuxt/client';
 import { h } from 'vue';
 
 const route = useRoute();
@@ -188,11 +189,10 @@ const { $trpc } = useNuxtApp();
 const toast = useToast();
 
 const sessionId = computed(() => route.params.id as string);
+const orderGetInput = computed(() => ({ id: sessionId.value }));
+const orderGetKey = computed(() => getQueryKey($trpc.order.get, orderGetInput.value));
 
-const { data: order, status, refetch } = useQuery({
-  queryKey: computed(() => ['order.get', sessionId.value]),
-  queryFn: () => $trpc.order.get.query({ id: sessionId.value }),
-});
+const { data: order, status } = await $trpc.order.get.useQuery(orderGetInput);
 
 const isLoading = computed(() => status.value === 'pending');
 
@@ -308,7 +308,7 @@ async function onShippingSubmit() {
       notes: shippingForm.notes || null,
     });
     toast.add({ title: '物流状态已更新', color: 'success' });
-    refetch();
+    await refreshNuxtData(orderGetKey.value);
   }
   catch (err) {
     useErrorHandler(err);

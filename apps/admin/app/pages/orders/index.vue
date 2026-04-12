@@ -97,17 +97,15 @@ interface Order {
 const PAGE_SIZE = 25;
 const cursor = ref<string | undefined>(undefined);
 const cursorStack = ref<string[]>([]);
+const orderListInput = computed(() => ({
+  limit: PAGE_SIZE,
+  startingAfter: cursor.value,
+}));
 
 const {
   data,
   status,
-} = useQuery({
-  queryKey: computed(() => ['order.list', cursor.value ?? '']),
-  queryFn: () => $trpc.order.list.query({
-    limit: PAGE_SIZE,
-    startingAfter: cursor.value,
-  }),
-});
+} = await $trpc.order.list.useQuery(orderListInput);
 
 const isLoading = computed(() => status.value === 'pending');
 const orders = computed(() => data.value?.orders as Order[] | undefined);

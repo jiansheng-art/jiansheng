@@ -162,6 +162,7 @@
 <script setup lang="ts">
 import type { EditorToolbarItem } from '@nuxt/ui';
 import type { RouterOutput } from '~/types/trpc';
+import { getQueryKey } from 'trpc-nuxt/client';
 import z from 'zod';
 
 const { product } = defineProps<{
@@ -182,13 +183,11 @@ const schema = z.object({
 type Schema = z.infer<typeof schema>;
 
 const { $trpc } = useNuxtApp();
-const queryCache = useQueryClient();
 const toast = useToast();
 
-const { data: works } = useQuery({
-  queryKey: ['work.list'],
-  queryFn: () => $trpc.work.list.query(),
-});
+const productListKey = getQueryKey($trpc.product.list, undefined);
+
+const { data: works } = await $trpc.work.list.useQuery();
 
 const workOptions = computed(() => {
   const base = [{ label: '不关联作品', value: null as number | null }];
@@ -239,7 +238,7 @@ async function deleteProduct(close: () => void) {
     close();
     modalOpen.value = false;
     toast.add({ title: '删除成功', description: '商品已删除', color: 'success' });
-    await queryCache.invalidateQueries({ queryKey: ['product.list'] });
+    await refreshNuxtData(productListKey);
   }
   catch (error) {
     useErrorHandler(error);
@@ -313,7 +312,7 @@ async function onSubmit() {
     productDirty.value.active = state.active ?? true;
     modalOpen.value = false;
     toast.add({ title: '修改成功', description: '成功修改商品', color: 'success' });
-    await queryCache.invalidateQueries({ queryKey: ['product.list'] });
+    await refreshNuxtData(productListKey);
   }
   catch (err) {
     useErrorHandler(err);
