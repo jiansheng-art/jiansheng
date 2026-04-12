@@ -2,6 +2,7 @@ import { desc } from 'drizzle-orm';
 import { db } from '~~/server/db';
 import { artActivities } from '~~/server/db/schema';
 import { publicProcedure, router } from '~~/server/trpc/trpc';
+import { s3 } from '~~/server/utils/s3';
 
 interface ActivityListItem {
   id: number;
@@ -21,7 +22,6 @@ interface ActivityListItem {
 }
 
 async function attachImageUrls(items: ActivityListItem[]) {
-  const s3 = new S3Controller();
   for (const item of items) {
     for (const image of item.images) {
       image.url = await s3.getFileUrl(image.s3FileId);

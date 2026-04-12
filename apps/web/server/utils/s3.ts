@@ -2,7 +2,7 @@ import { PutObjectCommand, S3, UploadPartCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { env } from '../env';
 
-export class S3Controller {
+class S3Controller {
   private s3: S3;
   constructor() {
     this.s3 = new S3({
@@ -147,3 +147,5 @@ export class S3Controller {
     }
   }
 }
+
+export const s3 = new S3Controller();

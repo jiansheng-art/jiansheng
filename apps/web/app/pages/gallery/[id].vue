@@ -103,7 +103,7 @@
       </div>
     </div>
 
-    <div v-if="relatedProducts.length" class="mt-10 md:mt-20">
+    <div v-if="relatedProducts && relatedProducts.length" class="mt-10 md:mt-20">
       <h2 class="text-xl font-bold mb-4">
         Related Products
       </h2>
@@ -143,8 +143,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-
 const route = useRoute();
 const { $trpc } = useNuxtApp();
 
@@ -164,17 +162,13 @@ const {
   queryFn: () => $trpc.work.get.query({ id: workId }),
 });
 
-const { data: products, suspense: productsSuspense } = useQuery({
-  queryKey: ['product.list'],
-  queryFn: () => $trpc.product.list.query(),
+const { data: relatedProducts, suspense: productsSuspense } = useQuery({
+  queryKey: ['product.getRelated', workId],
+  queryFn: () => $trpc.product.getRelated.query({ workId }),
 });
 
 await workSuspense();
 await productsSuspense();
-
-const relatedProducts = computed(() => {
-  return (products.value ?? []).filter(product => product.active && product.workId === workId);
-});
 
 function formatPrice(amount: number, currency: string) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.toUpperCase() }).format(amount / 100);

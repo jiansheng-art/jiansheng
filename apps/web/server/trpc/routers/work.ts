@@ -3,6 +3,7 @@ import z from 'zod';
 import { db } from '~~/server/db';
 import { works, workSeries } from '~~/server/db/schema';
 import { publicProcedure, router } from '~~/server/trpc/trpc';
+import { s3 } from '~~/server/utils/s3';
 
 interface WorkListItem {
   id: number;
@@ -37,7 +38,6 @@ interface SeriesListItem {
 }
 
 async function attachImageUrls(workItems: WorkListItem[]) {
-  const s3 = new S3Controller();
   for (const work of workItems) {
     for (const image of work.images) {
       image.url = await s3.getFileUrl(image.s3FileId);
@@ -54,10 +54,17 @@ export const workRouter = router({
         orderBy: [desc(workSeries.id)],
         with: {
           works: {
+            columns: {
+              id: true,
+            },
             orderBy: [desc(works.id)],
             with: {
-              images: true,
-              series: true,
+              images: {
+                columns: {
+                  s3FileId: true,
+                },
+                limit: 1,
+              },
             },
             limit: 4,
           },
@@ -81,9 +88,16 @@ export const workRouter = router({
         with: {
           works: {
             orderBy: [desc(works.id)],
+            columns: {
+              id: true,
+            },
             with: {
-              images: true,
-              series: true,
+              images: {
+                columns: {
+                  s3FileId: true,
+                },
+                limit: 1,
+              },
             },
           },
         },
@@ -139,7 +153,7 @@ export const workRouter = router({
       } = work;
 
       for (const image of result.images) {
-        image.url = await new S3Controller().getFileUrl(image.s3FileId);
+        image.url = await s3.getFileUrl(image.s3FileId);
       }
 
       return result;

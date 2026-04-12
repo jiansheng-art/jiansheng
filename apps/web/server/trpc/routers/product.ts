@@ -6,7 +6,7 @@ import { db } from '~~/server/db';
 import { products } from '~~/server/db/schema';
 import { env } from '~~/server/env';
 import { publicProcedure, router } from '~~/server/trpc/trpc';
-import { S3Controller } from '~~/server/utils/s3';
+import { s3 } from '~~/server/utils/s3';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
@@ -33,7 +33,6 @@ interface ProductListItem {
 }
 
 async function attachImageUrls(productItems: ProductListItem[]) {
-  const s3 = new S3Controller();
   for (const product of productItems) {
     for (const image of product.images) {
       image.url = s3.getPermanentFileUrl(image.s3FileId);
@@ -51,8 +50,19 @@ export const productRouter = router({
     .query(async ({ input }) => {
       const product = await db.query.products.findFirst({
         where: eq(products.id, input.id),
+        columns: {
+          id: true,
+          name: true,
+          description: true,
+          unitAmount: true,
+          currency: true,
+        },
         with: {
-          images: true,
+          images: {
+            columns: {
+              s3FileId: true,
+            },
+          },
         },
       }) as ProductListItem | undefined;
 
@@ -67,9 +77,48 @@ export const productRouter = router({
   list: publicProcedure
     .query(async () => {
       const productsRes = await db.query.products.findMany({
+        where: eq(products.active, true),
         orderBy: [desc(products.id)],
+        columns: {
+          id: true,
+          name: true,
+          currency: true,
+          unitAmount: true,
+        },
         with: {
-          images: true,
+          images: {
+            columns: {
+              s3FileId: true,
+            },
+            limit: 1,
+          },
+        },
+      }) as ProductListItem[];
+
+      return await attachImageUrls(productsRes);
+    }),
+
+  getRelated: publicProcedure
+    .input(z.object({
+      workId: z.number().int().positive(),
+    }))
+    .query(async ({ input }) => {
+      const productsRes = await db.query.products.findMany({
+        where: eq(products.workId, input.workId),
+        orderBy: [desc(products.id)],
+        columns: {
+          id: true,
+          name: true,
+          currency: true,
+          unitAmount: true,
+        },
+        with: {
+          images: {
+            columns: {
+              s3FileId: true,
+            },
+            limit: 1,
+          },
         },
       }) as ProductListItem[];
 

@@ -6,6 +6,7 @@
         <NuxtImg
           :src="work.src"
           class="relative object-cover w-full h-full"
+          loading="eager"
           preload
         />
       </UCard>

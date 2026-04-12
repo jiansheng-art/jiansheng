@@ -70,6 +70,9 @@ export const useCartStore = defineStore('cart', () => {
   };
 }, {
   persist: {
-    storage: piniaPluginPersistedstate.localStorage(),
+    storage: piniaPluginPersistedstate.cookies({
+      // One month
+      maxAge: 30 * 24 * 60 * 60,
+    }),
   },
 });
