@@ -4,6 +4,8 @@ export default defineNuxtConfig({
     enabled: true,
   },
 
+  ssr: false,
+
   modules: [
     '@nuxt/ui',
     '@nuxtjs/mdc',
