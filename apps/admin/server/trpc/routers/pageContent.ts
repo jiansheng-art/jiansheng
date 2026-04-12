@@ -1,7 +1,8 @@
-import { eq, inArray } from 'drizzle-orm';
+import { inArray } from 'drizzle-orm';
 import z from 'zod';
 import { db } from '~~/server/db';
 import { pageContents } from '~~/server/db/schema';
+import { env } from '~~/server/env';
 import { protectedProcedure, router } from '~~/server/trpc/trpc';
 
 const PAGE_SLUGS = ['about', 'contact'] as const;
@@ -64,28 +65,33 @@ export const pageContentRouter = router({
       markdown: z.string().min(1),
     }))
     .mutation(async ({ input }) => {
-      const record = {
-        slug: input.slug,
-        title: input.title,
-        description: input.description ?? null,
-        markdown: input.markdown,
-      };
+      await db.transaction(async (tx) => {
+        const record = {
+          slug: input.slug,
+          title: input.title,
+          description: input.description ?? null,
+          markdown: input.markdown,
+        };
 
-      await db
-        .insert(pageContents)
-        .values(record)
-        .onConflictDoUpdate({
-          target: pageContents.slug,
-          set: {
-            title: record.title,
-            description: record.description,
-            markdown: record.markdown,
-            updatedAt: new Date(),
-          },
-        });
+        await tx
+          .insert(pageContents)
+          .values(record)
+          .onConflictDoUpdate({
+            target: pageContents.slug,
+            set: {
+              title: record.title,
+              description: record.description,
+              markdown: record.markdown,
+              updatedAt: new Date(),
+            },
+          });
 
-      return await db.query.pageContents.findFirst({
-        where: eq(pageContents.slug, input.slug),
+        if (env.VERCEL_BUILD_HOOK_URL) {
+          // Trigger vercel build hook to update pre-rendered pages
+          await fetch(env.VERCEL_BUILD_HOOK_URL, {
+            method: 'POST',
+          });
+        }
       });
     }),
 });
