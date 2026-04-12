@@ -38,6 +38,18 @@ export default defineNuxtConfig({
     },
   },
 
+  routeRules: {
+    '/about': {
+      prerender: true,
+    },
+    'art-activities': {
+      prerender: true,
+    },
+    '/contact': {
+      prerender: true,
+    },
+  },
+
   build: {
     transpile: ['trpc-nuxt'],
   },
