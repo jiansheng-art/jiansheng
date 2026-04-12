@@ -1,13 +1,13 @@
+import { db } from '@jiansheng/shared/db';
+import { s3 } from '@jiansheng/shared/s3';
 import { TRPCError } from '@trpc/server';
 import { desc, eq } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
 import z from 'zod';
-import { db } from '~~/server/db';
 import { productImages, products } from '~~/server/db/schema';
 import { env } from '~~/server/env';
 import { protectedProcedure, router } from '~~/server/trpc/trpc';
-import { S3Controller } from '~~/server/utils/s3';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 const CAD_CURRENCY = 'cad';
@@ -35,10 +35,9 @@ interface ProductListItem {
 }
 
 async function attachImageUrls(productItems: ProductListItem[]) {
-  const s3 = new S3Controller();
   for (const product of productItems) {
     for (const image of product.images) {
-      image.url = s3.getPermanentFileUrl(image.s3FileId);
+      image.url = s3.getFileUrl(image.s3FileId);
     }
   }
 
@@ -50,8 +49,7 @@ async function syncStripeProductImages(productId: number, stripeProductId: strin
     where: eq(productImages.productId, productId),
   });
 
-  const s3 = new S3Controller();
-  const imageUrls = images.map(image => s3.getPermanentFileUrl(image.s3FileId));
+  const imageUrls = images.map(image => s3.getFileUrl(image.s3FileId));
 
   await stripe.products.update(stripeProductId, {
     images: imageUrls,
@@ -210,7 +208,6 @@ export const productRouter = router({
         where: eq(productImages.productId, input.id),
       });
 
-      const s3 = new S3Controller();
       await Promise.all(existingImages.map(image => s3.deleteFile(image.s3FileId)));
 
       if (existing.stripePriceId) {
@@ -238,7 +235,6 @@ export const productRouter = router({
       fileName: z.string().optional(),
     }))
     .mutation(async ({ input }) => {
-      const s3 = new S3Controller();
       const s3FileId = nanoid(20);
 
       const id = (await db.insert(productImages).values({
@@ -246,7 +242,7 @@ export const productRouter = router({
         fileName: input.fileName || null,
       }).returning())[0]?.id;
 
-      const url = await s3.getStandardUploadPresignedUrl(s3FileId);
+      const url = await s3.getUploadPresignedUrl(s3FileId);
       if (!url)
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Unable to get upload URL' });
 
@@ -277,7 +273,7 @@ export const productRouter = router({
         }
       }
 
-      await new S3Controller().deleteFile(image.s3FileId);
+      await s3.deleteFile(image.s3FileId);
       await db.delete(productImages).where(eq(productImages.id, input.id));
 
       if (image.productId && stripeProductId) {

@@ -1,9 +1,9 @@
+import { db } from '@jiansheng/shared/db';
+import { env } from '@jiansheng/shared/env';
+import { accessTokens, users } from '@jiansheng/shared/schema';
 import { eq } from 'drizzle-orm';
 import * as jose from 'jose';
 import { nanoid } from 'nanoid';
-import { db } from '../db';
-import { accessTokens, users } from '../db/schema';
-import { env } from '../env';
 
 const encode = TextEncoder.prototype.encode.bind(new TextEncoder());
 const decode = TextDecoder.prototype.decode.bind(new TextDecoder());

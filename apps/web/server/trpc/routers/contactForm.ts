@@ -1,6 +1,6 @@
+import { db } from '@jiansheng/shared/db';
+import { contactForms } from '@jiansheng/shared/schema';
 import z from 'zod';
-import { db } from '~~/server/db';
-import { contactForms } from '~~/server/db/schema';
 import { rateLimitedPublicProcedure, router } from '~~/server/trpc/trpc';
 
 export const contactFormRouter = router({

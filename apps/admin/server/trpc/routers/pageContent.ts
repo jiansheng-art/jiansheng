@@ -1,6 +1,6 @@
+import { db } from '@jiansheng/shared/db';
 import { inArray } from 'drizzle-orm';
 import z from 'zod';
-import { db } from '~~/server/db';
 import { pageContents } from '~~/server/db/schema';
 import { protectedProcedure, router } from '~~/server/trpc/trpc';
 import { triggerVercelBuild } from '~~/server/utils/vercelBuild';

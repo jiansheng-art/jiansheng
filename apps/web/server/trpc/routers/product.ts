@@ -1,12 +1,12 @@
+import { db } from '@jiansheng/shared/db';
+import { env } from '@jiansheng/shared/env';
+import { s3 } from '@jiansheng/shared/s3';
+import { products } from '@jiansheng/shared/schema';
 import { TRPCError } from '@trpc/server';
 import { desc, eq } from 'drizzle-orm';
 import Stripe from 'stripe';
 import z from 'zod';
-import { db } from '~~/server/db';
-import { products } from '~~/server/db/schema';
-import { env } from '~~/server/env';
 import { publicProcedure, router } from '~~/server/trpc/trpc';
-import { s3 } from '~~/server/utils/s3';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
@@ -35,7 +35,7 @@ interface ProductListItem {
 async function attachImageUrls(productItems: ProductListItem[]) {
   for (const product of productItems) {
     for (const image of product.images) {
-      image.url = s3.getPermanentFileUrl(image.s3FileId);
+      image.url = s3.getFileUrl(image.s3FileId);
     }
   }
 

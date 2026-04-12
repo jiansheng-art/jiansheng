@@ -1,4 +1,4 @@
-import { env } from '@jiansheng/db';
+import { env } from '@jiansheng/shared/env';
 
 export async function triggerVercelBuild() {
   if (env.VERCEL_BUILD_HOOK_URL) {

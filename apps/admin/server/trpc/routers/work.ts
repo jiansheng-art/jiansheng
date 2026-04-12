@@ -1,8 +1,9 @@
+import { db } from '@jiansheng/shared/db';
+import { s3 } from '@jiansheng/shared/s3';
 import { TRPCError } from '@trpc/server';
 import { desc, eq } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import z from 'zod';
-import { db } from '~~/server/db';
 import { workImages, works, workSeries } from '~~/server/db/schema';
 import { protectedProcedure, router } from '~~/server/trpc/trpc';
 
@@ -39,10 +40,9 @@ interface SeriesListItem {
 }
 
 async function attachImageUrls(workItems: WorkListItem[]) {
-  const s3 = new S3Controller();
   for (const work of workItems) {
     for (const image of work.images) {
-      image.url = await s3.getFileUrl(image.s3FileId);
+      image.url = s3.getFileUrl(image.s3FileId);
     }
   }
 
@@ -188,7 +188,6 @@ export const workRouter = router({
         throw new TRPCError({ code: 'NOT_FOUND', message: '作品未找到' });
       }
 
-      const s3 = new S3Controller();
       await Promise.all(work.images.map(image => s3.deleteFile(image.s3FileId)));
 
       await db.delete(works).where(eq(works.id, input.id));
@@ -212,7 +211,6 @@ export const workRouter = router({
       fileName: z.string().optional(),
     }))
     .mutation(async ({ input }) => {
-      const s3 = new S3Controller();
       const s3FileId = nanoid(20);
 
       const id = (await db.insert(workImages).values({
@@ -220,7 +218,7 @@ export const workRouter = router({
         fileName: input.fileName || null,
       }).returning())[0]?.id;
 
-      const url = await s3.getStandardUploadPresignedUrl(s3FileId);
+      const url = await s3.getUploadPresignedUrl(s3FileId);
       if (!url)
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '无法获取文件上传URL' });
       return { id, url };
@@ -238,7 +236,6 @@ export const workRouter = router({
         throw new TRPCError({ code: 'NOT_FOUND', message: '图片未找到' });
       }
 
-      const s3 = new S3Controller();
       await s3.deleteFile(image.s3FileId);
 
       await db.delete(workImages).where(eq(workImages.id, input.id));

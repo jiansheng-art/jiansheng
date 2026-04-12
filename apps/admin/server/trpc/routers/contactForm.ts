@@ -1,6 +1,6 @@
+import { db } from '@jiansheng/shared/db';
 import { eq } from 'drizzle-orm';
 import z from 'zod';
-import { db } from '~~/server/db';
 import { contactForms } from '~~/server/db/schema';
 import { protectedProcedure, router } from '~~/server/trpc/trpc';
 

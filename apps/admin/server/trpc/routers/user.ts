@@ -1,8 +1,8 @@
+import { db } from '@jiansheng/shared/db';
 import { TRPCError } from '@trpc/server';
 import bcrypt from 'bcrypt';
 import { eq } from 'drizzle-orm';
 import z from 'zod';
-import { db } from '~~/server/db';
 import { accessTokens } from '~~/server/db/schema';
 import { protectedProcedure, publicProcedure, router } from '~~/server/trpc/trpc';
 

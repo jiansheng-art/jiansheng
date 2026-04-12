@@ -1,9 +1,9 @@
+import { db } from '@jiansheng/shared/db';
+import { s3 } from '@jiansheng/shared/s3';
+import { works, workSeries } from '@jiansheng/shared/schema';
 import { desc, eq, sql } from 'drizzle-orm';
 import z from 'zod';
-import { db } from '~~/server/db';
-import { works, workSeries } from '~~/server/db/schema';
 import { publicProcedure, router } from '~~/server/trpc/trpc';
-import { s3 } from '~~/server/utils/s3';
 
 interface WorkListItem {
   id: number;

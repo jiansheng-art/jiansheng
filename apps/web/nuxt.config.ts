@@ -16,15 +16,6 @@ export default defineNuxtConfig({
     '@vercel/analytics',
   ],
 
-  imports: {
-    presets: [
-      {
-        from: '@tanstack/vue-query',
-        imports: ['useMutation', 'useQuery', 'useQueryClient'],
-      },
-    ],
-  },
-
   ogImage: {
     enabled: false,
   },

@@ -4,7 +4,7 @@ This repository is a Bun workspace with two separate Nuxt projects:
 
 - `apps/web`: public website + public tRPC backend
 - `apps/admin`: admin UI + admin tRPC backend
-- `packages/db`: shared Drizzle schema/connection used by both apps
+- `packages/shared`: shared Drizzle schema/connection used by both apps
 
 ## Install
 

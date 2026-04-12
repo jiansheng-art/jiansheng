@@ -1,8 +1,8 @@
+import { db } from '@jiansheng/shared/db';
+import { s3 } from '@jiansheng/shared/s3';
+import { artActivities } from '@jiansheng/shared/schema';
 import { desc } from 'drizzle-orm';
-import { db } from '~~/server/db';
-import { artActivities } from '~~/server/db/schema';
 import { publicProcedure, router } from '~~/server/trpc/trpc';
-import { s3 } from '~~/server/utils/s3';
 
 interface ActivityListItem {
   id: number;
@@ -24,7 +24,7 @@ interface ActivityListItem {
 async function attachImageUrls(items: ActivityListItem[]) {
   for (const item of items) {
     for (const image of item.images) {
-      image.url = await s3.getFileUrl(image.s3FileId);
+      image.url = s3.getFileUrl(image.s3FileId);
     }
   }
   return items;

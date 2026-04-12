@@ -1,7 +1,7 @@
+import { db } from '@jiansheng/shared/db';
 import { eq, inArray } from 'drizzle-orm';
 import Stripe from 'stripe';
 import z from 'zod';
-import { db } from '~~/server/db';
 import { orderShipments } from '~~/server/db/schema';
 import { env } from '~~/server/env';
 import { protectedProcedure, router } from '~~/server/trpc/trpc';

@@ -1,7 +1,7 @@
+import { db } from '@jiansheng/shared/db';
+import { pageContents } from '@jiansheng/shared/schema';
 import { eq, inArray } from 'drizzle-orm';
 import z from 'zod';
-import { db } from '~~/server/db';
-import { pageContents } from '~~/server/db/schema';
 import { publicProcedure, router } from '~~/server/trpc/trpc';
 
 const PAGE_SLUGS = ['about', 'contact'] as const;
