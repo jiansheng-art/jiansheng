@@ -3,7 +3,7 @@ import { env } from '@jiansheng/shared/env';
 import { s3 } from '@jiansheng/shared/s3';
 import { products } from '@jiansheng/shared/schema';
 import { TRPCError } from '@trpc/server';
-import { desc, eq } from 'drizzle-orm';
+import { and, desc, eq } from 'drizzle-orm';
 import Stripe from 'stripe';
 import z from 'zod';
 import { publicProcedure, router } from '~~/server/trpc/trpc';
@@ -104,7 +104,10 @@ export const productRouter = router({
     }))
     .query(async ({ input }) => {
       const productsRes = await db.query.products.findMany({
-        where: eq(products.workId, input.workId),
+        where: and(
+          eq(products.workId, input.workId),
+          eq(products.active, true),
+        ),
         orderBy: [desc(products.id)],
         columns: {
           id: true,

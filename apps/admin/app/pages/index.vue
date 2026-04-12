@@ -81,38 +81,31 @@ const { $trpc } = useNuxtApp();
 
 const UBadge = resolveComponent('UBadge');
 
-const { data: works } = await $trpc.work.list.useQuery();
-
-const { data: seriesList } = await $trpc.work.listSeries.useQuery();
-
-const { data: products } = await $trpc.product.list.useQuery();
-
+const { data: countStats } = await $trpc.home.counter.useQuery();
 const { data: contactForms } = await $trpc.contactForm.list.useQuery();
-
-const unreadCount = computed(() => contactForms.value?.filter(f => f.unread).length ?? 0);
 
 const stats = computed(() => [
   {
     label: '作品总数',
-    value: works.value?.length,
+    value: countStats.value?.workCount,
     icon: 'i-lucide-image',
     to: '/works',
   },
   {
     label: '系列总数',
-    value: seriesList.value?.length,
+    value: countStats.value?.seriesCount,
     icon: 'i-lucide-folder',
     to: '/works',
   },
   {
     label: '商品总数',
-    value: products.value?.length,
+    value: countStats.value?.productCount,
     icon: 'i-lucide-shopping-bag',
     to: '/products',
   },
   {
     label: '未读消息',
-    value: unreadCount.value,
+    value: countStats.value?.contactFormCount,
     icon: 'i-lucide-mail',
     to: '/contact',
   },

@@ -165,8 +165,9 @@ import type { RouterOutput } from '~/types/trpc';
 import { getQueryKey } from 'trpc-nuxt/client';
 import z from 'zod';
 
-const { product } = defineProps<{
+const { product, workList } = defineProps<{
   product: RouterOutput['product']['list'][number];
+  workList?: RouterOutput['work']['listIdAndTitle'];
 }>();
 
 const modalOpen = ref(false);
@@ -187,11 +188,9 @@ const toast = useToast();
 
 const productListKey = getQueryKey($trpc.product.list, undefined);
 
-const { data: works } = await $trpc.work.list.useQuery();
-
 const workOptions = computed(() => {
   const base = [{ label: '不关联作品', value: null as number | null }];
-  const items = (works.value ?? []).map(workItem => ({
+  const items = (workList ?? []).map(workItem => ({
     label: workItem.titleEnglish ? `${workItem.title} / ${workItem.titleEnglish}` : workItem.title,
     value: workItem.id,
   }));

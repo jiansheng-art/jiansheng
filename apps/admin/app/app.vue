@@ -9,7 +9,6 @@
 
 <script setup lang="ts">
 useSeoMeta({
-  titleTemplate: (title?: string) => !title ? 'ZhangJiansheng Art' : `${title} | ZhangJiansheng Art`,
-  ogImage: '/hero.jpg',
+  titleTemplate: (title?: string) => !title ? '管理 JianshengArt' : `${title} | 管理 JianshengArt`,
 });
 </script>

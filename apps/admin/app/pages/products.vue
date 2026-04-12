@@ -94,7 +94,7 @@
     </template>
     <template #body>
       <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-4">
-        <AdminProductCard v-for="item in products" :key="item.id" :product="item" />
+        <AdminProductCard v-for="item in products" :key="item.id" :product="item" :work-list="works" />
       </div>
     </template>
   </UDashboardPanel>
@@ -151,7 +151,7 @@ const {
   data: products,
 } = await $trpc.product.list.useQuery();
 
-const { data: works } = await $trpc.work.list.useQuery();
+const { data: works } = await $trpc.work.listIdAndTitle.useQuery();
 
 const workOptions = computed(() => {
   const base = [{ label: '不关联作品', value: null as number | null }];

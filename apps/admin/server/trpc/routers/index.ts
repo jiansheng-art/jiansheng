@@ -1,5 +1,6 @@
 import { artActivityRouter } from '~~/server/trpc/routers/artActivity';
 import { contactFormRouter } from '~~/server/trpc/routers/contactForm';
+import { homeRouter } from '~~/server/trpc/routers/home';
 import { orderRouter } from '~~/server/trpc/routers/order';
 import { pageContentRouter } from '~~/server/trpc/routers/pageContent';
 import { productRouter } from '~~/server/trpc/routers/product';
@@ -13,6 +14,7 @@ export const appRouter = router({
   pageContent: pageContentRouter,
   product: productRouter,
   work: workRouter,
+  home: homeRouter,
 });
 
 // export type definition of API

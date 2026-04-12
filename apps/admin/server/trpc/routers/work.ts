@@ -31,14 +31,6 @@ interface WorkListItem {
   }[];
 }
 
-interface SeriesListItem {
-  id: number;
-  title: string;
-  titleEnglish: string | null;
-  description: string | null;
-  works: WorkListItem[];
-}
-
 async function attachImageUrls(workItems: WorkListItem[]) {
   for (const work of workItems) {
     for (const image of work.images) {
@@ -89,25 +81,9 @@ export const workRouter = router({
 
   listSeries: protectedProcedure
     .query(async () => {
-      const res = await db.query.workSeries.findMany({
+      return await db.query.workSeries.findMany({
         orderBy: [desc(workSeries.id)],
-        with: {
-          works: {
-            orderBy: [desc(works.id)],
-            with: {
-              images: true,
-              series: true,
-            },
-            limit: 4,
-          },
-        },
-      }) as unknown as SeriesListItem[];
-
-      for (const series of res) {
-        await attachImageUrls(series.works);
-      }
-
-      return res;
+      });
     }),
 
   create: protectedProcedure
@@ -198,12 +174,26 @@ export const workRouter = router({
       const workRes = await db.query.works.findMany({
         orderBy: [desc(works.id)],
         with: {
-          images: true,
-          series: true,
+          images: {
+            columns: {
+              workId: false,
+            },
+          },
+        },
+      }) as unknown as WorkListItem[];
+
+      return await attachImageUrls(workRes);
+    }),
+
+  listIdAndTitle: protectedProcedure
+    .query(async () => {
+      return await db.query.works.findMany({
+        columns: {
+          id: true,
+          title: true,
+          titleEnglish: true,
         },
       });
-
-      return await attachImageUrls(workRes as WorkListItem[]);
     }),
 
   createImage: protectedProcedure
