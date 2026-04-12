@@ -1,7 +1,7 @@
 import { db } from '@jiansheng/shared/db';
+import { contactForms } from '@jiansheng/shared/schema';
 import { eq } from 'drizzle-orm';
 import z from 'zod';
-import { contactForms } from '~~/server/db/schema';
 import { protectedProcedure, router } from '~~/server/trpc/trpc';
 
 export const contactFormRouter = router({

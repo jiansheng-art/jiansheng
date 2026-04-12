@@ -6,8 +6,8 @@
   >
     <UButton
       v-bind="{
-        ...user,
-        label: user?.name,
+        ...session?.data?.user,
+        label: session?.data?.user.name,
         trailingIcon: 'i-lucide-chevrons-up-down',
       }"
       color="neutral"
@@ -35,15 +35,14 @@
 
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui';
+import { authClient } from '~/lib/auth-client';
 
 const colorMode = useColorMode();
-
-const userStore = useUserStore();
-const user = userStore;
+const session = authClient.useSession();
 
 const items = computed<DropdownMenuItem[][]>(() => ([[{
   type: 'label',
-  label: user.name,
+  label: session.value?.data?.user.name,
   avatar: {
     icon: 'lucide:user',
   },
@@ -78,7 +77,13 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
   label: 'Log out',
   icon: 'i-lucide-log-out',
   onSelect: () => {
-    userStore.logout();
+    authClient.signOut({
+      fetchOptions: {
+        onSuccess() {
+          navigateTo('/login');
+        },
+      },
+    });
   },
 }]]));
 </script>

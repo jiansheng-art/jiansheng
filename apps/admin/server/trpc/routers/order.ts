@@ -1,9 +1,9 @@
 import { db } from '@jiansheng/shared/db';
+import { env } from '@jiansheng/shared/env';
+import { orderShipments } from '@jiansheng/shared/schema';
 import { eq, inArray } from 'drizzle-orm';
 import Stripe from 'stripe';
 import z from 'zod';
-import { orderShipments } from '~~/server/db/schema';
-import { env } from '~~/server/env';
 import { protectedProcedure, router } from '~~/server/trpc/trpc';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);

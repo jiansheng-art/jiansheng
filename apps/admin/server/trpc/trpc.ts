@@ -22,12 +22,12 @@ const t = initTRPC.context<Context>().create({
 });
 
 export const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.user)
+  if (!ctx.authSession || ctx.authSession.user.role !== 'admin')
     throw new TRPCError({ code: 'UNAUTHORIZED', message: 'You are not logged in.' });
 
   return next({
     ctx: {
-      user: ctx.user,
+      authSession: ctx.authSession,
     },
   });
 });
@@ -35,5 +35,5 @@ export const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 export const router = t.router;
 export const middleware = t.middleware;
 
-export const publicProcedure = t.procedure;
-export const protectedProcedure = publicProcedure.use(enforceUserIsAuthed);
+// export const publicProcedure = t.procedure;
+export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);

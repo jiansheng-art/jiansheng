@@ -23,13 +23,13 @@ import type { AuthFormField, FormSubmitEvent } from '@nuxt/ui';
 
 import * as z from 'zod';
 import { zhCN } from 'zod/locales';
+import { authClient } from '~/lib/auth-client';
 
 definePageMeta({
   layout: 'login',
 });
 
 z.config(zhCN());
-const { $trpc } = useNuxtApp();
 const toast = useToast();
 
 const fields: AuthFormField[] = [{
@@ -57,17 +57,28 @@ const isPending = ref(false);
 
 async function login(data: Schema) {
   isPending.value = true;
-  try {
-    const res = await $trpc.user.login.mutate(data);
-    useUserStore().login(res);
+
+  const { error } = await authClient.signIn.username({
+    username: data.name,
+    password: data.password,
+  });
+
+  if (error) {
+    toast.add({
+      title: '登录失败',
+      description: error.message,
+      color: 'error',
+    });
+  }
+  else {
+    toast.add({
+      title: '登录成功',
+      color: 'success',
+    });
+
     navigateTo('/');
-    toast.add({ title: 'Success', description: 'Logged in successfully' });
   }
-  catch (err) {
-    useErrorHandler(err);
-  }
-  finally {
-    isPending.value = false;
-  }
+
+  isPending.value = false;
 }
 </script>

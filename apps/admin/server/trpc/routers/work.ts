@@ -1,10 +1,10 @@
 import { db } from '@jiansheng/shared/db';
 import { s3 } from '@jiansheng/shared/s3';
+import { workImages, works, workSeries } from '@jiansheng/shared/schema';
 import { TRPCError } from '@trpc/server';
 import { desc, eq } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import z from 'zod';
-import { workImages, works, workSeries } from '~~/server/db/schema';
 import { protectedProcedure, router } from '~~/server/trpc/trpc';
 
 interface WorkListItem {

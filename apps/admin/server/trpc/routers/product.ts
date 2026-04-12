@@ -1,12 +1,12 @@
 import { db } from '@jiansheng/shared/db';
+import { env } from '@jiansheng/shared/env';
 import { s3 } from '@jiansheng/shared/s3';
+import { productImages, products } from '@jiansheng/shared/schema';
 import { TRPCError } from '@trpc/server';
 import { desc, eq } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
 import z from 'zod';
-import { productImages, products } from '~~/server/db/schema';
-import { env } from '~~/server/env';
 import { protectedProcedure, router } from '~~/server/trpc/trpc';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);

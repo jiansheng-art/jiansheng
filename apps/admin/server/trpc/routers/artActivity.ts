@@ -1,10 +1,10 @@
 import { db } from '@jiansheng/shared/db';
 import { s3 } from '@jiansheng/shared/s3';
+import { artActivities, artActivityImages } from '@jiansheng/shared/schema';
 import { TRPCError } from '@trpc/server';
 import { desc, eq } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import z from 'zod';
-import { artActivities, artActivityImages } from '~~/server/db/schema';
 import { protectedProcedure, router } from '~~/server/trpc/trpc';
 import { triggerVercelBuild } from '~~/server/utils/vercelBuild';
 
@@ -28,7 +28,7 @@ interface ActivityListItem {
 async function attachImageUrls(items: ActivityListItem[]) {
   for (const item of items) {
     for (const image of item.images) {
-      image.url = await s3.getFileUrl(image.s3FileId);
+      image.url = s3.getFileUrl(image.s3FileId);
     }
   }
   return items;
