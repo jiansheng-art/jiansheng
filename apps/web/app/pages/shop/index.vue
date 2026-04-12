@@ -59,12 +59,7 @@ const {
   data: products,
   status,
   error,
-  suspense,
-} = useQuery({
-  queryKey: ['product.list'],
-  queryFn: () => $trpc.product.list.query(),
-});
-await suspense();
+} = await $trpc.product.list.useQuery();
 
 function formatPrice(amount: number, currency: string) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.toUpperCase() }).format(amount / 100);

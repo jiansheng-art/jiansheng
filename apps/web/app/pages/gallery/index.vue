@@ -48,14 +48,7 @@
 <script setup lang="ts">
 const { $trpc } = useNuxtApp();
 
-const {
-  data: seriesList,
-  suspense,
-} = useQuery({
-  queryKey: ['work.listSeries'],
-  queryFn: () => $trpc.work.listSeries.query(),
-});
-await suspense();
+const { data: seriesList } = await $trpc.work.listSeries.useQuery();
 
 useSeoMeta({
   title: 'Gallery',

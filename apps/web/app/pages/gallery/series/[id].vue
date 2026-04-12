@@ -63,12 +63,7 @@ const {
   data: series,
   status,
   error,
-  suspense,
-} = useQuery({
-  queryKey: ['work.getSeries', seriesId],
-  queryFn: () => $trpc.work.getSeries.query({ id: seriesId }),
-});
-await suspense();
+} = await $trpc.work.getSeries.useQuery({ id: seriesId });
 
 useSeoMeta({
   title: () => series.value?.title || 'Exhibition',

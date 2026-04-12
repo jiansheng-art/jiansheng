@@ -156,19 +156,9 @@ const {
   data: work,
   status,
   error,
-  suspense: workSuspense,
-} = useQuery({
-  queryKey: ['work.get', workId],
-  queryFn: () => $trpc.work.get.query({ id: workId }),
-});
+} = await $trpc.work.get.useQuery({ id: workId });
 
-const { data: relatedProducts, suspense: productsSuspense } = useQuery({
-  queryKey: ['product.getRelated', workId],
-  queryFn: () => $trpc.product.getRelated.query({ workId }),
-});
-
-await workSuspense();
-await productsSuspense();
+const { data: relatedProducts } = await $trpc.product.getRelated.useQuery({ workId });
 
 function formatPrice(amount: number, currency: string) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.toUpperCase() }).format(amount / 100);

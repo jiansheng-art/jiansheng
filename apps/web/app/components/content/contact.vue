@@ -56,24 +56,14 @@ const state = reactive<Partial<Schema>>({
 });
 
 const { $trpc } = useNuxtApp();
-const {
-  mutate: createContactForm,
-  status,
-  isPending,
-} = useMutation({
-  mutationFn: (data: Schema) => $trpc.contactForm.create.mutate(data),
-  onError(error) {
-    useErrorHandler(error);
-  },
-});
 
+const isPending = ref(false);
 const toast = useToast();
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  createContactForm(event.data);
-}
+  isPending.value = true;
+  try {
+    await $trpc.contactForm.create.mutate(event.data);
 
-watch(status, (newStatus) => {
-  if (newStatus === 'success') {
     toast.add({ title: 'Success', description: 'The form has been submitted.' });
 
     // Reset form state
@@ -83,5 +73,11 @@ watch(status, (newStatus) => {
     state.subject = undefined;
     state.message = undefined;
   }
-});
+  catch (error) {
+    useErrorHandler(error);
+  }
+  finally {
+    isPending.value = false;
+  }
+}
 </script>

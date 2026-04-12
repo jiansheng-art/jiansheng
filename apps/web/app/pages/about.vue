@@ -7,8 +7,7 @@
 <script setup lang="ts">
 const { $trpc } = useNuxtApp();
 
-const { data: pageContent } = await useAsyncData('page-content-about', () =>
-  $trpc.pageContent.getBySlug.query({ slug: 'about' }));
+const { data: pageContent } = await $trpc.pageContent.getBySlug.useQuery({ slug: 'about' });
 
 useSeoMeta({
   title: pageContent.value?.title || 'About',
