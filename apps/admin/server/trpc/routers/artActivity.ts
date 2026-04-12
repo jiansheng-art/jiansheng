@@ -5,6 +5,7 @@ import z from 'zod';
 import { db } from '~~/server/db';
 import { artActivities, artActivityImages } from '~~/server/db/schema';
 import { protectedProcedure, router } from '~~/server/trpc/trpc';
+import { triggerVercelBuild } from '~~/server/utils/vercelBuild';
 
 interface ActivityListItem {
   id: number;
@@ -54,19 +55,23 @@ export const artActivityRouter = router({
       imageIds: z.array(z.number()),
     }))
     .mutation(async ({ input }) => {
-      const id = (await db.insert(artActivities).values({
-        title: input.title,
-        description: input.description,
-        date: input.date,
-      }).returning())[0]?.id;
+      return await db.transaction(async (tx) => {
+        const id = (await tx.insert(artActivities).values({
+          title: input.title,
+          description: input.description,
+          date: input.date,
+        }).returning())[0]?.id;
 
-      for (const fileId of input.imageIds) {
-        await db.update(artActivityImages).set({
-          activityId: id,
-        }).where(eq(artActivityImages.id, fileId));
-      }
+        for (const fileId of input.imageIds) {
+          await tx.update(artActivityImages).set({
+            activityId: id,
+          }).where(eq(artActivityImages.id, fileId));
+        }
 
-      return { id };
+        await triggerVercelBuild();
+
+        return { id };
+      });
     }),
 
   update: protectedProcedure
@@ -79,20 +84,24 @@ export const artActivityRouter = router({
       imageIds: z.array(z.number()).optional(),
     }))
     .mutation(async ({ input }) => {
-      await db.update(artActivities).set({
-        title: input.title,
-        description: input.description,
-        markdown: input.markdown,
-        date: input.date,
-      }).where(eq(artActivities.id, input.id));
+      await db.transaction(async (tx) => {
+        await tx.update(artActivities).set({
+          title: input.title,
+          description: input.description,
+          markdown: input.markdown,
+          date: input.date,
+        }).where(eq(artActivities.id, input.id));
 
-      if (input.imageIds) {
-        for (const fileId of input.imageIds) {
-          await db.update(artActivityImages).set({
-            activityId: input.id,
-          }).where(eq(artActivityImages.id, fileId));
+        if (input.imageIds) {
+          for (const fileId of input.imageIds) {
+            await tx.update(artActivityImages).set({
+              activityId: input.id,
+            }).where(eq(artActivityImages.id, fileId));
+          }
         }
-      }
+
+        await triggerVercelBuild();
+      });
     }),
 
   delete: protectedProcedure
@@ -100,21 +109,25 @@ export const artActivityRouter = router({
       id: z.number().int().positive(),
     }))
     .mutation(async ({ input }) => {
-      const activity = await db.query.artActivities.findFirst({
-        where: eq(artActivities.id, input.id),
-        with: {
-          images: true,
-        },
+      await db.transaction(async (tx) => {
+        const activity = await tx.query.artActivities.findFirst({
+          where: eq(artActivities.id, input.id),
+          with: {
+            images: true,
+          },
+        });
+
+        if (!activity) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: '活动未找到' });
+        }
+
+        const s3 = new S3Controller();
+        await Promise.all(activity.images.map(image => s3.deleteFile(image.s3FileId)));
+
+        await tx.delete(artActivities).where(eq(artActivities.id, input.id));
+
+        await triggerVercelBuild();
       });
-
-      if (!activity) {
-        throw new TRPCError({ code: 'NOT_FOUND', message: '活动未找到' });
-      }
-
-      const s3 = new S3Controller();
-      await Promise.all(activity.images.map(image => s3.deleteFile(image.s3FileId)));
-
-      await db.delete(artActivities).where(eq(artActivities.id, input.id));
     }),
 
   createImage: protectedProcedure

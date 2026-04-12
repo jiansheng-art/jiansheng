@@ -2,8 +2,8 @@ import { inArray } from 'drizzle-orm';
 import z from 'zod';
 import { db } from '~~/server/db';
 import { pageContents } from '~~/server/db/schema';
-import { env } from '~~/server/env';
 import { protectedProcedure, router } from '~~/server/trpc/trpc';
+import { triggerVercelBuild } from '~~/server/utils/vercelBuild';
 
 const PAGE_SLUGS = ['about', 'contact'] as const;
 const pageSlugSchema = z.enum(PAGE_SLUGS);
@@ -86,12 +86,7 @@ export const pageContentRouter = router({
             },
           });
 
-        if (env.VERCEL_BUILD_HOOK_URL) {
-          // Trigger vercel build hook to update pre-rendered pages
-          await fetch(env.VERCEL_BUILD_HOOK_URL, {
-            method: 'POST',
-          });
-        }
+        await triggerVercelBuild();
       });
     }),
 });
