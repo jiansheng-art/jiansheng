@@ -15,11 +15,6 @@ export async function useErrorHandler(err: any): Promise<void> {
       }
     }
     else {
-      if (err.data?.code === 'UNAUTHORIZED') {
-        onNuxtReady(() => {
-          navigateTo('/login');
-        });
-      }
       toast.add({ title: 'Error', description: err.message, color: 'error' });
     }
   }

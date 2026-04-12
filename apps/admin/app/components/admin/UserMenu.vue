@@ -77,13 +77,14 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
   label: 'Log out',
   icon: 'i-lucide-log-out',
   onSelect: () => {
-    authClient.signOut({
-      fetchOptions: {
-        onSuccess() {
-          navigateTo('/login');
-        },
-      },
-    });
+    try {
+      authClient.signOut();
+      navigateTo('/login');
+    }
+    catch (error) {
+      const toast = useToast();
+      toast.add({ title: 'Logout failed', description: (error as Error).message, color: 'error' });
+    }
   },
 }]]));
 </script>
