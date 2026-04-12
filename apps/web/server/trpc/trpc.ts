@@ -22,17 +22,6 @@ const t = initTRPC.context<Context>().create({
   },
 });
 
-export const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.user)
-    throw new TRPCError({ code: 'UNAUTHORIZED', message: 'You are not logged in.' });
-
-  return next({
-    ctx: {
-      user: ctx.user,
-    },
-  });
-});
-
 const store = new MemoryStore({ windowMs: 30 * 1000 }); // 30 seconds
 
 const rateLimiter = t.middleware(async ({ ctx, next }) => {
@@ -55,6 +44,4 @@ export const router = t.router;
 export const middleware = t.middleware;
 
 export const publicProcedure = t.procedure;
-export const protectedProcedure = publicProcedure.use(enforceUserIsAuthed);
-
 export const rateLimitedPublicProcedure = publicProcedure.use(rateLimiter);
