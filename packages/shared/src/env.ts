@@ -10,13 +10,6 @@ dotenv.config({ path: '.env.local', override: true, quiet: true });
 const envSchema = z.object({
   DATABASE_URL: z.url(),
 
-  SIGN_PUBLIC_KEY: z.string(),
-  SIGN_PRIVATE_KEY: z.string(),
-  ENC_PUBLIC_KEY: z.string(),
-  ENC_PRIVATE_KEY: z.string(),
-  SIGN_KID: z.string(),
-  ENC_KID: z.string(),
-
   S3_SERVER_URL: z.string(),
   S3_ACCESS_KEY_ID: z.string(),
   S3_SECRET_ACCESS_KEY: z.string(),
@@ -35,7 +28,7 @@ const envSchema = z.object({
 const envParse = envSchema.safeParse(process.env);
 
 if (!envParse.success) {
-  console.error('[ERROR] Invalid environment variables:', JSON.stringify(envParse.error.format(), null, 4));
+  console.error('[ERROR] Invalid environment variables:', z.treeifyError(envParse.error));
   process.exit(1);
 }
 
