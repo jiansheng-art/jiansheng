@@ -27,7 +27,7 @@ jobs:
           bun install
 
       - name: Lint
-        run: bun lint --no-fix
+        run: bun lint
 
   typecheck:
     runs-on: ubuntu-latest
