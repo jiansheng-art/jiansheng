@@ -13,6 +13,6 @@
 import type { RouterOutput } from '~/types/trpc';
 
 const { work } = defineProps<{
-  work: RouterOutput['work']['list'][0];
+  work: Pick<RouterOutput['work']['list'][number], 'id' | 'images'>;
 }>();
 </script>
