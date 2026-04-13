@@ -8,32 +8,6 @@ import z from 'zod';
 import { protectedProcedure, router } from '~~/server/trpc/trpc';
 import { triggerVercelBuild } from '~~/server/utils/vercelBuild';
 
-interface ActivityListItem {
-  id: number;
-  title: string;
-  description: string | null;
-  markdown: string | null;
-  date: Date | null;
-  createdAt: Date | null;
-  updatedAt: Date | null;
-  images: {
-    id: number;
-    activityId: number | null;
-    fileName: string | null;
-    s3FileId: string;
-    url?: string;
-  }[];
-}
-
-async function attachImageUrls(items: ActivityListItem[]) {
-  for (const item of items) {
-    for (const image of item.images) {
-      image.url = s3.getFileUrl(image.s3FileId);
-    }
-  }
-  return items;
-}
-
 export const artActivityRouter = router({
   list: protectedProcedure
     .query(async () => {
@@ -43,7 +17,14 @@ export const artActivityRouter = router({
           images: true,
         },
       });
-      return await attachImageUrls(res as ActivityListItem[]);
+
+      return res.map(activity => ({
+        ...activity,
+        images: activity.images.map(image => ({
+          ...image,
+          url: s3.getFileUrl(image.s3FileId),
+        })),
+      }));
     }),
 
   create: protectedProcedure

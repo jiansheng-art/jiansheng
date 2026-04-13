@@ -10,38 +10,6 @@ import { publicProcedure, router } from '~~/server/trpc/trpc';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
-interface ProductListItem {
-  id: number;
-  stripeProductId: string;
-  stripePriceId: string | null;
-  workId: number | null;
-  name: string;
-  description: string | null;
-  active: boolean;
-  unitAmount: number | null;
-  currency: string | null;
-  metadata: string | null;
-  createdAt: Date | null;
-  updatedAt: Date | null;
-  images: {
-    id: number;
-    productId: number | null;
-    fileName: string | null;
-    s3FileId: string;
-    url?: string;
-  }[];
-}
-
-async function attachImageUrls(productItems: ProductListItem[]) {
-  for (const product of productItems) {
-    for (const image of product.images) {
-      image.url = s3.getFileUrl(image.s3FileId);
-    }
-  }
-
-  return productItems;
-}
-
 export const productRouter = router({
   get: publicProcedure
     .input(z.object({
@@ -64,14 +32,18 @@ export const productRouter = router({
             },
           },
         },
-      }) as ProductListItem | undefined;
+      });
 
       if (!product) {
         return null;
       }
 
-      await attachImageUrls([product]);
-      return product;
+      return {
+        ...product,
+        images: product.images.map(image => ({
+          url: s3.getFileUrl(image.s3FileId),
+        })),
+      };
     }),
 
   list: publicProcedure
@@ -93,9 +65,14 @@ export const productRouter = router({
             limit: 1,
           },
         },
-      }) as ProductListItem[];
+      });
 
-      return await attachImageUrls(productsRes);
+      return productsRes.map(product => ({
+        ...product,
+        images: product.images.map(image => ({
+          url: s3.getFileUrl(image.s3FileId),
+        })),
+      }));
     }),
 
   getRelated: publicProcedure
@@ -123,9 +100,14 @@ export const productRouter = router({
             limit: 1,
           },
         },
-      }) as ProductListItem[];
+      });
 
-      return await attachImageUrls(productsRes);
+      return productsRes.map(product => ({
+        ...product,
+        images: product.images.map(image => ({
+          url: s3.getFileUrl(image.s3FileId),
+        })),
+      }));
     }),
 
   createCheckoutSession: publicProcedure

@@ -12,38 +12,6 @@ import { protectedProcedure, router } from '~~/server/trpc/trpc';
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 const CAD_CURRENCY = 'cad';
 
-interface ProductListItem {
-  id: number;
-  stripeProductId: string;
-  stripePriceId: string | null;
-  workId: number | null;
-  name: string;
-  description: string | null;
-  active: boolean;
-  unitAmount: number | null;
-  currency: string | null;
-  metadata: string | null;
-  createdAt: Date | null;
-  updatedAt: Date | null;
-  images: {
-    id: number;
-    productId: number | null;
-    fileName: string | null;
-    s3FileId: string;
-    url?: string;
-  }[];
-}
-
-async function attachImageUrls(productItems: ProductListItem[]) {
-  for (const product of productItems) {
-    for (const image of product.images) {
-      image.url = s3.getFileUrl(image.s3FileId);
-    }
-  }
-
-  return productItems;
-}
-
 async function syncStripeProductImages(productId: number, stripeProductId: string) {
   const images = await db.query.productImages.findMany({
     where: eq(productImages.productId, productId),
@@ -225,9 +193,15 @@ export const productRouter = router({
         with: {
           images: true,
         },
-      }) as ProductListItem[];
+      });
 
-      return await attachImageUrls(productsRes);
+      return productsRes.map(product => ({
+        ...product,
+        images: product.images.map(image => ({
+          ...image,
+          url: s3.getFileUrl(image.s3FileId),
+        })),
+      }));
     }),
 
   createImage: protectedProcedure

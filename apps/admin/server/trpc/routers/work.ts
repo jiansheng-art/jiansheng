@@ -7,40 +7,6 @@ import { nanoid } from 'nanoid';
 import z from 'zod';
 import { protectedProcedure, router } from '~~/server/trpc/trpc';
 
-interface WorkListItem {
-  id: number;
-  description: string | null;
-  title: string;
-  titleEnglish: string | null;
-  year: number | null;
-  material: string | null;
-  dimensions: string | null;
-  seriesId: number | null;
-  series: {
-    id: number;
-    title: string;
-    titleEnglish: string | null;
-    description: string | null;
-  } | null;
-  images: {
-    id: number;
-    workId: number | null;
-    fileName: string | null;
-    s3FileId: string;
-    url?: string;
-  }[];
-}
-
-async function attachImageUrls(workItems: WorkListItem[]) {
-  for (const work of workItems) {
-    for (const image of work.images) {
-      image.url = s3.getFileUrl(image.s3FileId);
-    }
-  }
-
-  return workItems;
-}
-
 export const workRouter = router({
   createSeries: protectedProcedure
     .input(z.object({
@@ -180,9 +146,15 @@ export const workRouter = router({
             },
           },
         },
-      }) as unknown as WorkListItem[];
+      });
 
-      return await attachImageUrls(workRes);
+      return workRes.map(work => ({
+        ...work,
+        images: work.images.map(image => ({
+          ...image,
+          url: s3.getFileUrl(image.s3FileId),
+        })),
+      }));
     }),
 
   listIdAndTitle: protectedProcedure

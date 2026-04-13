@@ -1,51 +1,9 @@
 import { db } from '@jiansheng/shared/db';
 import { s3 } from '@jiansheng/shared/s3';
 import { works, workSeries } from '@jiansheng/shared/schema';
-import { desc, eq, sql } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import z from 'zod';
 import { publicProcedure, router } from '~~/server/trpc/trpc';
-
-interface WorkListItem {
-  id: number;
-  description: string | null;
-  title: string;
-  titleEnglish: string | null;
-  year: number | null;
-  material: string | null;
-  dimensions: string | null;
-  seriesId: number | null;
-  series: {
-    id: number;
-    title: string;
-    titleEnglish: string | null;
-    description: string | null;
-  } | null;
-  images: {
-    id: number;
-    workId: number | null;
-    fileName: string | null;
-    s3FileId: string;
-    url?: string;
-  }[];
-}
-
-interface SeriesListItem {
-  id: number;
-  title: string;
-  titleEnglish: string | null;
-  description: string | null;
-  works: WorkListItem[];
-}
-
-async function attachImageUrls(workItems: WorkListItem[]) {
-  for (const work of workItems) {
-    for (const image of work.images) {
-      image.url = await s3.getFileUrl(image.s3FileId);
-    }
-  }
-
-  return workItems;
-}
 
 export const workRouter = router({
   listSeries: publicProcedure
@@ -69,13 +27,17 @@ export const workRouter = router({
             limit: 4,
           },
         },
-      }) as unknown as SeriesListItem[];
+      });
 
-      for (const series of res) {
-        await attachImageUrls(series.works);
-      }
-
-      return res;
+      return res.map(series => ({
+        ...series,
+        works: series.works.map(work => ({
+          ...work,
+          images: work.images.map(image => ({
+            url: s3.getFileUrl(image.s3FileId),
+          })),
+        })),
+      }));
     }),
 
   getSeries: publicProcedure
@@ -101,14 +63,21 @@ export const workRouter = router({
             },
           },
         },
-      }) as unknown as SeriesListItem | undefined;
+      });
 
       if (!series) {
         return null;
       }
 
-      await attachImageUrls(series.works);
-      return series;
+      return {
+        ...series,
+        works: series.works.map(work => ({
+          ...work,
+          images: work.images.map(image => ({
+            url: s3.getFileUrl(image.s3FileId),
+          })),
+        })),
+      };
     }),
 
   get: publicProcedure
@@ -128,49 +97,12 @@ export const workRouter = router({
         return null;
       }
 
-      const result: {
-        id: number;
-        description: string | null;
-        title: string;
-        titleEnglish: string | null;
-        year: number | null;
-        material: string | null;
-        dimensions: string | null;
-        seriesId: number | null;
-        series: {
-          id: number;
-          title: string;
-          titleEnglish: string | null;
-          description: string | null;
-        } | null;
-        images: {
-          id: number;
-          workId: number | null;
-          fileName: string | null;
-          s3FileId: string;
-          url?: string;
-        }[];
-      } = work;
-
-      for (const image of result.images) {
-        image.url = await s3.getFileUrl(image.s3FileId);
-      }
-
-      return result;
-    }),
-
-  listHome: publicProcedure
-    .query(async () => {
-      const workRes = await db.query.works.findMany({
-        orderBy: [sql`RANDOM()`],
-        with: {
-          images: true,
-          series: true,
-        },
-        limit: 5,
-      });
-
-      return await attachImageUrls(workRes as WorkListItem[]);
+      return {
+        ...work,
+        images: work.images.map(image => ({
+          url: s3.getFileUrl(image.s3FileId),
+        })),
+      };
     }),
 
   list: publicProcedure
@@ -183,7 +115,11 @@ export const workRouter = router({
         },
       });
 
-      return await attachImageUrls(workRes as WorkListItem[]);
+      return workRes.map(work => ({
+        ...work,
+        images: work.images.map(image => ({
+          url: s3.getFileUrl(image.s3FileId),
+        })),
+      }));
     }),
-
 });
