@@ -9,6 +9,10 @@
     "./db": "./src/db.ts",
     "./transformer": "./src/transformer.ts"
   },
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1029.0",
     "@aws-sdk/s3-request-presigner": "^3.1029.0",
@@ -17,5 +21,9 @@
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
     "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^8.2.0",
+    "eslint": "^10.2.0"
   }
 }

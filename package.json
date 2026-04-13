@@ -12,11 +12,10 @@
     "dev:admin": "bun run --filter '@jiansheng/admin' dev",
     "build": "bun run --filter '@jiansheng/web' build && bun run --filter '@jiansheng/admin' build",
     "typecheck": "bun run --filter '@jiansheng/web' typecheck && bun run --filter '@jiansheng/admin' typecheck",
-    "lint": "bun run --filter '@jiansheng/web' lint && bun run --filter '@jiansheng/admin' lint",
-    "lint:fix": "bun run --filter '@jiansheng/web' lint:fix && bun run --filter '@jiansheng/admin' lint:fix",
+    "lint": "bun run --filter '*' lint",
+    "lint:fix": "bun run --filter '*' lint --fix",
     "db:push": "bun run --filter '@jiansheng/admin' db:push",
     "db:studio": "bun run --filter '@jiansheng/admin' db:studio",
-    "auth:genKey": "bun run --filter '@jiansheng/admin' auth:genKey",
     "auth:createAdmin": "bun run --filter '@jiansheng/admin' auth:createAdmin"
   },
   "dependencies": {
