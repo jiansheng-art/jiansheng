@@ -33,7 +33,6 @@
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",
     "stripe": "^22.0.1",
-    "superjson": "^2.2.6",
     "trpc-nuxt": "^2.0.2",
     "vue": "latest",
     "zod": "^4.3.6"

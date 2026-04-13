@@ -30,9 +30,7 @@
     "better-auth": "^1.6.2",
     "nanoid": "^5.1.7",
     "nuxt": "^4.4.2",
-    "pg": "^8.20.0",
     "stripe": "^22.0.1",
-    "superjson": "^2.2.6",
     "trpc-nuxt": "^2.0.2",
     "vue": "latest",
     "zod": "^4.3.6"
