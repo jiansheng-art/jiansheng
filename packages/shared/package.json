@@ -14,9 +14,9 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1029.0",
-    "@aws-sdk/s3-request-presigner": "^3.1029.0",
-    "@neondatabase/serverless": "^1.0.2",
+    "@aws-sdk/client-s3": "^3.1032.0",
+    "@aws-sdk/s3-request-presigner": "^3.1032.0",
+    "@neondatabase/serverless": "^1.1.0",
     "devalue": "^5.7.1",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
@@ -24,6 +24,6 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^8.2.0",
-    "eslint": "^10.2.0"
+    "eslint": "^10.2.1"
   }
 }

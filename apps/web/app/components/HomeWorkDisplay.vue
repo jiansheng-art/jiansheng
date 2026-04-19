@@ -6,8 +6,9 @@
         <NuxtImg
           :src="work.src"
           class="relative object-cover w-full h-full"
+          :preload="{ fetchPriority: 'high' }"
           loading="eager"
-          preload
+          format="webp"
         />
       </UCard>
     </NuxtLink>
