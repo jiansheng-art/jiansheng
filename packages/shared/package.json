@@ -17,13 +17,16 @@
     "@aws-sdk/client-s3": "^3.1032.0",
     "@aws-sdk/s3-request-presigner": "^3.1032.0",
     "@neondatabase/serverless": "^1.1.0",
+    "bufferutil": "^4.1.0",
     "devalue": "^5.7.1",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
+    "ws": "^8.20.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^8.2.0",
+    "@types/ws": "^8.18.1",
     "eslint": "^10.2.1"
   }
 }
