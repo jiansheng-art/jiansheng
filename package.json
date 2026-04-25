@@ -11,7 +11,7 @@
     "dev:web": "bun run --filter '@jiansheng/web' dev",
     "dev:admin": "bun run --filter '@jiansheng/admin' dev",
     "build": "bun run --filter '@jiansheng/web' build && bun run --filter '@jiansheng/admin' build",
-    "typecheck": "bun run --filter '@jiansheng/web' typecheck && bun run --filter '@jiansheng/admin' typecheck",
+    "typecheck": "bun run --filter '*' typecheck",
     "lint": "bun run --filter '*' lint",
     "lint:fix": "bun run --filter '*' lint --fix",
     "db:push": "bun run --filter '@jiansheng/admin' db:push",
