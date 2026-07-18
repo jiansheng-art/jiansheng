@@ -8,4 +8,7 @@ export default defineConfig({
   ignorePaths: [
     '**/node_modules/**',
   ],
-})
+  exclude: [
+    'typescript',
+  ],
+});

@@ -36,7 +36,7 @@ export default defineNuxtConfig({
     '/about': {
       prerender: true,
     },
-    'art-activities': {
+    '/art-activities': {
       prerender: true,
     },
     '/contact': {
@@ -45,7 +45,8 @@ export default defineNuxtConfig({
   },
 
   build: {
-    transpile: ['trpc-nuxt'],
+    // Inline so Nitro can replace __VUE_PROD_DEVTOOLS__ during prerender
+    transpile: ['trpc-nuxt', 'pinia'],
   },
 
   site: {
