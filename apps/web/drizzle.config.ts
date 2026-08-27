@@ -1,4 +1,5 @@
 import { defineConfig } from 'drizzle-kit';
+
 import { env } from '../../packages/shared/src/env.ts';
 
 export default defineConfig({

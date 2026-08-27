@@ -6,12 +6,7 @@ export default defineNuxtConfig({
 
   ssr: false,
 
-  modules: [
-    '@nuxt/ui',
-    '@nuxtjs/mdc',
-    '@vueuse/nuxt',
-    '@nuxt/image',
-  ],
+  modules: ['@nuxt/ui', '@nuxtjs/mdc', '@vueuse/nuxt', '@nuxt/image'],
 
   css: ['~/assets/css/main.css'],
 

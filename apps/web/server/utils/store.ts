@@ -7,7 +7,7 @@ function calculateNextResetTime(windowMs: number): Date {
   const resetTime = new Date();
   resetTime.setMilliseconds(resetTime.getMilliseconds() + windowMs);
   return resetTime;
-};
+}
 
 export class MemoryStore {
   /** The duration of time before which all hit counts are reset (in milliseconds). */
@@ -33,8 +33,7 @@ export class MemoryStore {
       await this.resetAll();
     }, this.windowMs);
     // Cleaning up the interval will be taken care of by the `shutdown` method.
-    if (this.interval.unref)
-      this.interval.unref();
+    if (this.interval.unref) this.interval.unref();
   }
 
   async increment(key: string) {

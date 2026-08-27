@@ -28,10 +28,7 @@
           </UFormField>
 
           <UFormField label="简述" name="description">
-            <UInput
-              v-model="state.description"
-              class="w-full"
-            />
+            <UInput v-model="state.description" class="w-full" />
           </UFormField>
 
           <UFormField label="描述" name="markdown">
@@ -117,9 +114,7 @@
             </UFileUpload>
           </UFormField>
 
-          <UButton type="submit" :loading="submitLoading">
-            保存
-          </UButton>
+          <UButton type="submit" :loading="submitLoading"> 保存 </UButton>
         </UForm>
       </template>
     </UModal>
@@ -127,11 +122,12 @@
 </template>
 
 <script setup lang="ts">
-import type { EditorToolbarItem } from '@nuxt/ui';
-import type { RouterOutput } from '~/types/trpc';
 import { CalendarDate } from '@internationalized/date';
+import type { EditorToolbarItem } from '@nuxt/ui';
 import { getQueryKey } from 'trpc-nuxt/client';
 import * as z from 'zod';
+
+import type { RouterOutput } from '~/types/trpc';
 
 const props = defineProps<{
   activity: RouterOutput['artActivity']['list'][number];
@@ -199,11 +195,9 @@ async function deleteActivity(closeFn: () => void) {
     toast.add({ title: '删除成功', color: 'success' });
     closeFn();
     await refreshNuxtData(artActivityListKey);
-  }
-  catch (err) {
+  } catch (err) {
     useErrorHandler(err);
-  }
-  finally {
+  } finally {
     isDeleteLoading.value = false;
   }
 }
@@ -212,14 +206,12 @@ async function deleteImage(imageId: number) {
   isDeleteImageLoading.value = true;
   try {
     await $trpc.artActivity.deleteImage.mutate({ id: imageId });
-    activityDirty.value.images = activityDirty.value.images.filter(i => i.id !== imageId);
+    activityDirty.value.images = activityDirty.value.images.filter((i) => i.id !== imageId);
     toast.add({ title: '图片已删除', color: 'success' });
     await refreshNuxtData(artActivityListKey);
-  }
-  catch (err) {
+  } catch (err) {
     useErrorHandler(err);
-  }
-  finally {
+  } finally {
     isDeleteImageLoading.value = false;
   }
 }
@@ -232,7 +224,11 @@ async function onSubmit() {
     try {
       const { id, url } = await $trpc.artActivity.createImage.mutate({ fileName: file.name });
       if (!id || !url) {
-        toast.add({ title: `${file.name} 上传失败`, description: '获取上传地址失败', color: 'error' });
+        toast.add({
+          title: `${file.name} 上传失败`,
+          description: '获取上传地址失败',
+          color: 'error',
+        });
         continue;
       }
       await $fetch(url, {
@@ -241,8 +237,7 @@ async function onSubmit() {
         headers: { 'Content-Type': file.type },
       });
       newImageIds.push(id);
-    }
-    catch (err) {
+    } catch (err) {
       submitLoading.value = false;
       useErrorHandler(err);
       return;
@@ -263,11 +258,9 @@ async function onSubmit() {
     toast.add({ title: '保存成功', color: 'success' });
     images.value = [];
     await refreshNuxtData(artActivityListKey);
-  }
-  catch (err) {
+  } catch (err) {
     useErrorHandler(err);
-  }
-  finally {
+  } finally {
     submitLoading.value = false;
   }
 }

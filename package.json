@@ -1,24 +1,45 @@
 {
   "name": "jiansheng-workspace",
-  "type": "module",
   "private": true,
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
+  "type": "module",
   "scripts": {
-    "dev": "bun run dev:web",
-    "dev:web": "bun run --filter '@jiansheng/web' dev",
-    "dev:admin": "bun run --filter '@jiansheng/admin' dev",
-    "build": "bun run --filter '@jiansheng/web' build && bun run --filter '@jiansheng/admin' build",
-    "typecheck": "bun run --filter '*' typecheck",
-    "lint": "bun run --filter '*' lint",
-    "lint:fix": "bun run --filter '*' lint --fix",
-    "db:push": "bun run --filter '@jiansheng/admin' db:push",
-    "db:studio": "bun run --filter '@jiansheng/admin' db:studio",
-    "auth:createAdmin": "bun run --filter '@jiansheng/admin' auth:createAdmin"
+    "dev": "vp run --filter @jiansheng/web dev",
+    "dev:web": "vp run --filter @jiansheng/web dev",
+    "dev:admin": "vp run --filter @jiansheng/admin dev",
+    "build": "vp run --filter @jiansheng/web build && vp run --filter @jiansheng/admin build",
+    "prepare:types": "vp run -r prepare:types",
+    "typecheck": "vp run -r typecheck",
+    "lint": "vp run -r lint",
+    "lint:fix": "vp run -r lint:fix",
+    "db:push": "vp run --filter @jiansheng/admin db:push",
+    "db:studio": "vp run --filter @jiansheng/admin db:studio",
+    "auth:createAdmin": "vp run --filter @jiansheng/admin auth:createAdmin",
+    "prepare": "vp config"
   },
   "dependencies": {
     "taze": "^21.1.0"
+  },
+  "devDependencies": {
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
+  },
+  "overrides": {
+    "vite": "catalog:"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "bun",
+      "version": "1.4.0",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "bun@1.4.0",
+  "catalog": {
+    "vite": "npm:@voidzero-dev/vite-plus-core@0.3.0",
+    "vite-plus": "0.3.0"
   }
 }

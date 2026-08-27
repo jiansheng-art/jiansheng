@@ -20,9 +20,9 @@
 
 <script setup lang="ts">
 import type { AuthFormField, FormSubmitEvent } from '@nuxt/ui';
-
 import * as z from 'zod';
 import { zhCN } from 'zod/locales';
+
 import { authClient } from '~/lib/auth-client';
 
 definePageMeta({
@@ -32,19 +32,22 @@ definePageMeta({
 z.config(zhCN());
 const toast = useToast();
 
-const fields: AuthFormField[] = [{
-  name: 'name',
-  type: 'text',
-  label: '用户名',
-  placeholder: '输入用户名',
-  required: true,
-}, {
-  name: 'password',
-  type: 'password',
-  label: '密码',
-  placeholder: '输入密码',
-  required: true,
-}];
+const fields: AuthFormField[] = [
+  {
+    name: 'name',
+    type: 'text',
+    label: '用户名',
+    placeholder: '输入用户名',
+    required: true,
+  },
+  {
+    name: 'password',
+    type: 'password',
+    label: '密码',
+    placeholder: '输入密码',
+    required: true,
+  },
+];
 
 const schema = z.object({
   name: z.string().min(1, '请输入用户名'),
@@ -69,8 +72,7 @@ async function login(data: Schema) {
       description: error.message,
       color: 'error',
     });
-  }
-  else {
+  } else {
     toast.add({
       title: '登录成功',
       color: 'success',

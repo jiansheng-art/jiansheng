@@ -5,9 +5,7 @@
       <UDashboardToolbar>
         <template #left>
           <UModal v-model:open="modalOpen" title="新建活动">
-            <UButton color="neutral" variant="soft" icon="lucide:plus">
-              新建活动
-            </UButton>
+            <UButton color="neutral" variant="soft" icon="lucide:plus"> 新建活动 </UButton>
 
             <template #body>
               <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
@@ -16,10 +14,7 @@
                 </UFormField>
 
                 <UFormField label="简述" name="description">
-                  <UInput
-                    v-model="state.description"
-                    class="w-full"
-                  />
+                  <UInput v-model="state.description" class="w-full" />
                 </UFormField>
 
                 <UFormField label="描述" name="markdown">
@@ -77,9 +72,7 @@
                   </UFileUpload>
                 </UFormField>
 
-                <UButton type="submit" :loading="submitLoading">
-                  创建
-                </UButton>
+                <UButton type="submit" :loading="submitLoading"> 创建 </UButton>
               </UForm>
             </template>
           </UModal>
@@ -99,10 +92,7 @@
         >
           <template #body>
             <div class="space-y-4">
-              <MarkdownViewer
-                v-if="item.markdown"
-                :markdown="item.markdown"
-              />
+              <MarkdownViewer v-if="item.markdown" :markdown="item.markdown" />
               <div class="flex justify-end">
                 <AdminArtActivityCard :activity="item" />
               </div>
@@ -164,9 +154,7 @@ const submitLoading = ref(false);
 
 const artActivityListKey = getQueryKey($trpc.artActivity.list, undefined);
 
-const {
-  data: activities,
-} = await $trpc.artActivity.list.useQuery();
+const { data: activities } = await $trpc.artActivity.list.useQuery();
 
 async function onSubmit() {
   submitLoading.value = true;
@@ -176,7 +164,11 @@ async function onSubmit() {
     try {
       const { id, url } = await $trpc.artActivity.createImage.mutate({ fileName: file.name });
       if (!id || !url) {
-        toast.add({ title: `${file.name} 上传失败`, description: '获取上传地址失败', color: 'error' });
+        toast.add({
+          title: `${file.name} 上传失败`,
+          description: '获取上传地址失败',
+          color: 'error',
+        });
         continue;
       }
       await $fetch(url, {
@@ -185,8 +177,7 @@ async function onSubmit() {
         headers: { 'Content-Type': file.type },
       });
       imageIds.push(id);
-    }
-    catch (err) {
+    } catch (err) {
       submitLoading.value = false;
       useErrorHandler(err);
       return;
@@ -210,11 +201,9 @@ async function onSubmit() {
     dateValue.value = undefined;
     images.value = [];
     await refreshNuxtData(artActivityListKey);
-  }
-  catch (err) {
+  } catch (err) {
     useErrorHandler(err);
-  }
-  finally {
+  } finally {
     submitLoading.value = false;
   }
 }

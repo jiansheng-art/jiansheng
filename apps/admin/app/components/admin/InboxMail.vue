@@ -24,7 +24,9 @@
 
         <UTooltip text="星标">
           <UButton
-            :icon="dirtyMail.starred ? 'tabler:star-filled' : 'tabler:star'" color="neutral" variant="ghost"
+            :icon="dirtyMail.starred ? 'tabler:star-filled' : 'tabler:star'"
+            color="neutral"
+            variant="ghost"
             :loading="starButtonLoading"
             @click="toggleStarred"
           />
@@ -32,17 +34,14 @@
       </template>
     </UDashboardNavbar>
 
-    <div class="flex flex-col sm:flex-row justify-between gap-1 p-4 sm:px-6 border-b border-default">
+    <div
+      class="flex flex-col sm:flex-row justify-between gap-1 p-4 sm:px-6 border-b border-default"
+    >
       <div class="flex items-start gap-4 sm:my-1.5">
-        <UAvatar
-          icon="lucide:user"
-          size="3xl"
-        />
+        <UAvatar icon="lucide:user" size="3xl" />
 
         <div class="min-w-0">
-          <p class="font-semibold text-highlighted">
-            {{ mail.firstName }} {{ mail.lastName }}
-          </p>
+          <p class="font-semibold text-highlighted">{{ mail.firstName }} {{ mail.lastName }}</p>
           <p class="text-muted">
             {{ mail.email }}
           </p>
@@ -63,8 +62,9 @@
 </template>
 
 <script setup lang="ts">
-import type { RouterOutput } from '~/types/trpc';
 import { getQueryKey } from 'trpc-nuxt/client';
+
+import type { RouterOutput } from '~/types/trpc';
 
 type Mail = RouterOutput['contactForm']['list'][number];
 
@@ -73,9 +73,12 @@ const { mail } = defineProps<{
 }>();
 const emits = defineEmits(['close']);
 const dirtyMail = ref({ ...mail });
-watch(() => mail, (newMail) => {
-  dirtyMail.value = { ...newMail };
-});
+watch(
+  () => mail,
+  (newMail) => {
+    dirtyMail.value = { ...newMail };
+  },
+);
 
 const { $trpc } = useNuxtApp();
 const toast = useToast();
@@ -89,8 +92,7 @@ async function toggleRead() {
     dirtyMail.value.unread = !dirtyMail.value.unread;
     await refreshNuxtData(contactFormListKey);
     readButtonLoading.value = false;
-  }
-  catch {
+  } catch {
     toast.add({
       title: '操作失败',
       description: '请稍后再试',
@@ -107,8 +109,7 @@ async function toggleStarred() {
     dirtyMail.value.starred = !dirtyMail.value.starred;
     await refreshNuxtData(contactFormListKey);
     starButtonLoading.value = false;
-  }
-  catch {
+  } catch {
     toast.add({
       title: '操作失败',
       description: '请稍后再试',

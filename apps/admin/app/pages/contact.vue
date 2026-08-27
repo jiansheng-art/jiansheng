@@ -1,10 +1,5 @@
 <template>
-  <UDashboardPanel
-    :default-size="25"
-    :min-size="20"
-    :max-size="30"
-    resizable
-  >
+  <UDashboardPanel :default-size="25" :min-size="20" :max-size="30" resizable>
     <UDashboardNavbar title="联系表格" />
     <AdminMailItem v-model="selectedMail" :mails="contactForms || []" />
   </UDashboardPanel>
@@ -24,14 +19,13 @@
 </template>
 
 <script setup lang="ts">
-import type { RouterOutput } from '~/types/trpc';
 import { breakpointsTailwind } from '@vueuse/core';
+
+import type { RouterOutput } from '~/types/trpc';
 
 const { $trpc } = useNuxtApp();
 
-const {
-  data: contactForms,
-} = await $trpc.contactForm.list.useQuery();
+const { data: contactForms } = await $trpc.contactForm.list.useQuery();
 
 const selectedMail = ref<null | RouterOutput['contactForm']['list'][number]>(null);
 const breakpoints = useBreakpoints(breakpointsTailwind);

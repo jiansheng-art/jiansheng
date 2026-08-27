@@ -3,7 +3,11 @@
     <div
       v-for="(mail, index) in mails"
       :key="index"
-      :ref="(el) => { if (el) mailsRefs[mail.id] = el as Element }"
+      :ref="
+        (el) => {
+          if (el) mailsRefs[mail.id] = el as Element;
+        }
+      "
     >
       <div
         class="p-4 sm:px-6 text-sm cursor-pointer border-l-2 transition-colors"
@@ -64,8 +68,7 @@ defineShortcuts({
 
     if (index === -1) {
       selectedMail.value = props.mails[0];
-    }
-    else if (index < props.mails.length - 1) {
+    } else if (index < props.mails.length - 1) {
       selectedMail.value = props.mails[index + 1];
     }
   },
@@ -74,8 +77,7 @@ defineShortcuts({
 
     if (index === -1) {
       selectedMail.value = props.mails.at(-1);
-    }
-    else if (index > 0) {
+    } else if (index > 0) {
       selectedMail.value = props.mails[index - 1];
     }
   },

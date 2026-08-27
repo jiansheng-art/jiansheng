@@ -10,7 +10,10 @@ const pageSlugSchema = z.enum(PAGE_SLUGS);
 
 type PageSlug = z.infer<typeof pageSlugSchema>;
 
-const defaultPageContent: Record<PageSlug, { title: string; description: string; markdown: string }> = {
+const defaultPageContent: Record<
+  PageSlug,
+  { title: string; description: string; markdown: string }
+> = {
   about: {
     title: 'About',
     description: 'Learn more about Zhang Jiansheng and his art practice.',
@@ -30,15 +33,15 @@ async function ensureDefaultPages() {
     where: inArray(pageContents.slug, PAGE_SLUGS),
   });
 
-  const existingSlugs = new Set(existing.map(item => item.slug));
-  const missingSlugs = PAGE_SLUGS.filter(slug => !existingSlugs.has(slug));
+  const existingSlugs = new Set(existing.map((item) => item.slug));
+  const missingSlugs = PAGE_SLUGS.filter((slug) => !existingSlugs.has(slug));
 
   if (!missingSlugs.length) {
     return;
   }
 
   await db.insert(pageContents).values(
-    missingSlugs.map(slug => ({
+    missingSlugs.map((slug) => ({
       slug,
       title: defaultPageContent[slug].title,
       description: defaultPageContent[slug].description,
@@ -48,22 +51,23 @@ async function ensureDefaultPages() {
 }
 
 export const pageContentRouter = router({
-  list: protectedProcedure
-    .query(async () => {
-      await ensureDefaultPages();
+  list: protectedProcedure.query(async () => {
+    await ensureDefaultPages();
 
-      return await db.query.pageContents.findMany({
-        where: inArray(pageContents.slug, PAGE_SLUGS),
-      });
-    }),
+    return await db.query.pageContents.findMany({
+      where: inArray(pageContents.slug, PAGE_SLUGS),
+    });
+  }),
 
   upsert: protectedProcedure
-    .input(z.object({
-      slug: pageSlugSchema,
-      title: z.string().min(1).max(255),
-      description: z.string().max(2000).optional(),
-      markdown: z.string().min(1),
-    }))
+    .input(
+      z.object({
+        slug: pageSlugSchema,
+        title: z.string().min(1).max(255),
+        description: z.string().max(2000).optional(),
+        markdown: z.string().min(1),
+      }),
+    )
     .mutation(async ({ input }) => {
       await db.transaction(async (tx) => {
         const record = {

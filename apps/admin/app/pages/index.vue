@@ -32,9 +32,7 @@
 
       <!-- Recent contacts table -->
       <div class="mt-8">
-        <h2 class="text-lg font-semibold mb-4">
-          最近联系表格
-        </h2>
+        <h2 class="text-lg font-semibold mb-4">最近联系表格</h2>
 
         <UTable
           v-if="recentContacts?.length"
@@ -57,17 +55,19 @@
           </template>
 
           <template #name-cell="{ row }">
-            <span class="font-medium">{{ row.original.firstName }} {{ row.original.lastName }}</span>
+            <span class="font-medium"
+              >{{ row.original.firstName }} {{ row.original.lastName }}</span
+            >
           </template>
 
           <template #date-cell="{ row }">
-            <span class="text-muted">{{ row.original.createdAt ? formatDate(row.original.createdAt) : '' }}</span>
+            <span class="text-muted">{{
+              row.original.createdAt ? formatDate(row.original.createdAt) : ''
+            }}</span>
           </template>
         </UTable>
 
-        <p v-else class="text-muted">
-          暂无联系表格
-        </p>
+        <p v-else class="text-muted">暂无联系表格</p>
       </div>
     </template>
   </UDashboardPanel>
@@ -148,11 +148,15 @@ const contactColumns: TableColumn<ContactForm>[] = [
     id: 'status',
     cell: ({ row }) => {
       const unread = row.original.unread;
-      return h(UBadge, {
-        color: unread ? 'primary' : 'neutral',
-        variant: 'subtle',
-        class: 'capitalize',
-      }, () => unread ? '未读' : '已读');
+      return h(
+        UBadge,
+        {
+          color: unread ? 'primary' : 'neutral',
+          variant: 'subtle',
+          class: 'capitalize',
+        },
+        () => (unread ? '未读' : '已读'),
+      );
     },
   },
   {
@@ -164,6 +168,11 @@ const contactColumns: TableColumn<ContactForm>[] = [
 
 function formatDate(date: Date | string) {
   const d = typeof date === 'string' ? new Date(date) : date;
-  return d.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  return d.toLocaleDateString('zh-CN', {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }
 </script>

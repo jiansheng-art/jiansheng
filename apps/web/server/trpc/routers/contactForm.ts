@@ -5,13 +5,15 @@ import { rateLimitedPublicProcedure, router } from '~~/server/trpc/trpc';
 
 export const contactFormRouter = router({
   create: rateLimitedPublicProcedure
-    .input(z.object({
-      firstName: z.string().min(1).max(255),
-      lastName: z.string().min(1).max(255),
-      email: z.email().min(1).max(255),
-      subject: z.string().min(1).max(255),
-      message: z.string().min(1).max(2000),
-    }))
+    .input(
+      z.object({
+        firstName: z.string().min(1).max(255),
+        lastName: z.string().min(1).max(255),
+        email: z.email().min(1).max(255),
+        subject: z.string().min(1).max(255),
+        message: z.string().min(1).max(2000),
+      }),
+    )
     .mutation(async ({ input }) => {
       await db.insert(contactForms).values({
         firstName: input.firstName,

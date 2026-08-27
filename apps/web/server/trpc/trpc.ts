@@ -1,8 +1,9 @@
-import type { Context } from './context';
 import { transformer } from '@jiansheng/shared/transformer';
 import { initTRPC, TRPCError } from '@trpc/server';
 import { ZodError } from 'zod';
+
 import { MemoryStore } from '../utils/store';
+import type { Context } from './context';
 
 const t = initTRPC.context<Context>().create({
   transformer,
@@ -14,9 +15,7 @@ const t = initTRPC.context<Context>().create({
       data: {
         ...shape.data,
         zodError:
-          error.code === 'BAD_REQUEST' && error.cause instanceof ZodError
-            ? error.cause
-            : null,
+          error.code === 'BAD_REQUEST' && error.cause instanceof ZodError ? error.cause : null,
       },
     };
   },

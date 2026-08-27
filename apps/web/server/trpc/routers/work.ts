@@ -6,44 +6,45 @@ import z from 'zod';
 import { publicProcedure, router } from '~~/server/trpc/trpc';
 
 export const workRouter = router({
-  listSeries: publicProcedure
-    .query(async () => {
-      const res = await db.query.workSeries.findMany({
-        orderBy: [desc(workSeries.id)],
-        with: {
-          works: {
-            columns: {
-              id: true,
-            },
-            orderBy: [desc(works.id)],
-            with: {
-              images: {
-                columns: {
-                  s3FileId: true,
-                },
-                limit: 1,
-              },
-            },
-            limit: 4,
+  listSeries: publicProcedure.query(async () => {
+    const res = await db.query.workSeries.findMany({
+      orderBy: [desc(workSeries.id)],
+      with: {
+        works: {
+          columns: {
+            id: true,
           },
+          orderBy: [desc(works.id)],
+          with: {
+            images: {
+              columns: {
+                s3FileId: true,
+              },
+              limit: 1,
+            },
+          },
+          limit: 4,
         },
-      });
+      },
+    });
 
-      return res.map(series => ({
-        ...series,
-        works: series.works.map(work => ({
-          ...work,
-          images: work.images.map(image => ({
-            url: s3.getFileUrl(image.s3FileId),
-          })),
+    return res.map((series) => ({
+      ...series,
+      works: series.works.map((work) => ({
+        ...work,
+        images: work.images.map((image) => ({
+          url: s3.getFileUrl(image.s3FileId),
         })),
-      }));
-    }),
+      })),
+    }));
+  }),
 
   getSeries: publicProcedure
-    .input(z.object({
-      id: z.number().int().positive(),
-    }))
+    .input(
+      z.object({
+        id: z.number().int().positive(),
+      }),
+    )
     .query(async ({ input }) => {
       const series = await db.query.workSeries.findFirst({
         where: eq(workSeries.id, input.id),
@@ -71,9 +72,9 @@ export const workRouter = router({
 
       return {
         ...series,
-        works: series.works.map(work => ({
+        works: series.works.map((work) => ({
           ...work,
-          images: work.images.map(image => ({
+          images: work.images.map((image) => ({
             url: s3.getFileUrl(image.s3FileId),
           })),
         })),
@@ -81,9 +82,11 @@ export const workRouter = router({
     }),
 
   get: publicProcedure
-    .input(z.object({
-      id: z.number().int().positive(),
-    }))
+    .input(
+      z.object({
+        id: z.number().int().positive(),
+      }),
+    )
     .query(async ({ input }) => {
       const work = await db.query.works.findFirst({
         where: eq(works.id, input.id),
@@ -99,27 +102,26 @@ export const workRouter = router({
 
       return {
         ...work,
-        images: work.images.map(image => ({
+        images: work.images.map((image) => ({
           url: s3.getFileUrl(image.s3FileId),
         })),
       };
     }),
 
-  list: publicProcedure
-    .query(async () => {
-      const workRes = await db.query.works.findMany({
-        orderBy: [desc(works.id)],
-        with: {
-          images: true,
-          series: true,
-        },
-      });
+  list: publicProcedure.query(async () => {
+    const workRes = await db.query.works.findMany({
+      orderBy: [desc(works.id)],
+      with: {
+        images: true,
+        series: true,
+      },
+    });
 
-      return workRes.map(work => ({
-        ...work,
-        images: work.images.map(image => ({
-          url: s3.getFileUrl(image.s3FileId),
-        })),
-      }));
-    }),
+    return workRes.map((work) => ({
+      ...work,
+      images: work.images.map((image) => ({
+        url: s3.getFileUrl(image.s3FileId),
+      })),
+    }));
+  }),
 });

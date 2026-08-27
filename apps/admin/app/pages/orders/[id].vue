@@ -86,23 +86,17 @@
           <UPageCard title="客户信息">
             <dl class="space-y-3 text-sm">
               <div class="flex justify-between">
-                <dt class="text-muted">
-                  姓名
-                </dt>
+                <dt class="text-muted">姓名</dt>
                 <dd>{{ order.customerName || '–' }}</dd>
               </div>
               <USeparator />
               <div class="flex justify-between">
-                <dt class="text-muted">
-                  邮箱
-                </dt>
+                <dt class="text-muted">邮箱</dt>
                 <dd>{{ order.customerEmail || '–' }}</dd>
               </div>
               <USeparator />
               <div class="flex justify-between">
-                <dt class="text-muted">
-                  下单时间
-                </dt>
+                <dt class="text-muted">下单时间</dt>
                 <dd>{{ formatDate(order.createdAt) }}</dd>
               </div>
             </dl>
@@ -112,18 +106,13 @@
             <div v-if="order.shippingAddress" class="text-sm leading-relaxed">
               {{ order.shippingAddress }}
             </div>
-            <div v-else class="text-sm text-muted">
-              未提供
-            </div>
+            <div v-else class="text-sm text-muted">未提供</div>
           </UPageCard>
         </div>
 
         <!-- Line Items -->
         <UPageCard title="商品明细">
-          <UTable
-            :data="order.lineItems"
-            :columns="itemColumns"
-          />
+          <UTable :data="order.lineItems" :columns="itemColumns" />
         </UPageCard>
 
         <!-- Shipping Management -->
@@ -139,11 +128,19 @@
               </UFormField>
 
               <UFormField label="快递公司" name="carrier">
-                <UInput v-model="shippingForm.carrier" placeholder="如 Canada Post, FedEx..." class="w-full" />
+                <UInput
+                  v-model="shippingForm.carrier"
+                  placeholder="如 Canada Post, FedEx..."
+                  class="w-full"
+                />
               </UFormField>
 
               <UFormField label="快递单号" name="trackingNumber">
-                <UInput v-model="shippingForm.trackingNumber" placeholder="输入快递单号" class="w-full" />
+                <UInput
+                  v-model="shippingForm.trackingNumber"
+                  placeholder="输入快递单号"
+                  class="w-full"
+                />
               </UFormField>
 
               <UFormField label="备注" name="notes">
@@ -152,12 +149,8 @@
             </div>
 
             <div v-if="order.shippedAt || order.deliveredAt" class="text-sm text-muted space-y-1">
-              <p v-if="order.shippedAt">
-                发货时间: {{ formatDate(order.shippedAt) }}
-              </p>
-              <p v-if="order.deliveredAt">
-                送达时间: {{ formatDate(order.deliveredAt) }}
-              </p>
+              <p v-if="order.shippedAt">发货时间: {{ formatDate(order.shippedAt) }}</p>
+              <p v-if="order.deliveredAt">送达时间: {{ formatDate(order.deliveredAt) }}</p>
             </div>
 
             <div class="flex justify-end">
@@ -167,14 +160,10 @@
         </UPageCard>
 
         <!-- Stripe Session ID -->
-        <div class="text-xs text-muted">
-          Stripe Session: {{ order.id }}
-        </div>
+        <div class="text-xs text-muted">Stripe Session: {{ order.id }}</div>
       </div>
 
-      <div v-else class="text-center py-24 text-muted">
-        订单不存在
-      </div>
+      <div v-else class="text-center py-24 text-muted">订单不存在</div>
     </template>
   </UDashboardPanel>
 </template>
@@ -199,42 +188,62 @@ const isLoading = computed(() => status.value === 'pending');
 // --- Payment status ---
 const paymentColor = computed(() => {
   switch (order.value?.status) {
-    case 'paid': return 'success' as const;
-    case 'unpaid': return 'warning' as const;
-    case 'no_payment_required': return 'info' as const;
-    default: return 'neutral' as const;
+    case 'paid':
+      return 'success' as const;
+    case 'unpaid':
+      return 'warning' as const;
+    case 'no_payment_required':
+      return 'info' as const;
+    default:
+      return 'neutral' as const;
   }
 });
 
 const paymentLabel = computed(() => {
   switch (order.value?.status) {
-    case 'paid': return '已支付';
-    case 'unpaid': return '未支付';
-    case 'no_payment_required': return '无需支付';
-    default: return order.value?.status ?? '–';
+    case 'paid':
+      return '已支付';
+    case 'unpaid':
+      return '未支付';
+    case 'no_payment_required':
+      return '无需支付';
+    default:
+      return order.value?.status ?? '–';
   }
 });
 
 // --- Shipping status ---
 const shippingColor = computed(() => {
   switch (order.value?.shippingStatus) {
-    case 'pending': return 'neutral' as const;
-    case 'processing': return 'warning' as const;
-    case 'shipped': return 'info' as const;
-    case 'delivered': return 'success' as const;
-    case 'cancelled': return 'error' as const;
-    default: return 'neutral' as const;
+    case 'pending':
+      return 'neutral' as const;
+    case 'processing':
+      return 'warning' as const;
+    case 'shipped':
+      return 'info' as const;
+    case 'delivered':
+      return 'success' as const;
+    case 'cancelled':
+      return 'error' as const;
+    default:
+      return 'neutral' as const;
   }
 });
 
 const shippingLabel = computed(() => {
   switch (order.value?.shippingStatus) {
-    case 'pending': return '待处理';
-    case 'processing': return '处理中';
-    case 'shipped': return '已发货';
-    case 'delivered': return '已送达';
-    case 'cancelled': return '已取消';
-    default: return order.value?.shippingStatus ?? '–';
+    case 'pending':
+      return '待处理';
+    case 'processing':
+      return '处理中';
+    case 'shipped':
+      return '已发货';
+    case 'delivered':
+      return '已送达';
+    case 'cancelled':
+      return '已取消';
+    default:
+      return order.value?.shippingStatus ?? '–';
   }
 });
 
@@ -285,43 +294,48 @@ const shippingStatusOptions = [
 ];
 
 // Sync form when order data loads
-watch(order, (o) => {
-  if (o) {
-    shippingForm.shippingStatus = o.shippingStatus;
-    shippingForm.trackingNumber = o.trackingNumber ?? '';
-    shippingForm.carrier = o.carrier ?? '';
-    shippingForm.notes = o.notes ?? '';
-  }
-}, { immediate: true });
+watch(
+  order,
+  (o) => {
+    if (o) {
+      shippingForm.shippingStatus = o.shippingStatus;
+      shippingForm.trackingNumber = o.trackingNumber ?? '';
+      shippingForm.carrier = o.carrier ?? '';
+      shippingForm.notes = o.notes ?? '';
+    }
+  },
+  { immediate: true },
+);
 
 async function onShippingSubmit() {
-  if (!order.value)
-    return;
+  if (!order.value) return;
   shippingSubmitLoading.value = true;
 
   try {
     await $trpc.order.updateShipping.mutate({
       stripeSessionId: order.value.id,
-      shippingStatus: shippingForm.shippingStatus as 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled',
+      shippingStatus: shippingForm.shippingStatus as
+        | 'pending'
+        | 'processing'
+        | 'shipped'
+        | 'delivered'
+        | 'cancelled',
       trackingNumber: shippingForm.trackingNumber || null,
       carrier: shippingForm.carrier || null,
       notes: shippingForm.notes || null,
     });
     toast.add({ title: '物流状态已更新', color: 'success' });
     await refreshNuxtData(orderGetKey.value);
-  }
-  catch (err) {
+  } catch (err) {
     useErrorHandler(err);
-  }
-  finally {
+  } finally {
     shippingSubmitLoading.value = false;
   }
 }
 
 // --- Formatters ---
 function formatAmount(amount: number | null, currency: string | null): string {
-  if (amount == null)
-    return '–';
+  if (amount == null) return '–';
   const value = amount / 100;
   return new Intl.NumberFormat('en-CA', {
     style: 'currency',

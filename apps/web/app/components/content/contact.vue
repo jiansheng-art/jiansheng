@@ -26,9 +26,7 @@
         <UTextarea v-model="state.message" :rows="5" class="w-full" />
       </UFormField>
 
-      <UButton size="lg" type="submit" :loading="isPending">
-        Submit
-      </UButton>
+      <UButton size="lg" type="submit" :loading="isPending"> Submit </UButton>
     </UForm>
   </div>
 </template>
@@ -38,11 +36,23 @@ import type { FormSubmitEvent } from '@nuxt/ui';
 import * as z from 'zod';
 
 const schema = z.object({
-  firstName: z.string('First name is required').min(1, 'First name is required').max(255, 'First name is too long'),
-  lastName: z.string('Last name is required').min(1, 'Last name is required').max(255, 'Last name is too long'),
+  firstName: z
+    .string('First name is required')
+    .min(1, 'First name is required')
+    .max(255, 'First name is too long'),
+  lastName: z
+    .string('Last name is required')
+    .min(1, 'Last name is required')
+    .max(255, 'Last name is too long'),
   email: z.email('Invalid email'),
-  subject: z.string('Subject is required').min(1, 'Subject is required').max(255, 'Subject is too long'),
-  message: z.string('Message is required').min(1, 'Message is required').max(2000, 'Message is too long'),
+  subject: z
+    .string('Subject is required')
+    .min(1, 'Subject is required')
+    .max(255, 'Subject is too long'),
+  message: z
+    .string('Message is required')
+    .min(1, 'Message is required')
+    .max(2000, 'Message is too long'),
 });
 
 type Schema = z.output<typeof schema>;
@@ -72,11 +82,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     state.email = undefined;
     state.subject = undefined;
     state.message = undefined;
-  }
-  catch (error) {
+  } catch (error) {
     useErrorHandler(error);
-  }
-  finally {
+  } finally {
     isPending.value = false;
   }
 }

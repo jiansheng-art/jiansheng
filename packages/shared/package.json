@@ -1,7 +1,7 @@
 {
   "name": "@jiansheng/shared",
-  "type": "module",
   "private": true,
+  "type": "module",
   "exports": {
     "./env": "./src/env.ts",
     "./schema": "./src/schema.ts",
@@ -10,8 +10,8 @@
     "./transformer": "./src/transformer.ts"
   },
   "scripts": {
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint": "vp check",
+    "lint:fix": "vp check --fix"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1119.0",
@@ -25,8 +25,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^9.3.0",
     "@types/ws": "^8.18.1",
-    "eslint": "^10.9.1"
+    "vite-plus": "catalog:"
   }
 }

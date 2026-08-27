@@ -1,5 +1,14 @@
 import { relations, sql } from 'drizzle-orm';
-import { boolean, foreignKey, index, integer, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  foreignKey,
+  index,
+  integer,
+  pgTable,
+  text,
+  timestamp,
+  varchar,
+} from 'drizzle-orm/pg-core';
 
 export const products = pgTable('products', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -12,22 +21,30 @@ export const products = pgTable('products', {
   unitAmount: integer('unit_amount'),
   currency: varchar({ length: 10 }),
   metadata: text(),
-  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`).$onUpdate(() => new Date()),
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
+  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .$onUpdate(() => new Date()),
 });
 
-export const productImages = pgTable('product_images', {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  productId: integer('product_id'),
-  fileName: varchar({ length: 255 }),
-  s3FileId: varchar({ length: 255 }).notNull(),
-}, table => [
-  foreignKey({
-    columns: [table.productId],
-    foreignColumns: [products.id],
-    name: 'fk_product',
-  }).onDelete('cascade'),
-]);
+export const productImages = pgTable(
+  'product_images',
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    productId: integer('product_id'),
+    fileName: varchar({ length: 255 }),
+    s3FileId: varchar({ length: 255 }).notNull(),
+  },
+  (table) => [
+    foreignKey({
+      columns: [table.productId],
+      foreignColumns: [products.id],
+      name: 'fk_product',
+    }).onDelete('cascade'),
+  ],
+);
 
 export const productRelations = relations(products, ({ many }) => ({
   images: many(productImages),
@@ -76,7 +93,7 @@ export const session = pgTable(
       .references(() => user.id, { onDelete: 'cascade' }),
     impersonatedBy: text('impersonated_by'),
   },
-  table => [index('session_userId_idx').on(table.userId)],
+  (table) => [index('session_userId_idx').on(table.userId)],
 );
 
 export const account = pgTable(
@@ -100,7 +117,7 @@ export const account = pgTable(
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
-  table => [index('account_userId_idx').on(table.userId)],
+  (table) => [index('account_userId_idx').on(table.userId)],
 );
 
 export const verification = pgTable(
@@ -116,7 +133,7 @@ export const verification = pgTable(
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
-  table => [index('verification_identifier_idx').on(table.identifier)],
+  (table) => [index('verification_identifier_idx').on(table.identifier)],
 );
 
 export const userRelations = relations(user, ({ many }) => ({
@@ -147,7 +164,9 @@ export const contactForms = pgTable('contact_forms', {
   message: varchar({ length: 2000 }).notNull(),
   unread: boolean().default(true).notNull(),
   starred: boolean().default(false).notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
 });
 
 export const worksCategories = pgTable('works_categories', {
@@ -162,41 +181,49 @@ export const workSeries = pgTable('work_series', {
   description: varchar({ length: 2000 }),
 });
 
-export const works = pgTable('works', {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  title: varchar({ length: 255 }).notNull(),
-  titleEnglish: varchar({ length: 255 }),
-  description: varchar({ length: 2000 }),
-  categoryId: integer('category_id'),
-  seriesId: integer('series_id'),
-  year: integer(),
-  material: varchar({ length: 255 }),
-  dimensions: varchar({ length: 255 }),
-}, table => [
-  foreignKey({
-    columns: [table.categoryId],
-    foreignColumns: [worksCategories.id],
-    name: 'fk_category',
-  }).onDelete('set null'),
-  foreignKey({
-    columns: [table.seriesId],
-    foreignColumns: [workSeries.id],
-    name: 'fk_series',
-  }).onDelete('set null'),
-]);
+export const works = pgTable(
+  'works',
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    title: varchar({ length: 255 }).notNull(),
+    titleEnglish: varchar({ length: 255 }),
+    description: varchar({ length: 2000 }),
+    categoryId: integer('category_id'),
+    seriesId: integer('series_id'),
+    year: integer(),
+    material: varchar({ length: 255 }),
+    dimensions: varchar({ length: 255 }),
+  },
+  (table) => [
+    foreignKey({
+      columns: [table.categoryId],
+      foreignColumns: [worksCategories.id],
+      name: 'fk_category',
+    }).onDelete('set null'),
+    foreignKey({
+      columns: [table.seriesId],
+      foreignColumns: [workSeries.id],
+      name: 'fk_series',
+    }).onDelete('set null'),
+  ],
+);
 
-export const workImages = pgTable('work_images', {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  workId: integer('work_id'),
-  fileName: varchar({ length: 255 }),
-  s3FileId: varchar({ length: 255 }).notNull(),
-}, table => [
-  foreignKey({
-    columns: [table.workId],
-    foreignColumns: [works.id],
-    name: 'fk_work',
-  }).onDelete('cascade'),
-]);
+export const workImages = pgTable(
+  'work_images',
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    workId: integer('work_id'),
+    fileName: varchar({ length: 255 }),
+    s3FileId: varchar({ length: 255 }).notNull(),
+  },
+  (table) => [
+    foreignKey({
+      columns: [table.workId],
+      foreignColumns: [works.id],
+      name: 'fk_work',
+    }).onDelete('cascade'),
+  ],
+);
 
 export const workRelations = relations(works, ({ many, one }) => ({
   images: many(workImages),
@@ -231,8 +258,12 @@ export const orderShipments = pgTable('order_shipments', {
   notes: text(),
   shippedAt: timestamp('shipped_at', { withTimezone: true, mode: 'date' }),
   deliveredAt: timestamp('delivered_at', { withTimezone: true, mode: 'date' }),
-  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`).$onUpdate(() => new Date()),
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
+  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .$onUpdate(() => new Date()),
 });
 
 export const artActivities = pgTable('art_activities', {
@@ -241,22 +272,30 @@ export const artActivities = pgTable('art_activities', {
   description: varchar({ length: 2000 }),
   markdown: text(),
   date: timestamp('date', { withTimezone: true, mode: 'date' }),
-  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`).$onUpdate(() => new Date()),
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
+  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .$onUpdate(() => new Date()),
 });
 
-export const artActivityImages = pgTable('art_activity_images', {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  activityId: integer('activity_id'),
-  fileName: varchar({ length: 255 }),
-  s3FileId: varchar({ length: 255 }).notNull(),
-}, table => [
-  foreignKey({
-    columns: [table.activityId],
-    foreignColumns: [artActivities.id],
-    name: 'fk_activity',
-  }).onDelete('cascade'),
-]);
+export const artActivityImages = pgTable(
+  'art_activity_images',
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    activityId: integer('activity_id'),
+    fileName: varchar({ length: 255 }),
+    s3FileId: varchar({ length: 255 }).notNull(),
+  },
+  (table) => [
+    foreignKey({
+      columns: [table.activityId],
+      foreignColumns: [artActivities.id],
+      name: 'fk_activity',
+    }).onDelete('cascade'),
+  ],
+);
 
 export const artActivityRelations = relations(artActivities, ({ many }) => ({
   images: many(artActivityImages),
@@ -275,6 +314,10 @@ export const pageContents = pgTable('page_contents', {
   title: varchar({ length: 255 }).notNull(),
   description: varchar({ length: 2000 }),
   markdown: text().notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).default(sql`CURRENT_TIMESTAMP`).$onUpdate(() => new Date()),
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
+  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .$onUpdate(() => new Date()),
 });

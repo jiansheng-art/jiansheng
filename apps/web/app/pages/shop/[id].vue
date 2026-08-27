@@ -1,12 +1,6 @@
 <template>
   <div>
-    <UButton
-      to="/shop"
-      variant="link"
-      color="neutral"
-      icon="lucide:arrow-left"
-      class="mb-4 px-0"
-    >
+    <UButton to="/shop" variant="link" color="neutral" icon="lucide:arrow-left" class="mb-4 px-0">
       Back to shop
     </UButton>
 
@@ -26,7 +20,11 @@
       description="This product does not exist or has been removed."
     />
 
-    <div v-else-if="product" :class="{ 'opacity-0': status === 'pending', 'animate-fade-in': status !== 'pending' }" class="grid gap-4 md:gap-8 md:grid-cols-5">
+    <div
+      v-else-if="product"
+      :class="{ 'opacity-0': status === 'pending', 'animate-fade-in': status !== 'pending' }"
+      class="grid gap-4 md:gap-8 md:grid-cols-5"
+    >
       <div class="md:col-span-3">
         <UCarousel
           v-if="product.images.length > 1"
@@ -60,7 +58,11 @@
           <Icon name="lucide:image-off" size="40" />
         </div>
 
-        <UPageCard v-if="product.description" title="Description" class="hidden md:block mt-4 md:mt-8">
+        <UPageCard
+          v-if="product.description"
+          title="Description"
+          class="hidden md:block mt-4 md:mt-8"
+        >
           <USkeleton
             v-if="!desktopDescriptionEditorReady"
             class="h-28 w-full rounded-md transition-opacity duration-300"
@@ -69,7 +71,7 @@
             :model-value="product.description"
             content-type="markdown"
             :editable="false"
-            :on-mount="() => desktopDescriptionEditorReady = true"
+            :on-mount="() => (desktopDescriptionEditorReady = true)"
             :ui="{
               base: 'px-0!',
             }"
@@ -89,17 +91,13 @@
 
               <dl class="space-y-2 text-md text-muted">
                 <div v-if="product.unitAmount != null && product.currency">
-                  <dt>
-                    Price:
-                  </dt>
+                  <dt>Price:</dt>
                   <dd class="text-2xl text-toned font-semibold font-latin-text-serif">
                     {{ formatPrice(product.unitAmount, product.currency) }}
                   </dd>
                 </div>
                 <div>
-                  <dt>
-                    Quantity:
-                  </dt>
+                  <dt>Quantity:</dt>
                   <dd class="mt-2">
                     <UInputNumber v-model="quantity" class="w-24" />
                   </dd>
@@ -137,7 +135,7 @@
               :model-value="product.description"
               content-type="markdown"
               :editable="false"
-              :on-mount="() => mobileDescriptionEditorReady = true"
+              :on-mount="() => (mobileDescriptionEditorReady = true)"
               class="w-full transition-opacity duration-300"
               :class="mobileDescriptionEditorReady ? 'opacity-100' : 'opacity-0'"
             />
@@ -161,19 +159,23 @@ const { $trpc } = useNuxtApp();
 const items = ref<AccordionItem[]>([
   {
     label: 'PACKING',
-    content: 'All orders are carefully packed in eco-friendly materials to ensure they arrive in perfect condition. We use recycled boxes and biodegradable packing peanuts whenever possible.',
+    content:
+      'All orders are carefully packed in eco-friendly materials to ensure they arrive in perfect condition. We use recycled boxes and biodegradable packing peanuts whenever possible.',
   },
   {
     label: 'SHIPPING',
-    content: 'We offer free standard shipping on all orders. Expedited shipping options are available at checkout.',
+    content:
+      'We offer free standard shipping on all orders. Expedited shipping options are available at checkout.',
   },
   {
     label: 'RETURNS',
-    content: 'We offer a 30-day return policy on all products. Items must be in their original condition and packaging.',
+    content:
+      'We offer a 30-day return policy on all products. Items must be in their original condition and packaging.',
   },
   {
     label: 'CARING FOR YOUR PRODUCT',
-    content: 'To keep your product looking its best, we recommend spot cleaning with a damp cloth. Avoid using harsh chemicals or abrasive materials.',
+    content:
+      'To keep your product looking its best, we recommend spot cleaning with a damp cloth. Avoid using harsh chemicals or abrasive materials.',
   },
 ]);
 
@@ -187,14 +189,13 @@ const mobileDescriptionEditorReady = ref(false);
 
 const quantity = ref(1);
 
-const {
-  data: product,
-  status,
-  error,
-} = $trpc.product.get.useQuery({ id: productId });
+const { data: product, status, error } = $trpc.product.get.useQuery({ id: productId });
 
 function formatPrice(amount: number, currency: string) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.toUpperCase() }).format(amount / 100);
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency.toUpperCase(),
+  }).format(amount / 100);
 }
 
 const cart = useCartStore();
@@ -202,38 +203,40 @@ const toast = useToast();
 const checkoutLoading = ref(false);
 
 function addToCart() {
-  if (!product.value)
-    return;
+  if (!product.value) return;
   cart.addItem(product.value, quantity.value);
-  toast.add({ title: 'Added to cart', description: `${product.value.name} has been added to your cart.`, color: 'success' });
+  toast.add({
+    title: 'Added to cart',
+    description: `${product.value.name} has been added to your cart.`,
+    color: 'success',
+  });
 }
 
 async function shopNow() {
-  if (!product.value)
-    return;
+  if (!product.value) return;
 
   checkoutLoading.value = true;
   try {
     const { url } = await $trpc.product.createCheckoutSession.mutate({
-      items: [{
-        productId: product.value.id,
-        quantity: quantity.value,
-      }],
+      items: [
+        {
+          productId: product.value.id,
+          quantity: quantity.value,
+        },
+      ],
     });
 
     await navigateTo(url, { external: true });
-  }
-  catch (err) {
+  } catch (err) {
     useErrorHandler(err);
-  }
-  finally {
+  } finally {
     checkoutLoading.value = false;
   }
 }
 
 useSeoMeta({
   title: () => product.value?.name || 'Product',
-  description: () => product.value ? toPlainText(product.value.description) : undefined,
+  description: () => (product.value ? toPlainText(product.value.description) : undefined),
 });
 </script>
 

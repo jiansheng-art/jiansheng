@@ -10,9 +10,19 @@
     }"
   >
     <UModal v-model:open="modalOpen" title="修改作品">
-      <UButton class="absolute top-3 right-3 z-50" variant="subtle" color="neutral" icon="lucide:edit" />
+      <UButton
+        class="absolute top-3 right-3 z-50"
+        variant="subtle"
+        color="neutral"
+        icon="lucide:edit"
+      />
       <UPopover>
-        <UButton class="absolute top-3 right-14 z-50" variant="subtle" color="error" icon="lucide:trash" />
+        <UButton
+          class="absolute top-3 right-14 z-50"
+          variant="subtle"
+          color="error"
+          icon="lucide:trash"
+        />
         <template #content="{ close }">
           <div class="p-4 space-y-4">
             <p>确定要删除这个作品吗？</p>
@@ -140,13 +150,15 @@
             </UFileUpload>
           </UFormField>
 
-          <UButton type="submit" :loading="submitLoading">
-            修改
-          </UButton>
+          <UButton type="submit" :loading="submitLoading"> 修改 </UButton>
         </UForm>
       </template>
     </UModal>
-    <NuxtImg v-if="work.images[0]?.url" :src="work.images[0].url" class="w-full aspect-square object-cover" />
+    <NuxtImg
+      v-if="work.images[0]?.url"
+      :src="work.images[0].url"
+      class="w-full aspect-square object-cover"
+    />
     <div v-else class="bg-muted flex items-center justify-center aspect-square object-cover">
       <Icon name="lucide:image-off" size="40" />
     </div>
@@ -155,9 +167,10 @@
 
 <script setup lang="ts">
 import type { EditorToolbarItem } from '@nuxt/ui';
-import type { RouterOutput } from '~/types/trpc';
 import { getQueryKey } from 'trpc-nuxt/client';
 import z from 'zod';
+
+import type { RouterOutput } from '~/types/trpc';
 
 const { work } = defineProps<{
   work: RouterOutput['work']['list'][0];
@@ -185,7 +198,7 @@ const { data: seriesList } = await $trpc.work.listSeries.useQuery();
 
 const seriesOptions = computed(() => {
   const base = [{ label: '不分配系列', value: null as number | null }];
-  const items = (seriesList.value ?? []).map(series => ({
+  const items = (seriesList.value ?? []).map((series) => ({
     label: series.titleEnglish ? `${series.title} / ${series.titleEnglish}` : series.title,
     value: series.id,
   }));
@@ -235,8 +248,7 @@ async function deleteWork(close: () => void) {
     toast.add({ title: '删除成功', description: '作品已删除', color: 'success' });
     await refreshNuxtData(workListKey);
     isDeleteWorkLoading.value = false;
-  }
-  catch (error) {
+  } catch (error) {
     useErrorHandler(error);
     isDeleteWorkLoading.value = false;
   }
@@ -246,10 +258,9 @@ async function deleteImage(id: number) {
   isDeleteImageLoading.value = true;
   try {
     await $trpc.work.deleteImage.mutate({ id });
-    workDirty.value.images = workDirty.value.images.filter(img => img.id !== id);
+    workDirty.value.images = workDirty.value.images.filter((img) => img.id !== id);
     isDeleteImageLoading.value = false;
-  }
-  catch (error) {
+  } catch (error) {
     useErrorHandler(error);
     isDeleteImageLoading.value = false;
   }
@@ -265,7 +276,11 @@ async function onSubmit() {
     try {
       const { id, url } = await $trpc.work.createImage.mutate({ fileName: file.name });
       if (!id || !url) {
-        toast.add({ title: `${file.name} 上传失败`, description: '获取上传地址失败', color: 'error' });
+        toast.add({
+          title: `${file.name} 上传失败`,
+          description: '获取上传地址失败',
+          color: 'error',
+        });
         continue;
       }
 
@@ -276,8 +291,7 @@ async function onSubmit() {
       });
 
       workImages.value.push(id);
-    }
-    catch (err) {
+    } catch (err) {
       submitLoading.value = false;
       useErrorHandler(err);
       return;
@@ -308,8 +322,7 @@ async function onSubmit() {
     await refreshNuxtData(workListKey);
     await refreshNuxtData(seriesListKey);
     submitLoading.value = false;
-  }
-  catch (error) {
+  } catch (error) {
     useErrorHandler(error);
     submitLoading.value = false;
   }

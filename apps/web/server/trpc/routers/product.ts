@@ -12,9 +12,11 @@ const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 export const productRouter = router({
   get: publicProcedure
-    .input(z.object({
-      id: z.number().int().positive(),
-    }))
+    .input(
+      z.object({
+        id: z.number().int().positive(),
+      }),
+    )
     .query(async ({ input }) => {
       const product = await db.query.products.findFirst({
         where: eq(products.id, input.id),
@@ -40,51 +42,49 @@ export const productRouter = router({
 
       return {
         ...product,
-        images: product.images.map(image => ({
+        images: product.images.map((image) => ({
           url: s3.getFileUrl(image.s3FileId),
         })),
       };
     }),
 
-  list: publicProcedure
-    .query(async () => {
-      const productsRes = await db.query.products.findMany({
-        where: eq(products.active, true),
-        orderBy: [desc(products.id)],
-        columns: {
-          id: true,
-          name: true,
-          currency: true,
-          unitAmount: true,
-        },
-        with: {
-          images: {
-            columns: {
-              s3FileId: true,
-            },
-            limit: 1,
+  list: publicProcedure.query(async () => {
+    const productsRes = await db.query.products.findMany({
+      where: eq(products.active, true),
+      orderBy: [desc(products.id)],
+      columns: {
+        id: true,
+        name: true,
+        currency: true,
+        unitAmount: true,
+      },
+      with: {
+        images: {
+          columns: {
+            s3FileId: true,
           },
+          limit: 1,
         },
-      });
+      },
+    });
 
-      return productsRes.map(product => ({
-        ...product,
-        images: product.images.map(image => ({
-          url: s3.getFileUrl(image.s3FileId),
-        })),
-      }));
-    }),
+    return productsRes.map((product) => ({
+      ...product,
+      images: product.images.map((image) => ({
+        url: s3.getFileUrl(image.s3FileId),
+      })),
+    }));
+  }),
 
   getRelated: publicProcedure
-    .input(z.object({
-      workId: z.number().int().positive(),
-    }))
+    .input(
+      z.object({
+        workId: z.number().int().positive(),
+      }),
+    )
     .query(async ({ input }) => {
       const productsRes = await db.query.products.findMany({
-        where: and(
-          eq(products.workId, input.workId),
-          eq(products.active, true),
-        ),
+        where: and(eq(products.workId, input.workId), eq(products.active, true)),
         orderBy: [desc(products.id)],
         columns: {
           id: true,
@@ -102,23 +102,29 @@ export const productRouter = router({
         },
       });
 
-      return productsRes.map(product => ({
+      return productsRes.map((product) => ({
         ...product,
-        images: product.images.map(image => ({
+        images: product.images.map((image) => ({
           url: s3.getFileUrl(image.s3FileId),
         })),
       }));
     }),
 
   createCheckoutSession: publicProcedure
-    .input(z.object({
-      items: z.array(z.object({
-        productId: z.number().int().positive(),
-        quantity: z.number().int().positive(),
-      })).min(1),
-    }))
+    .input(
+      z.object({
+        items: z
+          .array(
+            z.object({
+              productId: z.number().int().positive(),
+              quantity: z.number().int().positive(),
+            }),
+          )
+          .min(1),
+      }),
+    )
     .mutation(async ({ input }) => {
-      const productIds = input.items.map(item => item.productId);
+      const productIds = input.items.map((item) => item.productId);
       const dbProducts = await db.query.products.findMany({
         where: (p, { inArray }) => inArray(p.id, productIds),
       });
@@ -126,15 +132,24 @@ export const productRouter = router({
       const lineItems: { price: string; quantity: number }[] = [];
 
       for (const item of input.items) {
-        const product = dbProducts.find(p => p.id === item.productId);
+        const product = dbProducts.find((p) => p.id === item.productId);
         if (!product) {
-          throw new TRPCError({ code: 'NOT_FOUND', message: `Product ${item.productId} not found` });
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: `Product ${item.productId} not found`,
+          });
         }
         if (!product.active) {
-          throw new TRPCError({ code: 'BAD_REQUEST', message: `Product "${product.name}" is no longer available` });
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: `Product "${product.name}" is no longer available`,
+          });
         }
         if (!product.stripePriceId) {
-          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: `Product "${product.name}" has no price configured` });
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: `Product "${product.name}" has no price configured`,
+          });
         }
 
         lineItems.push({
@@ -154,7 +169,10 @@ export const productRouter = router({
       });
 
       if (!session.url) {
-        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to create checkout session' });
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to create checkout session',
+        });
       }
 
       return { url: session.url };

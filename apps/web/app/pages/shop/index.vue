@@ -55,14 +55,13 @@
 <script setup lang="ts">
 const { $trpc } = useNuxtApp();
 
-const {
-  data: products,
-  status,
-  error,
-} = await $trpc.product.list.useQuery();
+const { data: products, status, error } = await $trpc.product.list.useQuery();
 
 function formatPrice(amount: number, currency: string) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.toUpperCase() }).format(amount / 100);
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency.toUpperCase(),
+  }).format(amount / 100);
 }
 
 useSeoMeta({

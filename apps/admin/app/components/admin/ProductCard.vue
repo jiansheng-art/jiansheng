@@ -16,16 +16,29 @@
           size="sm"
           variant="subtle"
         />
-        <span v-if="productDirty.unitAmount != null && productDirty.currency" class="text-sm font-semibold">
+        <span
+          v-if="productDirty.unitAmount != null && productDirty.currency"
+          class="text-sm font-semibold"
+        >
           {{ formatPrice(productDirty.unitAmount, productDirty.currency) }}
         </span>
       </div>
     </template>
 
     <UModal v-model:open="modalOpen" title="修改商品">
-      <UButton class="absolute top-3 right-3 z-50" variant="subtle" color="neutral" icon="lucide:edit" />
+      <UButton
+        class="absolute top-3 right-3 z-50"
+        variant="subtle"
+        color="neutral"
+        icon="lucide:edit"
+      />
       <UPopover>
-        <UButton class="absolute top-3 right-14 z-50" variant="subtle" color="error" icon="lucide:trash" />
+        <UButton
+          class="absolute top-3 right-14 z-50"
+          variant="subtle"
+          color="error"
+          icon="lucide:trash"
+        />
         <template #content="{ close }">
           <div class="p-4 space-y-4">
             <p>确定要删除这个商品吗？</p>
@@ -145,14 +158,16 @@
             </UFileUpload>
           </UFormField>
 
-          <UButton type="submit" :loading="submitLoading">
-            修改
-          </UButton>
+          <UButton type="submit" :loading="submitLoading"> 修改 </UButton>
         </UForm>
       </template>
     </UModal>
 
-    <NuxtImg v-if="product.images[0]?.url" :src="product.images[0].url" class="w-full aspect-square object-cover" />
+    <NuxtImg
+      v-if="product.images[0]?.url"
+      :src="product.images[0].url"
+      class="w-full aspect-square object-cover"
+    />
     <div v-else class="bg-muted flex items-center justify-center aspect-square object-cover">
       <Icon name="lucide:image-off" size="40" />
     </div>
@@ -161,9 +176,10 @@
 
 <script setup lang="ts">
 import type { EditorToolbarItem } from '@nuxt/ui';
-import type { RouterOutput } from '~/types/trpc';
 import { getQueryKey } from 'trpc-nuxt/client';
 import z from 'zod';
+
+import type { RouterOutput } from '~/types/trpc';
 
 const { product, workList } = defineProps<{
   product: RouterOutput['product']['list'][number];
@@ -190,7 +206,7 @@ const productListKey = getQueryKey($trpc.product.list, undefined);
 
 const workOptions = computed(() => {
   const base = [{ label: '不关联作品', value: null as number | null }];
-  const items = (workList ?? []).map(workItem => ({
+  const items = (workList ?? []).map((workItem) => ({
     label: workItem.titleEnglish ? `${workItem.title} / ${workItem.titleEnglish}` : workItem.title,
     value: workItem.id,
   }));
@@ -227,7 +243,10 @@ const isDeleteLoading = ref(false);
 const isDeleteImageLoading = ref(false);
 
 function formatPrice(amount: number, currency: string) {
-  return new Intl.NumberFormat('zh-CN', { style: 'currency', currency: currency.toUpperCase() }).format(amount / 100);
+  return new Intl.NumberFormat('zh-CN', {
+    style: 'currency',
+    currency: currency.toUpperCase(),
+  }).format(amount / 100);
 }
 
 async function deleteProduct(close: () => void) {
@@ -238,11 +257,9 @@ async function deleteProduct(close: () => void) {
     modalOpen.value = false;
     toast.add({ title: '删除成功', description: '商品已删除', color: 'success' });
     await refreshNuxtData(productListKey);
-  }
-  catch (error) {
+  } catch (error) {
     useErrorHandler(error);
-  }
-  finally {
+  } finally {
     isDeleteLoading.value = false;
   }
 }
@@ -251,12 +268,10 @@ async function deleteImage(id: number) {
   isDeleteImageLoading.value = true;
   try {
     await $trpc.product.deleteImage.mutate({ id });
-    productDirty.value.images = productDirty.value.images.filter(img => img.id !== id);
-  }
-  catch (error) {
+    productDirty.value.images = productDirty.value.images.filter((img) => img.id !== id);
+  } catch (error) {
     useErrorHandler(error);
-  }
-  finally {
+  } finally {
     isDeleteImageLoading.value = false;
   }
 }
@@ -273,7 +288,11 @@ async function onSubmit() {
     try {
       const { id, url } = await $trpc.product.createImage.mutate({ fileName: file.name });
       if (!id || !url) {
-        toast.add({ title: `${file.name} 上传失败`, description: '获取上传地址失败', color: 'error' });
+        toast.add({
+          title: `${file.name} 上传失败`,
+          description: '获取上传地址失败',
+          color: 'error',
+        });
         continue;
       }
 
@@ -284,8 +303,7 @@ async function onSubmit() {
       });
 
       productImageIds.value.push(id);
-    }
-    catch (err) {
+    } catch (err) {
       submitLoading.value = false;
       useErrorHandler(err);
       return;
@@ -312,11 +330,9 @@ async function onSubmit() {
     modalOpen.value = false;
     toast.add({ title: '修改成功', description: '成功修改商品', color: 'success' });
     await refreshNuxtData(productListKey);
-  }
-  catch (err) {
+  } catch (err) {
     useErrorHandler(err);
-  }
-  finally {
+  } finally {
     submitLoading.value = false;
     productImageIds.value = [];
     images.value = [];

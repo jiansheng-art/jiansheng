@@ -4,9 +4,9 @@
 
 ## Usage
 
-- Install the dependencies: `bun install`
-- Start the development server: `bun run dev`
-- Build the application: `bun run build`
+- Install the dependencies: `vp install`
+- Start the development server: `vp run dev`
+- Build the application: `vp run build`
 
 ## License
 

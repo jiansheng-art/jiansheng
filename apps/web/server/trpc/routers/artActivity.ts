@@ -5,20 +5,19 @@ import { desc } from 'drizzle-orm';
 import { publicProcedure, router } from '~~/server/trpc/trpc';
 
 export const artActivityRouter = router({
-  list: publicProcedure
-    .query(async () => {
-      const res = await db.query.artActivities.findMany({
-        orderBy: [desc(artActivities.date), desc(artActivities.id)],
-        with: {
-          images: true,
-        },
-      });
+  list: publicProcedure.query(async () => {
+    const res = await db.query.artActivities.findMany({
+      orderBy: [desc(artActivities.date), desc(artActivities.id)],
+      with: {
+        images: true,
+      },
+    });
 
-      return res.map(item => ({
-        ...item,
-        images: item.images.map(image => ({
-          url: s3.getFileUrl(image.s3FileId),
-        })),
-      }));
-    }),
+    return res.map((item) => ({
+      ...item,
+      images: item.images.map((image) => ({
+        url: s3.getFileUrl(image.s3FileId),
+      })),
+    }));
+  }),
 });

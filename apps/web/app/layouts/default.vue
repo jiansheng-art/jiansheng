@@ -11,7 +11,10 @@
     >
       <UNavigationMenu
         highlight
-        variant="link" color="neutral" :items="items" :ui="{
+        variant="link"
+        color="neutral"
+        :items="items"
+        :ui="{
           list: 'gap-5',
         }"
       />
@@ -22,7 +25,11 @@
 
       <template #body>
         <UNavigationMenu
-          variant="link" orientation="vertical" color="neutral" :items="items" :ui="{
+          variant="link"
+          orientation="vertical"
+          color="neutral"
+          :items="items"
+          :ui="{
             list: 'flex flex-col gap-4',
           }"
         />

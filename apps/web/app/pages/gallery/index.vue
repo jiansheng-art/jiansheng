@@ -1,29 +1,28 @@
 <template>
   <div class="flex flex-col gap-6 lg:gap-10">
-    <NuxtLink
-      v-for="series in seriesList"
-      :key="series.id"
-      :to="`/gallery/series/${series.id}`"
-    >
+    <NuxtLink v-for="series in seriesList" :key="series.id" :to="`/gallery/series/${series.id}`">
       <UCard>
         <div class="grid gap-6 md:grid-cols-6">
           <div class="col-span-2">
             <h2 class="mt-2 text-4xl font-bold font-tc-serif">
               {{ series.title }}
             </h2>
-            <p v-if="series.titleEnglish" class="mt-1 text-xl text-muted font-latin-serif font-semibold">
+            <p
+              v-if="series.titleEnglish"
+              class="mt-1 text-xl text-muted font-latin-serif font-semibold"
+            >
               {{ series.titleEnglish }}
             </p>
-            <p v-if="series.description" class="line-clamp-3 mt-4 text-sm leading-relaxed text-muted">
+            <p
+              v-if="series.description"
+              class="line-clamp-3 mt-4 text-sm leading-relaxed text-muted"
+            >
               {{ toPlainText(series.description) }}
             </p>
           </div>
 
           <div class="col-span-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            <div
-              v-for="(preview, index) in series.works"
-              :key="preview.id"
-            >
+            <div v-for="(preview, index) in series.works" :key="preview.id">
               <UCard
                 :ui="{ body: 'p-2!' }"
                 :work="preview"

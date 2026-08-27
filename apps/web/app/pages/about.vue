@@ -11,6 +11,7 @@ const { data: pageContent } = await $trpc.pageContent.getBySlug.useQuery({ slug:
 
 useSeoMeta({
   title: pageContent.value?.title || 'About',
-  description: pageContent.value?.description || 'Learn more about Zhang Jiansheng and his art practice.',
+  description:
+    pageContent.value?.description || 'Learn more about Zhang Jiansheng and his art practice.',
 });
 </script>

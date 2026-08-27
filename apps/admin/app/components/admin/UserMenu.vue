@@ -35,56 +35,73 @@
 
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui';
+
 import { authClient } from '~/lib/auth-client';
 
 const colorMode = useColorMode();
 const session = await authClient.useSession(useFetch);
 
-const items = computed<DropdownMenuItem[][]>(() => ([[{
-  type: 'label',
-  label: session.data.value?.user.name,
-  avatar: {
-    icon: 'lucide:user',
-  },
-}], [{
-  label: 'Appearance',
-  icon: 'i-lucide-sun-moon',
-  children: [{
-    label: 'Light',
-    icon: 'i-lucide-sun',
-    type: 'checkbox',
-    checked: colorMode.value === 'light',
-    onSelect(e: Event) {
-      e.preventDefault();
+const items = computed<DropdownMenuItem[][]>(() => [
+  [
+    {
+      type: 'label',
+      label: session.data.value?.user.name,
+      avatar: {
+        icon: 'lucide:user',
+      },
+    },
+  ],
+  [
+    {
+      label: 'Appearance',
+      icon: 'i-lucide-sun-moon',
+      children: [
+        {
+          label: 'Light',
+          icon: 'i-lucide-sun',
+          type: 'checkbox',
+          checked: colorMode.value === 'light',
+          onSelect(e: Event) {
+            e.preventDefault();
 
-      colorMode.preference = 'light';
+            colorMode.preference = 'light';
+          },
+        },
+        {
+          label: 'Dark',
+          icon: 'i-lucide-moon',
+          type: 'checkbox',
+          checked: colorMode.value === 'dark',
+          onUpdateChecked(checked: boolean) {
+            if (checked) {
+              colorMode.preference = 'dark';
+            }
+          },
+          onSelect(e: Event) {
+            e.preventDefault();
+          },
+        },
+      ],
     },
-  }, {
-    label: 'Dark',
-    icon: 'i-lucide-moon',
-    type: 'checkbox',
-    checked: colorMode.value === 'dark',
-    onUpdateChecked(checked: boolean) {
-      if (checked) {
-        colorMode.preference = 'dark';
-      }
+  ],
+  [
+    {
+      label: 'Log out',
+      icon: 'i-lucide-log-out',
+      onSelect: async () => {
+        try {
+          await authClient.signOut();
+          navigateTo('/login');
+        } catch (error) {
+          const toast = useToast();
+          toast.add({
+            title: 'Logout failed',
+            description: (error as Error).message,
+            color: 'error',
+          });
+        }
+      },
     },
-    onSelect(e: Event) {
-      e.preventDefault();
-    },
-  }],
-}], [{
-  label: 'Log out',
-  icon: 'i-lucide-log-out',
-  onSelect: async () => {
-    try {
-      await authClient.signOut();
-      navigateTo('/login');
-    }
-    catch (error) {
-      const toast = useToast();
-      toast.add({ title: 'Logout failed', description: (error as Error).message, color: 'error' });
-    }
-  },
-}]]));
+  ],
+]);
 </script>

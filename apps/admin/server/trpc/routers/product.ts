@@ -17,7 +17,7 @@ async function syncStripeProductImages(productId: number, stripeProductId: strin
     where: eq(productImages.productId, productId),
   });
 
-  const imageUrls = images.map(image => s3.getFileUrl(image.s3FileId));
+  const imageUrls = images.map((image) => s3.getFileUrl(image.s3FileId));
 
   await stripe.products.update(stripeProductId, {
     images: imageUrls,
@@ -26,15 +26,17 @@ async function syncStripeProductImages(productId: number, stripeProductId: strin
 
 export const productRouter = router({
   create: protectedProcedure
-    .input(z.object({
-      name: z.string().min(1).max(255),
-      description: z.string().max(2000).optional(),
-      workId: z.number().int().positive().nullable().optional(),
-      active: z.boolean().optional(),
-      unitAmount: z.number().int().nonnegative(),
-      metadata: z.record(z.string(), z.string()).optional(),
-      imageIds: z.array(z.number().int().positive()).optional(),
-    }))
+    .input(
+      z.object({
+        name: z.string().min(1).max(255),
+        description: z.string().max(2000).optional(),
+        workId: z.number().int().positive().nullable().optional(),
+        active: z.boolean().optional(),
+        unitAmount: z.number().int().nonnegative(),
+        metadata: z.record(z.string(), z.string()).optional(),
+        imageIds: z.array(z.number().int().positive()).optional(),
+      }),
+    )
     .mutation(async ({ input }) => {
       const stripeProduct = await stripe.products.create({
         name: input.name,
@@ -53,19 +55,23 @@ export const productRouter = router({
       let product: typeof products.$inferSelect | undefined;
 
       try {
-        product = (await db.insert(products).values({
-          stripeProductId: stripeProduct.id,
-          stripePriceId: stripePrice.id,
-          workId: input.workId,
-          name: input.name,
-          description: input.description,
-          active: input.active,
-          unitAmount: input.unitAmount,
-          currency: CAD_CURRENCY,
-          metadata: input.metadata ? JSON.stringify(input.metadata) : undefined,
-        }).returning())[0];
-      }
-      catch {
+        product = (
+          await db
+            .insert(products)
+            .values({
+              stripeProductId: stripeProduct.id,
+              stripePriceId: stripePrice.id,
+              workId: input.workId,
+              name: input.name,
+              description: input.description,
+              active: input.active,
+              unitAmount: input.unitAmount,
+              currency: CAD_CURRENCY,
+              metadata: input.metadata ? JSON.stringify(input.metadata) : undefined,
+            })
+            .returning()
+        )[0];
+      } catch {
         await stripe.prices.update(stripePrice.id, { active: false });
         await stripe.products.update(stripeProduct.id, { active: false });
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to create product' });
@@ -77,9 +83,12 @@ export const productRouter = router({
 
       if (input.imageIds?.length) {
         for (const imageId of input.imageIds) {
-          await db.update(productImages).set({
-            productId: product.id,
-          }).where(eq(productImages.id, imageId));
+          await db
+            .update(productImages)
+            .set({
+              productId: product.id,
+            })
+            .where(eq(productImages.id, imageId));
         }
 
         await syncStripeProductImages(product.id, stripeProduct.id);
@@ -89,16 +98,18 @@ export const productRouter = router({
     }),
 
   update: protectedProcedure
-    .input(z.object({
-      id: z.number().int().positive(),
-      name: z.string().min(1).max(255).optional(),
-      description: z.string().max(10000).nullable().optional(),
-      workId: z.number().int().positive().nullable().optional(),
-      active: z.boolean().optional(),
-      unitAmount: z.number().int().nonnegative().nullable().optional(),
-      metadata: z.record(z.string(), z.string()).nullable().optional(),
-      imageIds: z.array(z.number().int().positive()).optional(),
-    }))
+    .input(
+      z.object({
+        id: z.number().int().positive(),
+        name: z.string().min(1).max(255).optional(),
+        description: z.string().max(10000).nullable().optional(),
+        workId: z.number().int().positive().nullable().optional(),
+        active: z.boolean().optional(),
+        unitAmount: z.number().int().nonnegative().nullable().optional(),
+        metadata: z.record(z.string(), z.string()).nullable().optional(),
+        imageIds: z.array(z.number().int().positive()).optional(),
+      }),
+    )
     .mutation(async ({ input }) => {
       const existing = await db.query.products.findFirst({
         where: eq(products.id, input.id),
@@ -109,7 +120,8 @@ export const productRouter = router({
       }
 
       const nextStripeProductId = existing.stripeProductId;
-      const nextUnitAmount = input.unitAmount === undefined ? existing.unitAmount : input.unitAmount;
+      const nextUnitAmount =
+        input.unitAmount === undefined ? existing.unitAmount : input.unitAmount;
 
       await stripe.products.update(nextStripeProductId, {
         name: input.name,
@@ -121,7 +133,10 @@ export const productRouter = router({
       let stripePriceId = existing.stripePriceId;
       if (input.unitAmount !== undefined || input.active !== undefined) {
         if (nextUnitAmount == null) {
-          throw new TRPCError({ code: 'BAD_REQUEST', message: 'unitAmount is required to create a Stripe price' });
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'unitAmount is required to create a Stripe price',
+          });
         }
 
         const stripePrice = await stripe.prices.create({
@@ -133,26 +148,40 @@ export const productRouter = router({
         stripePriceId = stripePrice.id;
       }
 
-      await db.update(products).set({
-        stripePriceId,
-        name: input.name,
-        description: input.description,
-        workId: input.workId,
-        active: input.active,
-        unitAmount: input.unitAmount,
-        currency: CAD_CURRENCY,
-        metadata: input.metadata === undefined ? undefined : input.metadata === null ? null : JSON.stringify(input.metadata),
-      }).where(eq(products.id, input.id));
+      await db
+        .update(products)
+        .set({
+          stripePriceId,
+          name: input.name,
+          description: input.description,
+          workId: input.workId,
+          active: input.active,
+          unitAmount: input.unitAmount,
+          currency: CAD_CURRENCY,
+          metadata:
+            input.metadata === undefined
+              ? undefined
+              : input.metadata === null
+                ? null
+                : JSON.stringify(input.metadata),
+        })
+        .where(eq(products.id, input.id));
 
       if (input.imageIds) {
-        await db.update(productImages).set({
-          productId: null,
-        }).where(eq(productImages.productId, input.id));
+        await db
+          .update(productImages)
+          .set({
+            productId: null,
+          })
+          .where(eq(productImages.productId, input.id));
 
         for (const imageId of input.imageIds) {
-          await db.update(productImages).set({
-            productId: input.id,
-          }).where(eq(productImages.id, imageId));
+          await db
+            .update(productImages)
+            .set({
+              productId: input.id,
+            })
+            .where(eq(productImages.id, imageId));
         }
 
         await syncStripeProductImages(input.id, nextStripeProductId);
@@ -160,9 +189,11 @@ export const productRouter = router({
     }),
 
   delete: protectedProcedure
-    .input(z.object({
-      id: z.number().int().positive(),
-    }))
+    .input(
+      z.object({
+        id: z.number().int().positive(),
+      }),
+    )
     .mutation(async ({ input }) => {
       const existing = await db.query.products.findFirst({
         where: eq(products.id, input.id),
@@ -176,7 +207,7 @@ export const productRouter = router({
         where: eq(productImages.productId, input.id),
       });
 
-      await Promise.all(existingImages.map(image => s3.deleteFile(image.s3FileId)));
+      await Promise.all(existingImages.map((image) => s3.deleteFile(image.s3FileId)));
 
       if (existing.stripePriceId) {
         await stripe.prices.update(existing.stripePriceId, { active: false });
@@ -186,35 +217,41 @@ export const productRouter = router({
       await db.delete(products).where(eq(products.id, input.id));
     }),
 
-  list: protectedProcedure
-    .query(async () => {
-      const productsRes = await db.query.products.findMany({
-        orderBy: [desc(products.id)],
-        with: {
-          images: true,
-        },
-      });
+  list: protectedProcedure.query(async () => {
+    const productsRes = await db.query.products.findMany({
+      orderBy: [desc(products.id)],
+      with: {
+        images: true,
+      },
+    });
 
-      return productsRes.map(product => ({
-        ...product,
-        images: product.images.map(image => ({
-          ...image,
-          url: s3.getFileUrl(image.s3FileId),
-        })),
-      }));
-    }),
+    return productsRes.map((product) => ({
+      ...product,
+      images: product.images.map((image) => ({
+        ...image,
+        url: s3.getFileUrl(image.s3FileId),
+      })),
+    }));
+  }),
 
   createImage: protectedProcedure
-    .input(z.object({
-      fileName: z.string().optional(),
-    }))
+    .input(
+      z.object({
+        fileName: z.string().optional(),
+      }),
+    )
     .mutation(async ({ input }) => {
       const s3FileId = nanoid(20);
 
-      const id = (await db.insert(productImages).values({
-        s3FileId,
-        fileName: input.fileName || null,
-      }).returning())[0]?.id;
+      const id = (
+        await db
+          .insert(productImages)
+          .values({
+            s3FileId,
+            fileName: input.fileName || null,
+          })
+          .returning()
+      )[0]?.id;
 
       const url = await s3.getUploadPresignedUrl(s3FileId);
       if (!url)
@@ -224,9 +261,11 @@ export const productRouter = router({
     }),
 
   deleteImage: protectedProcedure
-    .input(z.object({
-      id: z.number().int().positive(),
-    }))
+    .input(
+      z.object({
+        id: z.number().int().positive(),
+      }),
+    )
     .mutation(async ({ input }) => {
       const image = await db.query.productImages.findFirst({
         where: eq(productImages.id, input.id),
@@ -254,5 +293,4 @@ export const productRouter = router({
         await syncStripeProductImages(image.productId, stripeProductId);
       }
     }),
-
 });

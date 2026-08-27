@@ -26,7 +26,11 @@
       description="This gallery item does not exist or has been removed."
     />
 
-    <div v-else-if="work" :class="{ 'opacity-0': status === 'pending', 'animate-fade-in': status !== 'pending' }" class="grid gap-4 md:gap-8 md:grid-cols-5">
+    <div
+      v-else-if="work"
+      :class="{ 'opacity-0': status === 'pending', 'animate-fade-in': status !== 'pending' }"
+      class="grid gap-4 md:gap-8 md:grid-cols-5"
+    >
       <div class="md:col-span-3 flex flex-col gap-4 md:gap-8">
         <UCarousel
           v-if="work.images.length > 1"
@@ -73,23 +77,20 @@
                 {{ work.titleEnglish }}
               </p>
 
-              <dl v-if="work.year || work.material || work.dimensions" class="mt-2 space-y-2 text-md text-muted">
+              <dl
+                v-if="work.year || work.material || work.dimensions"
+                class="mt-2 space-y-2 text-md text-muted"
+              >
                 <div v-if="work.year">
-                  <dt class="font-medium text-toned">
-                    Year
-                  </dt>
+                  <dt class="font-medium text-toned">Year</dt>
                   <dd>{{ work.year }}</dd>
                 </div>
                 <div v-if="work.material">
-                  <dt class="font-medium text-toned">
-                    Material
-                  </dt>
+                  <dt class="font-medium text-toned">Material</dt>
                   <dd>{{ work.material }}</dd>
                 </div>
                 <div v-if="work.dimensions">
-                  <dt class="font-medium text-toned">
-                    Dimensions
-                  </dt>
+                  <dt class="font-medium text-toned">Dimensions</dt>
                   <dd>{{ work.dimensions }}</dd>
                 </div>
               </dl>
@@ -104,9 +105,7 @@
     </div>
 
     <div v-if="relatedProducts && relatedProducts.length" class="mt-10 md:mt-20">
-      <h2 class="text-xl font-bold mb-4">
-        Related Products
-      </h2>
+      <h2 class="text-xl font-bold mb-4">Related Products</h2>
 
       <div class="flex gap-4 overflow-x-auto p-px">
         <NuxtLink
@@ -122,7 +121,10 @@
                 :src="product.images[0].url"
                 class="size-40 md:size-48 object-cover shrink-0"
               />
-              <div v-else class="bg-muted size-40 md:size-48 items-center justify-center flex shrink-0">
+              <div
+                v-else
+                class="bg-muted size-40 md:size-48 items-center justify-center flex shrink-0"
+              >
                 <Icon name="lucide:image-off" size="20" />
               </div>
 
@@ -152,16 +154,15 @@ if (!Number.isInteger(workId) || workId <= 0) {
   throw createError({ statusCode: 404, statusMessage: 'Not Found' });
 }
 
-const {
-  data: work,
-  status,
-  error,
-} = await $trpc.work.get.useQuery({ id: workId });
+const { data: work, status, error } = await $trpc.work.get.useQuery({ id: workId });
 
 const { data: relatedProducts } = await $trpc.product.getRelated.useQuery({ workId });
 
 function formatPrice(amount: number, currency: string) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.toUpperCase() }).format(amount / 100);
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency.toUpperCase(),
+  }).format(amount / 100);
 }
 
 useSeoMeta({

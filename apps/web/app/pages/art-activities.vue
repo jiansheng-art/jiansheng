@@ -1,7 +1,5 @@
 <template>
-  <UChangelogVersions
-    :indicator-motion="false"
-  >
+  <UChangelogVersions :indicator-motion="false">
     <UChangelogVersion
       v-for="activity in activities"
       :key="activity.id"
@@ -11,10 +9,7 @@
       :ui="{ image: 'p-2 border border-default' }"
     >
       <template #body>
-        <MarkdownViewer
-          v-if="activity.markdown"
-          :markdown="activity.markdown"
-        />
+        <MarkdownViewer v-if="activity.markdown" :markdown="activity.markdown" />
       </template>
     </UChangelogVersion>
   </UChangelogVersions>

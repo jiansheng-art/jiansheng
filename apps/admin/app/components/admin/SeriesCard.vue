@@ -11,7 +11,12 @@
         />
 
         <template #body>
-          <UForm :schema="seriesSchema" :state="editSeriesState" class="space-y-4" @submit="onUpdateSeries">
+          <UForm
+            :schema="seriesSchema"
+            :state="editSeriesState"
+            class="space-y-4"
+            @submit="onUpdateSeries"
+          >
             <UFormField label="标题" name="title">
               <UInput v-model="editSeriesState.title" class="w-full" />
             </UFormField>
@@ -36,20 +41,21 @@
               </UEditor>
             </UFormField>
 
-            <UButton type="submit" :loading="seriesUpdateLoading">
-              保存修改
-            </UButton>
+            <UButton type="submit" :loading="seriesUpdateLoading"> 保存修改 </UButton>
           </UForm>
         </template>
       </UModal>
 
       <UPopover>
-        <UButton variant="soft" color="error" icon="lucide:trash" class="absolute top-3 right-14 z-50" />
+        <UButton
+          variant="soft"
+          color="error"
+          icon="lucide:trash"
+          class="absolute top-3 right-14 z-50"
+        />
         <template #content="{ close }">
           <div class="p-4 space-y-4">
-            <p class="text-sm">
-              确定要删除系列「{{ series.title }}」吗？
-            </p>
+            <p class="text-sm">确定要删除系列「{{ series.title }}」吗？</p>
             <div class="flex justify-end gap-2">
               <UButton label="取消" variant="outline" size="sm" @click="close" />
               <UButton
@@ -76,8 +82,9 @@
 
 <script setup lang="ts">
 import type { EditorToolbarItem } from '@nuxt/ui';
-import type { RouterOutput } from '~/types/trpc';
 import * as z from 'zod';
+
+import type { RouterOutput } from '~/types/trpc';
 
 const { series } = defineProps<{
   series: RouterOutput['work']['listSeries'][number];
@@ -147,8 +154,7 @@ async function onUpdateSeries() {
     modalOpen.value = false;
     emit('changed');
     seriesUpdateLoading.value = false;
-  }
-  catch (error) {
+  } catch (error) {
     seriesUpdateLoading.value = false;
     useErrorHandler(error);
   }
@@ -162,8 +168,7 @@ async function onDeleteSeries(close: () => void) {
     close();
     emit('changed');
     seriesDeleteLoading.value = false;
-  }
-  catch (error) {
+  } catch (error) {
     seriesDeleteLoading.value = false;
     useErrorHandler(error);
   }

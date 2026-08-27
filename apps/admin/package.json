@@ -1,18 +1,19 @@
 {
   "name": "@jiansheng/admin",
-  "type": "module",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev --port 3001",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
+    "prepare:types": "nuxt prepare",
     "typecheck": "nuxt typecheck",
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "vp check",
+    "lint:fix": "vp check --fix",
     "auth:createAdmin": "bun run ./scripts/createAdmin.ts"
   },
   "dependencies": {
@@ -37,17 +38,14 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^9.3.0",
     "@iconify-json/lucide": "^1.2.126",
-    "@unocss/eslint-plugin": "^66.8.1",
     "@vueuse/core": "^14.4.0",
     "@vueuse/nuxt": "^14.4.0",
     "drizzle-kit": "^0.31.10",
-    "eslint": "^10.9.1",
-    "eslint-plugin-format": "^2.0.1",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.12",
     "typescript": "^6.0.3",
+    "vite-plus": "catalog:",
     "vue-tsc": "^3.3.11"
   }
 }

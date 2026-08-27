@@ -9,7 +9,12 @@
     </template>
 
     <template #body>
-      <UForm :schema="schema" :state="currentState" class="space-y-4 w-full lg:max-w-4xl mx-auto" @submit="() => onSubmit(selectedSlug)">
+      <UForm
+        :schema="schema"
+        :state="currentState"
+        class="space-y-4 w-full lg:max-w-4xl mx-auto"
+        @submit="() => onSubmit(selectedSlug)"
+      >
         <UFormField label="标题" name="title">
           <UInput v-model="currentState.title" class="w-full" />
         </UFormField>
@@ -35,9 +40,7 @@
           </UEditor>
         </UFormField>
 
-        <UButton type="submit" :loading="isSaving[selectedSlug]">
-          保存
-        </UButton>
+        <UButton type="submit" :loading="isSaving[selectedSlug]"> 保存 </UButton>
       </UForm>
     </template>
   </UDashboardPanel>
@@ -62,24 +65,26 @@ type FormState = z.infer<typeof schema>;
 
 const selectedSlug = ref<PageSlug>('about');
 
-const menuItems = computed<NavigationMenuItem[][]>(() => [[
-  {
-    label: 'About 页面',
-    active: selectedSlug.value === 'about',
-    onSelect: (e: Event) => {
-      e.preventDefault();
-      selectedSlug.value = 'about';
+const menuItems = computed<NavigationMenuItem[][]>(() => [
+  [
+    {
+      label: 'About 页面',
+      active: selectedSlug.value === 'about',
+      onSelect: (e: Event) => {
+        e.preventDefault();
+        selectedSlug.value = 'about';
+      },
     },
-  },
-  {
-    label: 'Contact 页面',
-    active: selectedSlug.value === 'contact',
-    onSelect: (e: Event) => {
-      e.preventDefault();
-      selectedSlug.value = 'contact';
+    {
+      label: 'Contact 页面',
+      active: selectedSlug.value === 'contact',
+      onSelect: (e: Event) => {
+        e.preventDefault();
+        selectedSlug.value = 'contact';
+      },
     },
-  },
-]]);
+  ],
+]);
 
 const states = reactive<Record<PageSlug, FormState>>({
   about: {
@@ -132,7 +137,7 @@ watch(
     }
 
     for (const slug of ['about', 'contact'] as const) {
-      const page = items.find(item => item.slug === slug);
+      const page = items.find((item) => item.slug === slug);
       if (!page) {
         continue;
       }
@@ -157,11 +162,9 @@ async function onSubmit(slug: PageSlug) {
 
     toast.add({ title: '保存成功', description: '网页内容已更新', color: 'success' });
     await refreshNuxtData(pageContentListKey);
-  }
-  catch (error) {
+  } catch (error) {
     useErrorHandler(error);
-  }
-  finally {
+  } finally {
     isSaving[slug] = false;
   }
 }

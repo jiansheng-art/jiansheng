@@ -5,9 +5,7 @@
       <UDashboardToolbar>
         <template #left>
           <UModal v-model:open="modalOpen" title="新建商品">
-            <UButton color="neutral" variant="soft" icon="lucide:plus">
-              新建商品
-            </UButton>
+            <UButton color="neutral" variant="soft" icon="lucide:plus"> 新建商品 </UButton>
 
             <template #body>
               <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
@@ -31,7 +29,11 @@
                   </UEditor>
                 </UFormField>
 
-                <UFormField label="价格（分）" name="unitAmount" description="以货币最小单位计，如 CAD 的分">
+                <UFormField
+                  label="价格（分）"
+                  name="unitAmount"
+                  description="以货币最小单位计，如 CAD 的分"
+                >
                   <UInputNumber v-model="state.unitAmount" class="w-full" />
                 </UFormField>
 
@@ -83,9 +85,7 @@
                   </UFileUpload>
                 </UFormField>
 
-                <UButton type="submit" :loading="submitLoading">
-                  创建
-                </UButton>
+                <UButton type="submit" :loading="submitLoading"> 创建 </UButton>
               </UForm>
             </template>
           </UModal>
@@ -94,7 +94,12 @@
     </template>
     <template #body>
       <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-4">
-        <AdminProductCard v-for="item in products" :key="item.id" :product="item" :work-list="works" />
+        <AdminProductCard
+          v-for="item in products"
+          :key="item.id"
+          :product="item"
+          :work-list="works"
+        />
       </div>
     </template>
   </UDashboardPanel>
@@ -147,15 +152,13 @@ const modalOpen = ref(false);
 
 const productListKey = getQueryKey($trpc.product.list, undefined);
 
-const {
-  data: products,
-} = await $trpc.product.list.useQuery();
+const { data: products } = await $trpc.product.list.useQuery();
 
 const { data: works } = await $trpc.work.listIdAndTitle.useQuery();
 
 const workOptions = computed(() => {
   const base = [{ label: '不关联作品', value: null as number | null }];
-  const items = (works.value ?? []).map(work => ({
+  const items = (works.value ?? []).map((work) => ({
     label: work.titleEnglish ? `${work.title} / ${work.titleEnglish}` : work.title,
     value: work.id,
   }));
@@ -175,7 +178,11 @@ async function onSubmit() {
     try {
       const { id, url } = await $trpc.product.createImage.mutate({ fileName: file.name });
       if (!id || !url) {
-        toast.add({ title: `${file.name} 上传失败`, description: '获取上传地址失败', color: 'error' });
+        toast.add({
+          title: `${file.name} 上传失败`,
+          description: '获取上传地址失败',
+          color: 'error',
+        });
         continue;
       }
 
@@ -186,8 +193,7 @@ async function onSubmit() {
       });
 
       productImageIds.value.push(id);
-    }
-    catch (err) {
+    } catch (err) {
       submitLoading.value = false;
       useErrorHandler(err);
       return;
@@ -214,11 +220,9 @@ async function onSubmit() {
     productImageIds.value = [];
     images.value = [];
     await refreshNuxtData(productListKey);
-  }
-  catch (err) {
+  } catch (err) {
     useErrorHandler(err);
-  }
-  finally {
+  } finally {
     submitLoading.value = false;
   }
 }

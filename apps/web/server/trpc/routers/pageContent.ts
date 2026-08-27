@@ -9,7 +9,10 @@ const pageSlugSchema = z.enum(PAGE_SLUGS);
 
 type PageSlug = z.infer<typeof pageSlugSchema>;
 
-const defaultPageContent: Record<PageSlug, { title: string; description: string; markdown: string }> = {
+const defaultPageContent: Record<
+  PageSlug,
+  { title: string; description: string; markdown: string }
+> = {
   about: {
     title: 'About',
     description: 'Learn more about Zhang Jiansheng and his art practice.',
@@ -29,15 +32,15 @@ async function ensureDefaultPages() {
     where: inArray(pageContents.slug, PAGE_SLUGS),
   });
 
-  const existingSlugs = new Set(existing.map(item => item.slug));
-  const missingSlugs = PAGE_SLUGS.filter(slug => !existingSlugs.has(slug));
+  const existingSlugs = new Set(existing.map((item) => item.slug));
+  const missingSlugs = PAGE_SLUGS.filter((slug) => !existingSlugs.has(slug));
 
   if (!missingSlugs.length) {
     return;
   }
 
   await db.insert(pageContents).values(
-    missingSlugs.map(slug => ({
+    missingSlugs.map((slug) => ({
       slug,
       title: defaultPageContent[slug].title,
       description: defaultPageContent[slug].description,
@@ -48,9 +51,11 @@ async function ensureDefaultPages() {
 
 export const pageContentRouter = router({
   getBySlug: publicProcedure
-    .input(z.object({
-      slug: pageSlugSchema,
-    }))
+    .input(
+      z.object({
+        slug: pageSlugSchema,
+      }),
+    )
     .query(async ({ input }) => {
       await ensureDefaultPages();
 
@@ -58,5 +63,4 @@ export const pageContentRouter = router({
         where: eq(pageContents.slug, input.slug),
       });
     }),
-
 });

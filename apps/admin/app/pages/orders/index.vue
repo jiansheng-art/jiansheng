@@ -102,10 +102,7 @@ const orderListInput = computed(() => ({
   startingAfter: cursor.value,
 }));
 
-const {
-  data,
-  status,
-} = await $trpc.order.list.useQuery(orderListInput);
+const { data, status } = await $trpc.order.list.useQuery(orderListInput);
 
 const isLoading = computed(() => status.value === 'pending');
 const orders = computed(() => data.value?.orders as Order[] | undefined);
@@ -140,11 +137,12 @@ const columns: TableColumn<Order>[] = [
     id: 'paymentStatus',
     cell: ({ row }) => {
       const s = row.original.status;
-      const color = {
-        paid: 'success' as const,
-        unpaid: 'warning' as const,
-        no_payment_required: 'info' as const,
-      }[s] ?? 'neutral' as const;
+      const color =
+        {
+          paid: 'success' as const,
+          unpaid: 'warning' as const,
+          no_payment_required: 'info' as const,
+        }[s] ?? ('neutral' as const);
       return h(UBadge, { variant: 'subtle', color }, () => statusLabel(s));
     },
   },
@@ -165,12 +163,10 @@ function onRowSelect(_event: Event, row: { original: Order }) {
 
 // --- Pagination ---
 function nextPage() {
-  if (!data.value?.lastId)
-    return;
+  if (!data.value?.lastId) return;
   if (cursor.value) {
     cursorStack.value.push(cursor.value);
-  }
-  else {
+  } else {
     cursorStack.value.push('');
   }
   cursor.value = data.value.lastId;
@@ -183,8 +179,7 @@ function prevPage() {
 
 // --- Formatters ---
 function formatAmount(amount: number | null, currency: string | null): string {
-  if (amount == null)
-    return '–';
+  if (amount == null) return '–';
   const value = amount / 100;
   return new Intl.NumberFormat('en-CA', {
     style: 'currency',
@@ -204,32 +199,48 @@ function formatDate(date: Date | string) {
 
 function statusLabel(status: string) {
   switch (status) {
-    case 'paid': return '已支付';
-    case 'unpaid': return '未支付';
-    case 'no_payment_required': return '无需支付';
-    default: return status;
+    case 'paid':
+      return '已支付';
+    case 'unpaid':
+      return '未支付';
+    case 'no_payment_required':
+      return '无需支付';
+    default:
+      return status;
   }
 }
 
 function shippingStatusColor(status: string) {
   switch (status) {
-    case 'pending': return 'neutral' as const;
-    case 'processing': return 'warning' as const;
-    case 'shipped': return 'info' as const;
-    case 'delivered': return 'success' as const;
-    case 'cancelled': return 'error' as const;
-    default: return 'neutral' as const;
+    case 'pending':
+      return 'neutral' as const;
+    case 'processing':
+      return 'warning' as const;
+    case 'shipped':
+      return 'info' as const;
+    case 'delivered':
+      return 'success' as const;
+    case 'cancelled':
+      return 'error' as const;
+    default:
+      return 'neutral' as const;
   }
 }
 
 function shippingStatusLabel(status: string) {
   switch (status) {
-    case 'pending': return '待处理';
-    case 'processing': return '处理中';
-    case 'shipped': return '已发货';
-    case 'delivered': return '已送达';
-    case 'cancelled': return '已取消';
-    default: return status;
+    case 'pending':
+      return '待处理';
+    case 'processing':
+      return '处理中';
+    case 'shipped':
+      return '已发货';
+    case 'delivered':
+      return '已送达';
+    case 'cancelled':
+      return '已取消';
+    default:
+      return status;
   }
 }
 </script>

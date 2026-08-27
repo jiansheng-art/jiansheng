@@ -9,6 +9,7 @@
 
 <script setup lang="ts">
 useSeoMeta({
-  titleTemplate: (title?: string) => !title ? '管理 JianshengArt' : `${title} | 管理 JianshengArt`,
+  titleTemplate: (title?: string) =>
+    !title ? '管理 JianshengArt' : `${title} | 管理 JianshengArt`,
 });
 </script>

@@ -6,23 +6,24 @@ This repository is a Bun workspace with two separate Nuxt projects:
 - `apps/admin`: admin UI + admin tRPC backend
 - `packages/shared`: shared Drizzle schema/connection used by both apps
 
+Install Vite+ (`vp`) once, then use it as the toolchain. Bun stays the package manager.
+
 ## Install
 
-- `bun install`
+- `vp install`
 
 ## Develop
 
-- `bun run dev:web` (public app)
-- `bun run dev:admin` (admin app)
+- `vp run dev:web` (public app)
+- `vp run dev:admin` (admin app)
 
 ## Quality checks
 
-- `bun run typecheck`
-- `bun run lint`
+- `vp check` (format, lint, type-aware lint)
+- `vp run typecheck`
 
 ## Database/auth helpers
 
-- `bun run db:push`
-- `bun run db:studio`
-- `bun run auth:genKey`
-- `bun run auth:createAdmin`
+- `vp run db:push`
+- `vp run db:studio`
+- `vp run auth:createAdmin`

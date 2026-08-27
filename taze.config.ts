@@ -5,10 +5,6 @@ export default defineConfig({
   install: true,
   recursive: true,
   mode: 'major',
-  ignorePaths: [
-    '**/node_modules/**',
-  ],
-  exclude: [
-    'typescript',
-  ],
+  ignorePaths: ['**/node_modules/**'],
+  exclude: ['typescript', 'vite', 'vite-plus'],
 });

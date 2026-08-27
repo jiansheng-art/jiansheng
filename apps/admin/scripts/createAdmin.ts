@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+
 import { auth } from '../server/utils/auth';
 
 const ctx = await auth.$context;
@@ -7,17 +8,21 @@ const password = ctx.password;
 
 const initialPassword = nanoid(12);
 
-const user = await internalAdapter.createUser({
-  email: 'admin@jiansheng.art',
-  emailVerified: true,
-  name: 'Admin',
-  username: 'admin',
-  role: 'admin',
-});
+const user = await internalAdapter.createUser(
+  {
+    email: 'admin@jiansheng.art',
+    emailVerified: true,
+    name: 'Admin',
+    username: 'admin',
+    role: 'admin',
+  },
+  { method: 'admin' },
+);
 
 await internalAdapter.linkAccount({
   accountId: user.id,
   providerId: 'credential',
+  issuer: 'local:credential',
   userId: user.id,
   password: await password.hash(initialPassword),
 });

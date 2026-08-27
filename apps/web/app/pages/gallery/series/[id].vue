@@ -1,11 +1,5 @@
 <template>
-  <UButton
-    to="/gallery"
-    variant="link"
-    color="neutral"
-    icon="lucide:arrow-left"
-    class="mb-6 px-0"
-  >
+  <UButton to="/gallery" variant="link" color="neutral" icon="lucide:arrow-left" class="mb-6 px-0">
     Back to gallery
   </UButton>
 
@@ -26,7 +20,11 @@
     :class="{ 'opacity-0': status === 'pending' }"
   />
 
-  <div v-else :class="{ 'opacity-0': status === 'pending', 'animate-fade-in': status !== 'pending' }" class="flex flex-col gap-12">
+  <div
+    v-else
+    :class="{ 'opacity-0': status === 'pending', 'animate-fade-in': status !== 'pending' }"
+    class="flex flex-col gap-12"
+  >
     <div>
       <h2 class="mt-3 mb-3 text-4xl md:text-6xl font-extrabold font-tc-serif">
         {{ series.title }}
@@ -41,9 +39,7 @@
     </div>
 
     <div v-if="series.description">
-      <p class="text-lg font-bold mb-4">
-        Series Introduction
-      </p>
+      <p class="text-lg font-bold mb-4">Series Introduction</p>
       <MarkdownViewer :markdown="series.description" />
     </div>
   </div>
@@ -59,15 +55,11 @@ if (!Number.isInteger(seriesId) || seriesId <= 0) {
   throw createError({ statusCode: 404, statusMessage: 'Not Found' });
 }
 
-const {
-  data: series,
-  status,
-  error,
-} = await $trpc.work.getSeries.useQuery({ id: seriesId });
+const { data: series, status, error } = await $trpc.work.getSeries.useQuery({ id: seriesId });
 
 useSeoMeta({
   title: () => series.value?.title || 'Exhibition',
-  description: () => series.value ? toPlainText(series.value.description) : undefined,
+  description: () => (series.value ? toPlainText(series.value.description) : undefined),
 });
 </script>
 

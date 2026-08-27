@@ -5,12 +5,15 @@
       <UDashboardToolbar>
         <template #left>
           <UModal v-model:open="seriesModalOpen" title="新建系列">
-            <UButton color="neutral" variant="soft" icon="lucide:folder-plus">
-              新建系列
-            </UButton>
+            <UButton color="neutral" variant="soft" icon="lucide:folder-plus"> 新建系列 </UButton>
 
             <template #body>
-              <UForm :schema="seriesSchema" :state="seriesState" class="space-y-4" @submit="onSubmitSeries">
+              <UForm
+                :schema="seriesSchema"
+                :state="seriesState"
+                class="space-y-4"
+                @submit="onSubmitSeries"
+              >
                 <UFormField label="标题" name="title">
                   <UInput v-model="seriesState.title" class="w-full" />
                 </UFormField>
@@ -35,17 +38,13 @@
                   </UEditor>
                 </UFormField>
 
-                <UButton type="submit" :loading="seriesSubmitLoading">
-                  创建系列
-                </UButton>
+                <UButton type="submit" :loading="seriesSubmitLoading"> 创建系列 </UButton>
               </UForm>
             </template>
           </UModal>
 
           <UModal v-model:open="modalOpen" title="新建作品">
-            <UButton color="neutral" variant="soft" icon="lucide:plus">
-              新建作品
-            </UButton>
+            <UButton color="neutral" variant="soft" icon="lucide:plus"> 新建作品 </UButton>
 
             <template #body>
               <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
@@ -129,9 +128,7 @@
                   </UFileUpload>
                 </UFormField>
 
-                <UButton type="submit" :loading="submitLoading">
-                  创建
-                </UButton>
+                <UButton type="submit" :loading="submitLoading"> 创建 </UButton>
               </UForm>
             </template>
           </UModal>
@@ -140,9 +137,7 @@
     </template>
     <template #body>
       <div class="mb-8">
-        <h2 class="mb-4 text-lg font-semibold">
-          系列列表
-        </h2>
+        <h2 class="mb-4 text-lg font-semibold">系列列表</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           <AdminSeriesCard
             v-for="series in seriesList"
@@ -223,17 +218,13 @@ const seriesModalOpen = ref(false);
 const workListKey = getQueryKey($trpc.work.list, undefined);
 const seriesListKey = getQueryKey($trpc.work.listSeries, undefined);
 
-const {
-  data: works,
-} = await $trpc.work.list.useQuery();
+const { data: works } = await $trpc.work.list.useQuery();
 
-const {
-  data: seriesList,
-} = await $trpc.work.listSeries.useQuery();
+const { data: seriesList } = await $trpc.work.listSeries.useQuery();
 
 const seriesOptions = computed(() => {
   const base = [{ label: '不分配系列', value: null as number | null }];
-  const items = (seriesList.value ?? []).map(series => ({
+  const items = (seriesList.value ?? []).map((series) => ({
     label: series.titleEnglish ? `${series.title} / ${series.titleEnglish}` : series.title,
     value: series.id,
   }));
@@ -268,8 +259,7 @@ async function onSubmitSeries() {
     seriesState.titleEnglish = '';
     seriesState.description = '';
     seriesSubmitLoading.value = false;
-  }
-  catch (error) {
+  } catch (error) {
     seriesSubmitLoading.value = false;
     useErrorHandler(error);
   }
@@ -281,7 +271,11 @@ async function onSubmit() {
     try {
       const { id, url } = await $trpc.work.createImage.mutate({ fileName: file.name });
       if (!id || !url) {
-        toast.add({ title: `${file.name} 上传失败`, description: '获取上传地址失败', color: 'error' });
+        toast.add({
+          title: `${file.name} 上传失败`,
+          description: '获取上传地址失败',
+          color: 'error',
+        });
         continue;
       }
 
@@ -292,8 +286,7 @@ async function onSubmit() {
       });
 
       workImages.value.push(id);
-    }
-    catch (err) {
+    } catch (err) {
       submitLoading.value = false;
       useErrorHandler(err);
       return;
