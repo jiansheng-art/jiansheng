@@ -5,12 +5,12 @@ export default defineConfig({
     '*': 'vp check --fix',
   },
   fmt: {
-    ignorePatterns: ['.github/**', '**/.nuxt/**', '**/.output/**'],
+    ignorePatterns: ['.github/**', '**/.nuxt/**', '**/.output/**', '**/.agents/**'],
     singleQuote: true,
     sortImports: true,
   },
   lint: {
-    ignorePatterns: ['.github/**', '**/.nuxt/**', '**/.output/**'],
+    ignorePatterns: ['.github/**', '**/.nuxt/**', '**/.output/**', '**/.agents/**'],
     jsPlugins: [{ name: 'vite-plus', specifier: 'vite-plus/oxlint-plugin' }],
     rules: { 'vite-plus/prefer-vite-plus-imports': 'error' },
     options: {
