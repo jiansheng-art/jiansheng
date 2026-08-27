@@ -19,6 +19,6 @@
     "auth:createAdmin": "bun run --filter '@jiansheng/admin' auth:createAdmin"
   },
   "dependencies": {
-    "taze": "^19.14.1"
+    "taze": "^21.1.0"
   }
 }
