@@ -33,6 +33,9 @@ export default defineNuxtConfig({
     '/**': {
       isr: 1 * 60 * 60,
     },
+    '/rpc/**': {
+      isr: false,
+    },
     '/about': {
       prerender: true,
     },
