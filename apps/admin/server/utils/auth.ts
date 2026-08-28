@@ -12,6 +12,13 @@ export const auth = betterAuth({
     enabled: true,
     disableSignUp: true,
   },
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 5,
+      strategy: 'compact',
+    },
+  },
   plugins: [
     username(),
     admin(),
