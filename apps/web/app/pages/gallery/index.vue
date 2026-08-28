@@ -45,9 +45,16 @@
 </template>
 
 <script setup lang="ts">
-const { $trpc } = useNuxtApp();
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 
-const { data: seriesList } = await $trpc.work.listSeries.useQuery();
+const { $orpc } = useNuxtApp();
+const queryClient = useQueryClient();
+
+const seriesListQuery = $orpc.work.listSeries.queryOptions();
+if (import.meta.server) {
+  await queryClient.prefetchQuery(seriesListQuery);
+}
+const { data: seriesList } = useQuery(seriesListQuery);
 
 useSeoMeta({
   title: 'Gallery',

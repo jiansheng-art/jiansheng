@@ -53,9 +53,16 @@
 </template>
 
 <script setup lang="ts">
-const { $trpc } = useNuxtApp();
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 
-const { data: products, status, error } = await $trpc.product.list.useQuery();
+const { $orpc } = useNuxtApp();
+const queryClient = useQueryClient();
+
+const productListQuery = $orpc.product.list.queryOptions();
+if (import.meta.server) {
+  await queryClient.prefetchQuery(productListQuery);
+}
+const { data: products, status, error } = useQuery(productListQuery);
 
 function formatPrice(amount: number, currency: string) {
   return new Intl.NumberFormat('en-US', {

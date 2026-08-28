@@ -1,22 +1,35 @@
-import { TRPCClientError } from '@trpc/client';
-import type { AppRouter } from '~~/server/trpc/routers';
+import { ORPCError } from '@orpc/client';
 
-export function useIsTRPCClientError(cause: unknown): cause is TRPCClientError<AppRouter> {
-  return cause instanceof TRPCClientError;
+function issueMessage(issue: unknown): string | undefined {
+  if (
+    issue &&
+    typeof issue === 'object' &&
+    'message' in issue &&
+    typeof issue.message === 'string'
+  ) {
+    return issue.message;
+  }
 }
 
-export async function useErrorHandler(err: any): Promise<void> {
+export function useErrorHandler(err: unknown): void {
   const toast = useToast();
 
-  if (useIsTRPCClientError(err)) {
-    if (err.data?.zodError) {
-      for (const issue of err.data.zodError.issues) {
-        toast.add({ title: 'Error', description: issue.message, color: 'error' });
+  if (err instanceof ORPCError) {
+    const data = err.data;
+    if (data && typeof data === 'object' && 'issues' in data && Array.isArray(data.issues)) {
+      for (const issue of data.issues) {
+        toast.add({
+          title: 'Error',
+          description: issueMessage(issue) ?? err.message,
+          color: 'error',
+        });
       }
-    } else {
-      toast.add({ title: 'Error', description: err.message, color: 'error' });
+      return;
     }
-  } else {
-    toast.add({ title: 'Error', description: 'An error occurred.', color: 'error' });
+
+    toast.add({ title: 'Error', description: err.message, color: 'error' });
+    return;
   }
+
+  toast.add({ title: 'Error', description: 'An error occurred.', color: 'error' });
 }

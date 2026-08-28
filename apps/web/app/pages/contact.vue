@@ -5,9 +5,16 @@
 </template>
 
 <script setup lang="ts">
-const { $trpc } = useNuxtApp();
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 
-const { data: pageContent } = await $trpc.pageContent.getBySlug.useQuery({ slug: 'contact' });
+const { $orpc } = useNuxtApp();
+const queryClient = useQueryClient();
+
+const pageContentQuery = $orpc.pageContent.getBySlug.queryOptions({ input: { slug: 'contact' } });
+if (import.meta.server) {
+  await queryClient.prefetchQuery(pageContentQuery);
+}
+const { data: pageContent } = useQuery(pageContentQuery);
 
 useSeoMeta({
   title: pageContent.value?.title || 'Contact',

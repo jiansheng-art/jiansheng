@@ -145,8 +145,11 @@
 </template>
 
 <script setup lang="ts">
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
+
 const route = useRoute();
-const { $trpc } = useNuxtApp();
+const { $orpc } = useNuxtApp();
+const queryClient = useQueryClient();
 
 const workId = Number(route.params.id);
 
@@ -154,9 +157,16 @@ if (!Number.isInteger(workId) || workId <= 0) {
   throw createError({ statusCode: 404, statusMessage: 'Not Found' });
 }
 
-const { data: work, status, error } = await $trpc.work.get.useQuery({ id: workId });
-
-const { data: relatedProducts } = await $trpc.product.getRelated.useQuery({ workId });
+const workQuery = $orpc.work.get.queryOptions({ input: { id: workId } });
+const relatedQuery = $orpc.product.getRelated.queryOptions({ input: { workId } });
+if (import.meta.server) {
+  await Promise.all([
+    queryClient.prefetchQuery(workQuery),
+    queryClient.prefetchQuery(relatedQuery),
+  ]);
+}
+const { data: work, status, error } = useQuery(workQuery);
+const { data: relatedProducts } = useQuery(relatedQuery);
 
 function formatPrice(amount: number, currency: string) {
   return new Intl.NumberFormat('en-US', {

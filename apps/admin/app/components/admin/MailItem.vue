@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import type { RouterOutput } from '~/types/trpc';
+import type { RouterOutput } from '~/types/orpc';
 
 type Mail = RouterOutput['contactForm']['list'][number];
 const props = defineProps<{

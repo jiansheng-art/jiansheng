@@ -75,14 +75,15 @@
 
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui';
+import { useQuery } from '@tanstack/vue-query';
 import { h, resolveComponent } from 'vue';
 
-const { $trpc } = useNuxtApp();
+const { $orpc } = useNuxtApp();
 
 const UBadge = resolveComponent('UBadge');
 
-const { data: countStats } = await $trpc.home.counter.useQuery();
-const { data: contactForms } = await $trpc.contactForm.list.useQuery();
+const { data: countStats } = useQuery($orpc.home.counter.queryOptions());
+const { data: contactForms } = useQuery($orpc.contactForm.list.queryOptions());
 
 const stats = computed(() => [
   {

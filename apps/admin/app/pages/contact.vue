@@ -19,13 +19,14 @@
 </template>
 
 <script setup lang="ts">
+import { useQuery } from '@tanstack/vue-query';
 import { breakpointsTailwind } from '@vueuse/core';
 
-import type { RouterOutput } from '~/types/trpc';
+import type { RouterOutput } from '~/types/orpc';
 
-const { $trpc } = useNuxtApp();
+const { $orpc } = useNuxtApp();
 
-const { data: contactForms } = await $trpc.contactForm.list.useQuery();
+const { data: contactForms } = useQuery($orpc.contactForm.list.queryOptions());
 
 const selectedMail = ref<null | RouterOutput['contactForm']['list'][number]>(null);
 const breakpoints = useBreakpoints(breakpointsTailwind);

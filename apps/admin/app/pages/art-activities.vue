@@ -107,7 +107,7 @@
 <script setup lang="ts">
 import type { CalendarDate } from '@internationalized/date';
 import type { EditorToolbarItem } from '@nuxt/ui';
-import { getQueryKey } from 'trpc-nuxt/client';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import * as z from 'zod';
 
 const schema = z.object({
@@ -118,7 +118,8 @@ const schema = z.object({
 
 type Schema = z.infer<typeof schema>;
 
-const { $trpc } = useNuxtApp();
+const { $orpc } = useNuxtApp();
+const queryClient = useQueryClient();
 const toast = useToast();
 
 const state = reactive<Schema>({
@@ -152,9 +153,7 @@ const modalOpen = ref(false);
 const images = ref<File[]>([]);
 const submitLoading = ref(false);
 
-const artActivityListKey = getQueryKey($trpc.artActivity.list, undefined);
-
-const { data: activities } = await $trpc.artActivity.list.useQuery();
+const { data: activities } = useQuery($orpc.artActivity.list.queryOptions());
 
 async function onSubmit() {
   submitLoading.value = true;
@@ -162,7 +161,7 @@ async function onSubmit() {
 
   for (const file of images.value) {
     try {
-      const { id, url } = await $trpc.artActivity.createImage.mutate({ fileName: file.name });
+      const { id, url } = await $orpc.artActivity.createImage.call({ fileName: file.name });
       if (!id || !url) {
         toast.add({
           title: `${file.name} 上传失败`,
@@ -185,7 +184,7 @@ async function onSubmit() {
   }
 
   try {
-    await $trpc.artActivity.create.mutate({
+    await $orpc.artActivity.create.call({
       title: state.title,
       description: state.description || undefined,
       markdown: state.markdown || undefined,
@@ -200,7 +199,9 @@ async function onSubmit() {
     state.markdown = '';
     dateValue.value = undefined;
     images.value = [];
-    await refreshNuxtData(artActivityListKey);
+    await queryClient.invalidateQueries({
+      queryKey: $orpc.artActivity.list.key({ type: 'query' }),
+    });
   } catch (err) {
     useErrorHandler(err);
   } finally {

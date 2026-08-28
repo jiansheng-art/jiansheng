@@ -170,18 +170,19 @@
 
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui';
-import { getQueryKey } from 'trpc-nuxt/client';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import { h } from 'vue';
 
 const route = useRoute();
-const { $trpc } = useNuxtApp();
+const { $orpc } = useNuxtApp();
+const queryClient = useQueryClient();
 const toast = useToast();
 
 const sessionId = computed(() => route.params.id as string);
-const orderGetInput = computed(() => ({ id: sessionId.value }));
-const orderGetKey = computed(() => getQueryKey($trpc.order.get, orderGetInput.value));
 
-const { data: order, status } = await $trpc.order.get.useQuery(orderGetInput);
+const { data: order, status } = useQuery(() =>
+  $orpc.order.get.queryOptions({ input: { id: sessionId.value } }),
+);
 
 const isLoading = computed(() => status.value === 'pending');
 
@@ -312,7 +313,7 @@ async function onShippingSubmit() {
   shippingSubmitLoading.value = true;
 
   try {
-    await $trpc.order.updateShipping.mutate({
+    await $orpc.order.updateShipping.call({
       stripeSessionId: order.value.id,
       shippingStatus: shippingForm.shippingStatus as
         | 'pending'
@@ -325,7 +326,7 @@ async function onShippingSubmit() {
       notes: shippingForm.notes || null,
     });
     toast.add({ title: '物流状态已更新', color: 'success' });
-    await refreshNuxtData(orderGetKey.value);
+    await queryClient.invalidateQueries({ queryKey: $orpc.order.get.key({ type: 'query' }) });
   } catch (err) {
     useErrorHandler(err);
   } finally {

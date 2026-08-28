@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 
-import type { RouterOutput } from '~/types/trpc';
+import type { RouterOutput } from '~/types/orpc';
 
 export interface CartItem {
   productId: number;

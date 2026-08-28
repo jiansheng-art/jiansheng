@@ -48,10 +48,11 @@
 
 <script setup lang="ts">
 import type { EditorToolbarItem, NavigationMenuItem } from '@nuxt/ui';
-import { getQueryKey } from 'trpc-nuxt/client';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import * as z from 'zod';
 
-const { $trpc } = useNuxtApp();
+const { $orpc } = useNuxtApp();
+const queryClient = useQueryClient();
 const toast = useToast();
 
 const schema = z.object({
@@ -126,8 +127,7 @@ const editorToolbarItems: EditorToolbarItem[][] = [
   ],
 ];
 
-const pageContentListKey = getQueryKey($trpc.pageContent.list, undefined);
-const { data: pages } = await $trpc.pageContent.list.useQuery();
+const { data: pages } = useQuery($orpc.pageContent.list.queryOptions());
 
 watch(
   pages,
@@ -153,7 +153,7 @@ watch(
 async function onSubmit(slug: PageSlug) {
   isSaving[slug] = true;
   try {
-    await $trpc.pageContent.upsert.mutate({
+    await $orpc.pageContent.upsert.call({
       slug,
       title: states[slug].title,
       description: states[slug].description || undefined,
@@ -161,7 +161,9 @@ async function onSubmit(slug: PageSlug) {
     });
 
     toast.add({ title: '保存成功', description: '网页内容已更新', color: 'success' });
-    await refreshNuxtData(pageContentListKey);
+    await queryClient.invalidateQueries({
+      queryKey: $orpc.pageContent.list.key({ type: 'query' }),
+    });
   } catch (error) {
     useErrorHandler(error);
   } finally {

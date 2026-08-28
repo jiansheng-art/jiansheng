@@ -46,7 +46,7 @@ export default defineNuxtConfig({
 
   build: {
     // Inline so Nitro can replace __VUE_PROD_DEVTOOLS__ during prerender
-    transpile: ['trpc-nuxt', 'pinia'],
+    transpile: ['pinia'],
   },
 
   site: {

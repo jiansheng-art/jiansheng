@@ -152,9 +152,10 @@
 
 <script setup lang="ts">
 import type { AccordionItem } from '@nuxt/ui';
+import { useQuery } from '@tanstack/vue-query';
 
 const route = useRoute();
-const { $trpc } = useNuxtApp();
+const { $orpc } = useNuxtApp();
 
 const items = ref<AccordionItem[]>([
   {
@@ -189,7 +190,11 @@ const mobileDescriptionEditorReady = ref(false);
 
 const quantity = ref(1);
 
-const { data: product, status, error } = $trpc.product.get.useQuery({ id: productId });
+const {
+  data: product,
+  status,
+  error,
+} = useQuery($orpc.product.get.queryOptions({ input: { id: productId } }));
 
 function formatPrice(amount: number, currency: string) {
   return new Intl.NumberFormat('en-US', {
@@ -217,7 +222,7 @@ async function shopNow() {
 
   checkoutLoading.value = true;
   try {
-    const { url } = await $trpc.product.createCheckoutSession.mutate({
+    const { url } = await $orpc.product.createCheckoutSession.call({
       items: [
         {
           productId: product.value.id,

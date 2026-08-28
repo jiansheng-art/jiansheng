@@ -62,9 +62,9 @@
 </template>
 
 <script setup lang="ts">
-import { getQueryKey } from 'trpc-nuxt/client';
+import { useQueryClient } from '@tanstack/vue-query';
 
-import type { RouterOutput } from '~/types/trpc';
+import type { RouterOutput } from '~/types/orpc';
 
 type Mail = RouterOutput['contactForm']['list'][number];
 
@@ -80,17 +80,19 @@ watch(
   },
 );
 
-const { $trpc } = useNuxtApp();
+const { $orpc } = useNuxtApp();
+const queryClient = useQueryClient();
 const toast = useToast();
-const contactFormListKey = getQueryKey($trpc.contactForm.list, undefined);
 
 const readButtonLoading = ref(false);
 async function toggleRead() {
   try {
     readButtonLoading.value = true;
-    await $trpc.contactForm.toggleRead.mutate({ id: mail.id });
+    await $orpc.contactForm.toggleRead.call({ id: mail.id });
     dirtyMail.value.unread = !dirtyMail.value.unread;
-    await refreshNuxtData(contactFormListKey);
+    await queryClient.invalidateQueries({
+      queryKey: $orpc.contactForm.list.key({ type: 'query' }),
+    });
     readButtonLoading.value = false;
   } catch {
     toast.add({
@@ -105,9 +107,11 @@ const starButtonLoading = ref(false);
 async function toggleStarred() {
   try {
     starButtonLoading.value = true;
-    await $trpc.contactForm.toggleStarred.mutate({ id: mail.id });
+    await $orpc.contactForm.toggleStarred.call({ id: mail.id });
     dirtyMail.value.starred = !dirtyMail.value.starred;
-    await refreshNuxtData(contactFormListKey);
+    await queryClient.invalidateQueries({
+      queryKey: $orpc.contactForm.list.key({ type: 'query' }),
+    });
     starButtonLoading.value = false;
   } catch {
     toast.add({
