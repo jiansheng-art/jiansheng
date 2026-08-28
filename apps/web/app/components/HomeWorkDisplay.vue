@@ -6,9 +6,10 @@
         <NuxtImg
           :src="work.src"
           class="relative object-cover w-full h-full"
-          :preload="{ fetchPriority: 'high' }"
-          loading="eager"
+          sizes="50vw md:33vw lg:25vw xl:20vw"
           format="webp"
+          :loading="loading"
+          :preload="preload ? { fetchPriority: 'high' } : false"
         />
       </UCard>
     </NuxtLink>
@@ -16,7 +17,13 @@
 </template>
 
 <script setup lang="ts">
-const { work } = defineProps<{
+const {
+  work,
+  preload = false,
+  loading = 'lazy',
+} = defineProps<{
   work: { id: string; src: string };
+  preload?: boolean;
+  loading?: 'eager' | 'lazy';
 }>();
 </script>

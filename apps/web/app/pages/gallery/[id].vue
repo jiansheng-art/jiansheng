@@ -151,18 +151,19 @@ const route = useRoute();
 const { $orpc } = useNuxtApp();
 const queryClient = useQueryClient();
 
-const workId = Number(route.params.id);
+const workId = computed(() => Number(route.params.id));
 
-if (!Number.isInteger(workId) || workId <= 0) {
+if (!Number.isInteger(workId.value) || workId.value <= 0) {
   throw createError({ statusCode: 404, statusMessage: 'Not Found' });
 }
 
-const workQuery = $orpc.work.get.queryOptions({ input: { id: workId } });
-const relatedQuery = $orpc.product.getRelated.queryOptions({ input: { workId } });
+const workQuery = () => $orpc.work.get.queryOptions({ input: { id: workId.value } });
+const relatedQuery = () =>
+  $orpc.product.getRelated.queryOptions({ input: { workId: workId.value } });
 if (import.meta.server) {
   await Promise.all([
-    queryClient.prefetchQuery(workQuery),
-    queryClient.prefetchQuery(relatedQuery),
+    queryClient.prefetchQuery(workQuery()),
+    queryClient.prefetchQuery(relatedQuery()),
   ]);
 }
 const { data: work, status, error } = useQuery(workQuery);

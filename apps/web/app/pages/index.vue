@@ -7,6 +7,8 @@
         v-for="(item, index) in works"
         :key="item.id"
         :work="item"
+        :preload="index === 0"
+        :loading="index <= 1 ? 'eager' : 'lazy'"
         :class="[
           index === 2 ? 'hidden md:block' : '',
           index === 3 ? 'hidden lg:block' : '',

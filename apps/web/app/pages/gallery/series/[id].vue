@@ -52,15 +52,15 @@ const route = useRoute();
 const { $orpc } = useNuxtApp();
 const queryClient = useQueryClient();
 
-const seriesId = Number(route.params.id);
+const seriesId = computed(() => Number(route.params.id));
 
-if (!Number.isInteger(seriesId) || seriesId <= 0) {
+if (!Number.isInteger(seriesId.value) || seriesId.value <= 0) {
   throw createError({ statusCode: 404, statusMessage: 'Not Found' });
 }
 
-const seriesQuery = $orpc.work.getSeries.queryOptions({ input: { id: seriesId } });
+const seriesQuery = () => $orpc.work.getSeries.queryOptions({ input: { id: seriesId.value } });
 if (import.meta.server) {
-  await queryClient.prefetchQuery(seriesQuery);
+  await queryClient.prefetchQuery(seriesQuery());
 }
 const { data: series, status, error } = useQuery(seriesQuery);
 

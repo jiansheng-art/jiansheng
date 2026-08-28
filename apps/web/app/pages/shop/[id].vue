@@ -181,9 +181,9 @@ const items = ref<AccordionItem[]>([
   },
 ]);
 
-const productId = Number(route.params.id);
+const productId = computed(() => Number(route.params.id));
 
-if (!Number.isInteger(productId) || productId <= 0) {
+if (!Number.isInteger(productId.value) || productId.value <= 0) {
   throw createError({ statusCode: 404, statusMessage: 'Not Found' });
 }
 const desktopDescriptionEditorReady = ref(false);
@@ -191,9 +191,9 @@ const mobileDescriptionEditorReady = ref(false);
 
 const quantity = ref(1);
 
-const productQuery = $orpc.product.get.queryOptions({ input: { id: productId } });
+const productQuery = () => $orpc.product.get.queryOptions({ input: { id: productId.value } });
 if (import.meta.server) {
-  await queryClient.prefetchQuery(productQuery);
+  await queryClient.prefetchQuery(productQuery());
 }
 const { data: product, status, error } = useQuery(productQuery);
 
