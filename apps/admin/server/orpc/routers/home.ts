@@ -6,13 +6,12 @@ import { protectedProcedure } from '../orpc';
 
 export const homeRouter = {
   counter: protectedProcedure.handler(async () => {
-    const workCount = await db.select({ count: count() }).from(works);
-    const seriesCount = await db.select({ count: count() }).from(workSeries);
-    const productCount = await db.select({ count: count() }).from(products);
-    const contactFormCount = await db
-      .select({ count: count() })
-      .from(contactForms)
-      .where(eq(contactForms.unread, true));
+    const [workCount, seriesCount, productCount, contactFormCount] = await Promise.all([
+      db.select({ count: count() }).from(works),
+      db.select({ count: count() }).from(workSeries),
+      db.select({ count: count() }).from(products),
+      db.select({ count: count() }).from(contactForms).where(eq(contactForms.unread, true)),
+    ]);
 
     return {
       workCount: workCount[0]?.count,
