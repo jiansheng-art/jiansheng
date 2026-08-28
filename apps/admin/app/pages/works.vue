@@ -157,7 +157,7 @@
 
 <script setup lang="ts">
 import type { EditorToolbarItem } from '@nuxt/ui';
-import { getQueryKey } from 'trpc-nuxt/client';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import * as z from 'zod';
 
 const schema = z.object({
@@ -176,7 +176,8 @@ const seriesSchema = z.object({
   description: z.string().optional(),
 });
 
-const { $trpc } = useNuxtApp();
+const { $orpc } = useNuxtApp();
+const queryClient = useQueryClient();
 
 type Schema = z.infer<typeof schema>;
 type SeriesSchema = z.infer<typeof seriesSchema>;
@@ -215,12 +216,8 @@ const editorToolbarItems: EditorToolbarItem[][] = [
 const modalOpen = ref(false);
 const seriesModalOpen = ref(false);
 
-const workListKey = getQueryKey($trpc.work.list, undefined);
-const seriesListKey = getQueryKey($trpc.work.listSeries, undefined);
-
-const { data: works } = await $trpc.work.list.useQuery();
-
-const { data: seriesList } = await $trpc.work.listSeries.useQuery();
+const { data: works } = useQuery($orpc.work.list.queryOptions());
+const { data: seriesList } = useQuery($orpc.work.listSeries.queryOptions());
 
 const seriesOptions = computed(() => {
   const base = [{ label: '不分配系列', value: null as number | null }];
@@ -239,20 +236,20 @@ const submitLoading = ref(false);
 const seriesSubmitLoading = ref(false);
 
 async function onSeriesChanged() {
-  await refreshNuxtData(seriesListKey);
-  await refreshNuxtData(workListKey);
+  await queryClient.invalidateQueries({ queryKey: $orpc.work.listSeries.key({ type: 'query' }) });
+  await queryClient.invalidateQueries({ queryKey: $orpc.work.list.key({ type: 'query' }) });
 }
 
 async function onSubmitSeries() {
   seriesSubmitLoading.value = true;
   try {
-    await $trpc.work.createSeries.mutate({
+    await $orpc.work.createSeries.call({
       title: seriesState.title,
       titleEnglish: seriesState.titleEnglish || undefined,
       description: seriesState.description || undefined,
     });
 
-    await refreshNuxtData(seriesListKey);
+    await queryClient.invalidateQueries({ queryKey: $orpc.work.listSeries.key({ type: 'query' }) });
     toast.add({ title: '新建成功', description: '成功新建系列', color: 'success' });
     seriesModalOpen.value = false;
     seriesState.title = '';
@@ -269,7 +266,7 @@ async function onSubmit() {
   submitLoading.value = true;
   for (const file of images.value) {
     try {
-      const { id, url } = await $trpc.work.createImage.mutate({ fileName: file.name });
+      const { id, url } = await $orpc.work.createImage.call({ fileName: file.name });
       if (!id || !url) {
         toast.add({
           title: `${file.name} 上传失败`,
@@ -293,7 +290,7 @@ async function onSubmit() {
     }
   }
 
-  await $trpc.work.create.mutate({
+  await $orpc.work.create.call({
     title: state.title,
     titleEnglish: state.titleEnglish || undefined,
     description: state.description,
@@ -313,6 +310,6 @@ async function onSubmit() {
   state.seriesId = undefined;
   workImages.value = [];
   images.value = [];
-  await refreshNuxtData(workListKey);
+  await queryClient.invalidateQueries({ queryKey: $orpc.work.list.key({ type: 'query' }) });
 }
 </script>

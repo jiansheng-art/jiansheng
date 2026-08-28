@@ -84,7 +84,7 @@
 import type { EditorToolbarItem } from '@nuxt/ui';
 import * as z from 'zod';
 
-import type { RouterOutput } from '~/types/trpc';
+import type { RouterOutput } from '~/types/orpc';
 
 const { series } = defineProps<{
   series: RouterOutput['work']['listSeries'][number];
@@ -127,7 +127,7 @@ const editorToolbarItems: EditorToolbarItem[][] = [
   ],
 ];
 
-const { $trpc } = useNuxtApp();
+const { $orpc } = useNuxtApp();
 const toast = useToast();
 
 const modalOpen = ref(false);
@@ -143,7 +143,7 @@ function openEditSeries() {
 async function onUpdateSeries() {
   seriesUpdateLoading.value = true;
   try {
-    await $trpc.work.updateSeries.mutate({
+    await $orpc.work.updateSeries.call({
       id: series.id,
       title: editSeriesState.title,
       titleEnglish: editSeriesState.titleEnglish || undefined,
@@ -163,7 +163,7 @@ async function onUpdateSeries() {
 async function onDeleteSeries(close: () => void) {
   seriesDeleteLoading.value = true;
   try {
-    await $trpc.work.deleteSeries.mutate({ id: series.id });
+    await $orpc.work.deleteSeries.call({ id: series.id });
     toast.add({ title: '删除成功', description: '系列已删除', color: 'success' });
     close();
     emit('changed');

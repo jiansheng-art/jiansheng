@@ -16,7 +16,14 @@
 </template>
 
 <script setup lang="ts">
-const { $trpc } = useNuxtApp();
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 
-const { data: activities } = await $trpc.artActivity.list.useQuery();
+const { $orpc } = useNuxtApp();
+const queryClient = useQueryClient();
+
+const activitiesQuery = $orpc.artActivity.list.queryOptions();
+if (import.meta.server) {
+  await queryClient.prefetchQuery(activitiesQuery);
+}
+const { data: activities } = useQuery(activitiesQuery);
 </script>

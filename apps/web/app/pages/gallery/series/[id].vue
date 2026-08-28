@@ -46,8 +46,11 @@
 </template>
 
 <script setup lang="ts">
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
+
 const route = useRoute();
-const { $trpc } = useNuxtApp();
+const { $orpc } = useNuxtApp();
+const queryClient = useQueryClient();
 
 const seriesId = Number(route.params.id);
 
@@ -55,7 +58,11 @@ if (!Number.isInteger(seriesId) || seriesId <= 0) {
   throw createError({ statusCode: 404, statusMessage: 'Not Found' });
 }
 
-const { data: series, status, error } = await $trpc.work.getSeries.useQuery({ id: seriesId });
+const seriesQuery = $orpc.work.getSeries.queryOptions({ input: { id: seriesId } });
+if (import.meta.server) {
+  await queryClient.prefetchQuery(seriesQuery);
+}
+const { data: series, status, error } = useQuery(seriesQuery);
 
 useSeoMeta({
   title: () => series.value?.title || 'Exhibition',

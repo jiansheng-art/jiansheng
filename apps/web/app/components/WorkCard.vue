@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import type { RouterOutput } from '~/types/trpc';
+import type { RouterOutput } from '~/types/orpc';
 
 const { work } = defineProps<{
   work: Pick<RouterOutput['work']['list'][number], 'id' | 'images'>;

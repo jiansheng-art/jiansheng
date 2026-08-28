@@ -176,10 +176,10 @@
 
 <script setup lang="ts">
 import type { EditorToolbarItem } from '@nuxt/ui';
-import { getQueryKey } from 'trpc-nuxt/client';
+import { useQueryClient } from '@tanstack/vue-query';
 import z from 'zod';
 
-import type { RouterOutput } from '~/types/trpc';
+import type { RouterOutput } from '~/types/orpc';
 
 const { product, workList } = defineProps<{
   product: RouterOutput['product']['list'][number];
@@ -199,10 +199,9 @@ const schema = z.object({
 
 type Schema = z.infer<typeof schema>;
 
-const { $trpc } = useNuxtApp();
+const { $orpc } = useNuxtApp();
+const queryClient = useQueryClient();
 const toast = useToast();
-
-const productListKey = getQueryKey($trpc.product.list, undefined);
 
 const workOptions = computed(() => {
   const base = [{ label: '不关联作品', value: null as number | null }];
@@ -252,11 +251,11 @@ function formatPrice(amount: number, currency: string) {
 async function deleteProduct(close: () => void) {
   isDeleteLoading.value = true;
   try {
-    await $trpc.product.delete.mutate({ id: product.id });
+    await $orpc.product.delete.call({ id: product.id });
     close();
     modalOpen.value = false;
     toast.add({ title: '删除成功', description: '商品已删除', color: 'success' });
-    await refreshNuxtData(productListKey);
+    await queryClient.invalidateQueries({ queryKey: $orpc.product.list.key({ type: 'query' }) });
   } catch (error) {
     useErrorHandler(error);
   } finally {
@@ -267,7 +266,7 @@ async function deleteProduct(close: () => void) {
 async function deleteImage(id: number) {
   isDeleteImageLoading.value = true;
   try {
-    await $trpc.product.deleteImage.mutate({ id });
+    await $orpc.product.deleteImage.call({ id });
     productDirty.value.images = productDirty.value.images.filter((img) => img.id !== id);
   } catch (error) {
     useErrorHandler(error);
@@ -286,7 +285,7 @@ async function onSubmit() {
 
   for (const file of images.value) {
     try {
-      const { id, url } = await $trpc.product.createImage.mutate({ fileName: file.name });
+      const { id, url } = await $orpc.product.createImage.call({ fileName: file.name });
       if (!id || !url) {
         toast.add({
           title: `${file.name} 上传失败`,
@@ -311,7 +310,7 @@ async function onSubmit() {
   }
 
   try {
-    await $trpc.product.update.mutate({
+    await $orpc.product.update.call({
       id: product.id,
       name: state.name,
       description: state.description,
@@ -329,7 +328,7 @@ async function onSubmit() {
     productDirty.value.active = state.active ?? true;
     modalOpen.value = false;
     toast.add({ title: '修改成功', description: '成功修改商品', color: 'success' });
-    await refreshNuxtData(productListKey);
+    await queryClient.invalidateQueries({ queryKey: $orpc.product.list.key({ type: 'query' }) });
   } catch (err) {
     useErrorHandler(err);
   } finally {

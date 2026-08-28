@@ -65,14 +65,14 @@ const state = reactive<Partial<Schema>>({
   message: undefined,
 });
 
-const { $trpc } = useNuxtApp();
+const { $orpc } = useNuxtApp();
 
 const isPending = ref(false);
 const toast = useToast();
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isPending.value = true;
   try {
-    await $trpc.contactForm.create.mutate(event.data);
+    await $orpc.contactForm.create.call(event.data);
 
     toast.add({ title: 'Success', description: 'The form has been submitted.' });
 

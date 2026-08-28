@@ -69,9 +69,10 @@
 
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui';
+import { useQuery } from '@tanstack/vue-query';
 import { h, resolveComponent } from 'vue';
 
-const { $trpc } = useNuxtApp();
+const { $orpc } = useNuxtApp();
 const router = useRouter();
 
 const UBadge = resolveComponent('UBadge');
@@ -102,7 +103,9 @@ const orderListInput = computed(() => ({
   startingAfter: cursor.value,
 }));
 
-const { data, status } = await $trpc.order.list.useQuery(orderListInput);
+const { data, status } = useQuery(() =>
+  $orpc.order.list.queryOptions({ input: orderListInput.value }),
+);
 
 const isLoading = computed(() => status.value === 'pending');
 const orders = computed(() => data.value?.orders as Order[] | undefined);

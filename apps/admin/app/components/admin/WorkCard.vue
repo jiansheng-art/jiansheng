@@ -167,10 +167,10 @@
 
 <script setup lang="ts">
 import type { EditorToolbarItem } from '@nuxt/ui';
-import { getQueryKey } from 'trpc-nuxt/client';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import z from 'zod';
 
-import type { RouterOutput } from '~/types/trpc';
+import type { RouterOutput } from '~/types/orpc';
 
 const { work } = defineProps<{
   work: RouterOutput['work']['list'][0];
@@ -188,13 +188,11 @@ const schema = z.object({
   material: z.string().optional(),
   dimensions: z.string().optional(),
 });
-const { $trpc } = useNuxtApp();
+const { $orpc } = useNuxtApp();
+const queryClient = useQueryClient();
 const toast = useToast();
 
-const workListKey = getQueryKey($trpc.work.list, undefined);
-const seriesListKey = getQueryKey($trpc.work.listSeries, undefined);
-
-const { data: seriesList } = await $trpc.work.listSeries.useQuery();
+const { data: seriesList } = useQuery($orpc.work.listSeries.queryOptions());
 
 const seriesOptions = computed(() => {
   const base = [{ label: '不分配系列', value: null as number | null }];
@@ -242,11 +240,11 @@ const isDeleteWorkLoading = ref(false);
 async function deleteWork(close: () => void) {
   isDeleteWorkLoading.value = true;
   try {
-    await $trpc.work.delete.mutate({ id: work.id });
+    await $orpc.work.delete.call({ id: work.id });
     close();
     modalOpen.value = false;
     toast.add({ title: '删除成功', description: '作品已删除', color: 'success' });
-    await refreshNuxtData(workListKey);
+    await queryClient.invalidateQueries({ queryKey: $orpc.work.list.key({ type: 'query' }) });
     isDeleteWorkLoading.value = false;
   } catch (error) {
     useErrorHandler(error);
@@ -257,7 +255,7 @@ async function deleteWork(close: () => void) {
 async function deleteImage(id: number) {
   isDeleteImageLoading.value = true;
   try {
-    await $trpc.work.deleteImage.mutate({ id });
+    await $orpc.work.deleteImage.call({ id });
     workDirty.value.images = workDirty.value.images.filter((img) => img.id !== id);
     isDeleteImageLoading.value = false;
   } catch (error) {
@@ -274,7 +272,7 @@ async function onSubmit() {
   submitLoading.value = true;
   for (const file of images.value) {
     try {
-      const { id, url } = await $trpc.work.createImage.mutate({ fileName: file.name });
+      const { id, url } = await $orpc.work.createImage.call({ fileName: file.name });
       if (!id || !url) {
         toast.add({
           title: `${file.name} 上传失败`,
@@ -299,7 +297,7 @@ async function onSubmit() {
   }
 
   try {
-    await $trpc.work.update.mutate({
+    await $orpc.work.update.call({
       id: work.id,
       title: state.title,
       titleEnglish: state.titleEnglish,
@@ -319,8 +317,8 @@ async function onSubmit() {
     workDirty.value.dimensions = state.dimensions ?? null;
     modalOpen.value = false;
     toast.add({ title: '修改成功', description: '成功修改作品', color: 'success' });
-    await refreshNuxtData(workListKey);
-    await refreshNuxtData(seriesListKey);
+    await queryClient.invalidateQueries({ queryKey: $orpc.work.list.key({ type: 'query' }) });
+    await queryClient.invalidateQueries({ queryKey: $orpc.work.listSeries.key({ type: 'query' }) });
     submitLoading.value = false;
   } catch (error) {
     useErrorHandler(error);

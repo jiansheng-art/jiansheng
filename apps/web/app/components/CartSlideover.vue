@@ -86,7 +86,7 @@
 
 <script setup lang="ts">
 const cart = useCartStore();
-const { $trpc } = useNuxtApp();
+const { $orpc } = useNuxtApp();
 
 const checkoutLoading = ref(false);
 
@@ -95,7 +95,7 @@ async function checkout() {
 
   checkoutLoading.value = true;
   try {
-    const { url } = await $trpc.product.createCheckoutSession.mutate({
+    const { url } = await $orpc.product.createCheckoutSession.call({
       items: cart.items.map((item) => ({
         productId: item.productId,
         quantity: item.quantity,

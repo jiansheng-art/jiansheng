@@ -124,10 +124,10 @@
 <script setup lang="ts">
 import { CalendarDate } from '@internationalized/date';
 import type { EditorToolbarItem } from '@nuxt/ui';
-import { getQueryKey } from 'trpc-nuxt/client';
+import { useQueryClient } from '@tanstack/vue-query';
 import * as z from 'zod';
 
-import type { RouterOutput } from '~/types/trpc';
+import type { RouterOutput } from '~/types/orpc';
 
 const props = defineProps<{
   activity: RouterOutput['artActivity']['list'][number];
@@ -141,10 +141,9 @@ const schema = z.object({
 
 type Schema = z.infer<typeof schema>;
 
-const { $trpc } = useNuxtApp();
+const { $orpc } = useNuxtApp();
+const queryClient = useQueryClient();
 const toast = useToast();
-
-const artActivityListKey = getQueryKey($trpc.artActivity.list, undefined);
 
 const activityDirty = ref(structuredClone(toRaw(props.activity)));
 
@@ -191,10 +190,12 @@ const isDeleteImageLoading = ref(false);
 async function deleteActivity(closeFn: () => void) {
   isDeleteLoading.value = true;
   try {
-    await $trpc.artActivity.delete.mutate({ id: props.activity.id });
+    await $orpc.artActivity.delete.call({ id: props.activity.id });
     toast.add({ title: '删除成功', color: 'success' });
     closeFn();
-    await refreshNuxtData(artActivityListKey);
+    await queryClient.invalidateQueries({
+      queryKey: $orpc.artActivity.list.key({ type: 'query' }),
+    });
   } catch (err) {
     useErrorHandler(err);
   } finally {
@@ -205,10 +206,12 @@ async function deleteActivity(closeFn: () => void) {
 async function deleteImage(imageId: number) {
   isDeleteImageLoading.value = true;
   try {
-    await $trpc.artActivity.deleteImage.mutate({ id: imageId });
+    await $orpc.artActivity.deleteImage.call({ id: imageId });
     activityDirty.value.images = activityDirty.value.images.filter((i) => i.id !== imageId);
     toast.add({ title: '图片已删除', color: 'success' });
-    await refreshNuxtData(artActivityListKey);
+    await queryClient.invalidateQueries({
+      queryKey: $orpc.artActivity.list.key({ type: 'query' }),
+    });
   } catch (err) {
     useErrorHandler(err);
   } finally {
@@ -222,7 +225,7 @@ async function onSubmit() {
 
   for (const file of images.value) {
     try {
-      const { id, url } = await $trpc.artActivity.createImage.mutate({ fileName: file.name });
+      const { id, url } = await $orpc.artActivity.createImage.call({ fileName: file.name });
       if (!id || !url) {
         toast.add({
           title: `${file.name} 上传失败`,
@@ -245,7 +248,7 @@ async function onSubmit() {
   }
 
   try {
-    await $trpc.artActivity.update.mutate({
+    await $orpc.artActivity.update.call({
       id: props.activity.id,
       title: state.title,
       description: state.description || undefined,
@@ -257,7 +260,9 @@ async function onSubmit() {
     modalOpen.value = false;
     toast.add({ title: '保存成功', color: 'success' });
     images.value = [];
-    await refreshNuxtData(artActivityListKey);
+    await queryClient.invalidateQueries({
+      queryKey: $orpc.artActivity.list.key({ type: 'query' }),
+    });
   } catch (err) {
     useErrorHandler(err);
   } finally {

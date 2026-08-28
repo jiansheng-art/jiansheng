@@ -107,7 +107,7 @@
 
 <script setup lang="ts">
 import type { EditorToolbarItem } from '@nuxt/ui';
-import { getQueryKey } from 'trpc-nuxt/client';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import * as z from 'zod';
 
 const schema = z.object({
@@ -120,7 +120,8 @@ const schema = z.object({
 
 type Schema = z.infer<typeof schema>;
 
-const { $trpc } = useNuxtApp();
+const { $orpc } = useNuxtApp();
+const queryClient = useQueryClient();
 
 const state = reactive<Schema>({
   name: '',
@@ -150,11 +151,8 @@ const editorToolbarItems: EditorToolbarItem[][] = [
 
 const modalOpen = ref(false);
 
-const productListKey = getQueryKey($trpc.product.list, undefined);
-
-const { data: products } = await $trpc.product.list.useQuery();
-
-const { data: works } = await $trpc.work.listIdAndTitle.useQuery();
+const { data: products } = useQuery($orpc.product.list.queryOptions());
+const { data: works } = useQuery($orpc.work.listIdAndTitle.queryOptions());
 
 const workOptions = computed(() => {
   const base = [{ label: '不关联作品', value: null as number | null }];
@@ -176,7 +174,7 @@ async function onSubmit() {
 
   for (const file of images.value) {
     try {
-      const { id, url } = await $trpc.product.createImage.mutate({ fileName: file.name });
+      const { id, url } = await $orpc.product.createImage.call({ fileName: file.name });
       if (!id || !url) {
         toast.add({
           title: `${file.name} 上传失败`,
@@ -201,7 +199,7 @@ async function onSubmit() {
   }
 
   try {
-    await $trpc.product.create.mutate({
+    await $orpc.product.create.call({
       name: state.name,
       description: state.description || undefined,
       workId: state.workId ?? null,
@@ -219,7 +217,7 @@ async function onSubmit() {
     state.active = true;
     productImageIds.value = [];
     images.value = [];
-    await refreshNuxtData(productListKey);
+    await queryClient.invalidateQueries({ queryKey: $orpc.product.list.key({ type: 'query' }) });
   } catch (err) {
     useErrorHandler(err);
   } finally {
